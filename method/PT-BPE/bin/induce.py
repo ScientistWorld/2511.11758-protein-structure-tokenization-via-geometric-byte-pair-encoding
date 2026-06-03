@@ -24,7 +24,7 @@ def _effective_cpus() -> int:
     if "SLURM_CPUS_PER_TASK" in os.environ:        
         n = int(os.environ["SLURM_CPUS_PER_TASK"])
         print(f"SLURM_CPUS_PER_TASK={n}")
-        return n
+        return max(1, n)
     try:                                   # Linux cpuset / cgroups
         return len(os.sched_getaffinity(0))
     except AttributeError:

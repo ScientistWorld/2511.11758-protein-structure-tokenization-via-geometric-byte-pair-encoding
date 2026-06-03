@@ -111,6 +111,8 @@ def main() -> None:
 
     output_dir = Path(args.output_dir)
     induce_dir = Path(args.induce_dir)
+    shutil.rmtree(output_dir, ignore_errors=True)
+    shutil.rmtree(induce_dir, ignore_errors=True)
     output_dir.mkdir(parents=True, exist_ok=True)
     induce_dir.mkdir(parents=True, exist_ok=True)
     prepare_upstream_data(Path(args.data_root))
@@ -120,8 +122,7 @@ def main() -> None:
     env.setdefault("OMP_NUM_THREADS", "1")
     env.setdefault("MKL_NUM_THREADS", "1")
     env.setdefault("GEOBPE_DATASET_WORKERS", "1")
-    # The upstream code uses SLURM_CPUS_PER_TASK=0 as an explicit sequential mode.
-    env["SLURM_CPUS_PER_TASK"] = "0"
+    env["SLURM_CPUS_PER_TASK"] = "1"
 
     encode_cmd = [
         sys.executable,

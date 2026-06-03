@@ -32,5 +32,9 @@
 - Third compute job reached official GEOBPE PDB featurization but failed on a Biotite API change: `filter_backbone` is absent in the installed Biotite version.
 - Added a compatibility shim for backbone filtering and capped featurization workers for the next CPU smoke job.
 
+### [2026-06-03 06:25] - none
+- Fourth compute job featurized the smoke structures and entered official GEOBPE BPE initialization, including histogram generation and bond standardization.
+- The run failed when upstream BPE tried to construct a process pool with zero workers from `SLURM_CPUS_PER_TASK=0`; patched BPE and induction worker helpers to clamp to at least one worker.
+
 ## Stop Justification
 - Not stopped.

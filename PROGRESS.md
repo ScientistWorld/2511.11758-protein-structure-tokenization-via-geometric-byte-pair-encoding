@@ -29,3 +29,5 @@ No completed compute job has been scored yet. The next CPU test job is prepared 
 - Job `b20a522a-14b` reached the same ESM `ProteinChain` import path and failed on `msgpack_numpy`. Inspected the ESM 3.2.0 wheel metadata and added the small missing runtime dependencies.
 - Job `a777ea58-e69` reached official PT-BPE PDB featurization but failed because modern Biotite no longer exposes `biotite.structure.filter_backbone`.
 - Added a compatibility shim in the official geometry parser that computes the same standard-residue N/CA/C backbone mask, imported the missing `OrderedDict`, and capped dataset featurization workers through `GEOBPE_DATASET_WORKERS`.
+- Job `535e943b-b62` successfully featurized the smoke structures and reached official GEOBPE BPE initialization, including histogram generation and bond standardization.
+- The job then failed because the upstream BPE worker helper returned zero workers from `SLURM_CPUS_PER_TASK=0`. Patched the BPE and induction helpers to clamp worker counts to at least one and changed the wrapper to run with one worker from a clean output directory.
