@@ -31,3 +31,5 @@ No completed compute job has been scored yet. The next CPU test job is prepared 
 - Added a compatibility shim in the official geometry parser that computes the same standard-residue N/CA/C backbone mask, imported the missing `OrderedDict`, and capped dataset featurization workers through `GEOBPE_DATASET_WORKERS`.
 - Job `535e943b-b62` successfully featurized the smoke structures and reached official GEOBPE BPE initialization, including histogram generation and bond standardization.
 - The job then failed because the upstream BPE worker helper returned zero workers from `SLURM_CPUS_PER_TASK=0`. Patched the BPE and induction helpers to clamp worker counts to at least one and changed the wrapper to run with one worker from a clean output directory.
+- Job `836611b5-37b` completed the official GEOBPE encode phase on the smoke training structures and produced `bpe_iter=0.pkl`, but the wrapper searched for it in the workspace checkpoint directory while upstream had written relative paths under `method/PT-BPE/checkpoints/`.
+- Updated the wrapper to resolve output, induction, and data paths to absolute workspace paths before invoking upstream scripts.

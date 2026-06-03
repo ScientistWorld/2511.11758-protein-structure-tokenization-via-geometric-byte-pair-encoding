@@ -31,4 +31,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "CPU test job after worker-count fix: run official PT-BPE GEOBPE from a clean smoke checkpoint directory, induce on CAMEO smoke structures, evaluate scores, and validate the workspace."
+notes: "CPU test job after absolute-path fix: run official PT-BPE GEOBPE into workspace checkpoints, induce on CAMEO smoke structures, evaluate scores, and validate the workspace."

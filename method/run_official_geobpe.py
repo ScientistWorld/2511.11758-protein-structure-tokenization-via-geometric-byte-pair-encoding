@@ -16,6 +16,13 @@ UPSTREAM = WORKSPACE / "method" / "PT-BPE"
 UPSTREAM_DATA = UPSTREAM / "data" / "vqvae_pretrain"
 
 
+def workspace_path(path: str | Path) -> Path:
+    candidate = Path(path)
+    if candidate.is_absolute():
+        return candidate
+    return WORKSPACE / candidate
+
+
 def _link_or_copy(src: Path, dst: Path) -> None:
     if dst.is_symlink() or dst.exists():
         return
@@ -109,13 +116,13 @@ def main() -> None:
     if not (UPSTREAM / "bin" / "encode.py").exists():
         raise FileNotFoundError(f"Official PT-BPE code is missing at {UPSTREAM}")
 
-    output_dir = Path(args.output_dir)
-    induce_dir = Path(args.induce_dir)
+    output_dir = workspace_path(args.output_dir)
+    induce_dir = workspace_path(args.induce_dir)
     shutil.rmtree(output_dir, ignore_errors=True)
     shutil.rmtree(induce_dir, ignore_errors=True)
     output_dir.mkdir(parents=True, exist_ok=True)
     induce_dir.mkdir(parents=True, exist_ok=True)
-    prepare_upstream_data(Path(args.data_root))
+    prepare_upstream_data(workspace_path(args.data_root))
 
     env = os.environ.copy()
     env["PYTHONPATH"] = f"{UPSTREAM}:{env.get('PYTHONPATH', '')}"

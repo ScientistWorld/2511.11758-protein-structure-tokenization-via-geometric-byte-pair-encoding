@@ -36,5 +36,9 @@
 - Fourth compute job featurized the smoke structures and entered official GEOBPE BPE initialization, including histogram generation and bond standardization.
 - The run failed when upstream BPE tried to construct a process pool with zero workers from `SLURM_CPUS_PER_TASK=0`; patched BPE and induction worker helpers to clamp to at least one worker.
 
+### [2026-06-03 06:35] - none
+- Fifth compute job completed official GEOBPE encode on the smoke training structures and produced a BPE checkpoint.
+- The wrapper failed before induction because relative upstream output paths were interpreted inside `method/PT-BPE`; patched the wrapper to pass absolute workspace paths.
+
 ## Stop Justification
 - Not stopped.
