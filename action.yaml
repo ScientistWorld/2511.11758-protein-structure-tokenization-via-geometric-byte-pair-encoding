@@ -27,8 +27,8 @@
 #   milestone: core_claim
 #   notes: "Reproduced the core claim. Environment packaged."
 
-action: pending
-gpus: 1
-test: false
+action: submit
+gpus: 0
+test: true
 milestone: none
-notes: ""
+notes: "CPU test job: run official PT-BPE GEOBPE on the tracked PDB smoke subset, induce on CAMEO smoke structures, evaluate scores, and validate the workspace."
