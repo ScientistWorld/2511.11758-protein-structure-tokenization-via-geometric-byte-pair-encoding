@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: none**
+**Current: method_runs**
 
 <!-- Milestone levels (update "Current" above as you progress):
   none             — just started, no meaningful progress yet
@@ -39,6 +39,10 @@
 ### [2026-06-03 06:35] - none
 - Fifth compute job completed official GEOBPE encode on the smoke training structures and produced a BPE checkpoint.
 - The wrapper failed before induction because relative upstream output paths were interpreted inside `method/PT-BPE`; patched the wrapper to pass absolute workspace paths.
+
+### [2026-06-03 06:55] - method_runs
+- Sixth compute job completed official GEOBPE encode, induced tokenizations on held-out smoke CAMEO structures, wrote `checkpoints/geobpe_scaled/results.json`, wrote `scoring/scores.json`, and passed `python validate.py --compare`.
+- The run demonstrates that the paper's actual algorithm executes end-to-end, but its tiny two-structure setup has poor reconstruction quality and is not sufficient for `core_claim`.
 
 ## Stop Justification
 - Not stopped.

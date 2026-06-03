@@ -29,6 +29,6 @@
 
 action: submit
 gpus: 0
-test: true
-milestone: none
-notes: "CPU test job after absolute-path fix: run official PT-BPE GEOBPE into workspace checkpoints, induce on CAMEO smoke structures, evaluate scores, and validate the workspace."
+test: false
+milestone: method_runs
+notes: "Expanded CPU reproduction after successful smoke run: train official GEOBPE on 8 PDB structures for 3 BPE iterations, induce on 5 CAMEO structures, evaluate scores, and validate the workspace."

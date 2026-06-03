@@ -9,7 +9,16 @@
 
 ## Results Achieved
 
-No completed compute job has been scored yet. The next CPU test job is prepared to execute official GEOBPE and write `scoring/scores.json`.
+Job `5f24b034-f1a` completed the official GEOBPE smoke reproduction on two training and two held-out CAMEO structures. It wrote `checkpoints/geobpe_scaled/results.json` and `scoring/scores.json`, then passed `python validate.py --compare`.
+
+Smoke scores for `scaled_pdb_tokenization`:
+
+- `rmsd`: 11.6716
+- `lddt`: 0.2100
+- `bpr`: 3.0683
+- `vocab_size`: 17
+
+This reaches `method_runs` because the paper's actual algorithm executes end-to-end. It does not yet reach `core_claim`: the tiny smoke setting is too small and reconstruction quality is far from the paper's reported low-resolution GEOBPE setting.
 
 ## Deviations From Paper
 
@@ -19,8 +28,8 @@ No completed compute job has been scored yet. The next CPU test job is prepared 
 
 ## What Remains
 
-- Run the prepared compute job and inspect `scoring/scores.json`.
-- If the smoke run succeeds, scale up train/test limits or add an ablation while staying within the GPU-hour budget.
+- Run the expanded CPU reproduction with more training structures, more held-out structures, and more BPE iterations.
+- If expanded reconstruction improves enough to demonstrate the quality-efficiency tradeoff, update to `core_claim`; otherwise diagnose whether the public smoke subset or scaled hyperparameters are still too small.
 
 ## Issues
 
@@ -33,3 +42,4 @@ No completed compute job has been scored yet. The next CPU test job is prepared 
 - The job then failed because the upstream BPE worker helper returned zero workers from `SLURM_CPUS_PER_TASK=0`. Patched the BPE and induction helpers to clamp worker counts to at least one and changed the wrapper to run with one worker from a clean output directory.
 - Job `836611b5-37b` completed the official GEOBPE encode phase on the smoke training structures and produced `bpe_iter=0.pkl`, but the wrapper searched for it in the workspace checkpoint directory while upstream had written relative paths under `method/PT-BPE/checkpoints/`.
 - Updated the wrapper to resolve output, induction, and data paths to absolute workspace paths before invoking upstream scripts.
+- Job `5f24b034-f1a` completed the end-to-end official method and evaluation pipeline. Expanded the default scheduled job to `TRAIN_LIMIT=8`, `TEST_LIMIT=5`, and `ITERATIONS=3` to pursue `core_claim`.

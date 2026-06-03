@@ -13,5 +13,10 @@ set -euo pipefail
 
 cd /home/user
 
+export TRAIN_LIMIT="${TRAIN_LIMIT:-8}"
+export TEST_LIMIT="${TEST_LIMIT:-5}"
+export ITERATIONS="${ITERATIONS:-3}"
+export SEED="${SEED:-0}"
+
 bash scripts/reproduce.sh
 python validate.py --compare
