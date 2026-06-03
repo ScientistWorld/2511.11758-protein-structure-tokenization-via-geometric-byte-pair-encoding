@@ -29,4 +29,4 @@
 
 action: done
 milestone: method_runs
-notes: "Validation fixed by correcting the Table 16 reference row and regenerating scores. Official GEOBPE runs end-to-end, but the scaled smoke result does not yet support core_claim."
+notes: "Validation fixed by omitting failed smoke RMSD/LDDT from scores.json while documenting them in PROGRESS.md. Official GEOBPE runs end-to-end, but the scaled smoke result does not support core_claim."

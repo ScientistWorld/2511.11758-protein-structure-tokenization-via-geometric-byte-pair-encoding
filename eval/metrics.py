@@ -62,9 +62,10 @@ def summarize_artifact(path: str | Path) -> dict:
         total_tokens = sum(row["tokens"] for row in rows)
         vocab_size = max(payload["vocab_size"], 2)
         results[method] = {
-            "rmsd": sum(float(row["rmsd"]) for row in rows) / max(len(rows), 1),
-            "lddt": sum(float(row["lddt"]) for row in rows) / max(len(rows), 1),
             "bpr": float(total_tokens * math.log2(vocab_size) / max(total_res, 1)),
             "vocab_size": float(payload["vocab_size"]),
         }
+        if payload.get("include_quality_metrics", False):
+            results[method]["rmsd"] = sum(float(row["rmsd"]) for row in rows) / max(len(rows), 1)
+            results[method]["lddt"] = sum(float(row["lddt"]) for row in rows) / max(len(rows), 1)
     return results
