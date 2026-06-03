@@ -24,5 +24,9 @@
 - First compute job reached the official PT-BPE import path but failed before GEOBPE execution due to a missing `brotli` dependency required by ESM's `ProteinChain`.
 - Added the missing dependency and kept the milestone at `none`.
 
+### [2026-06-03 06:00] - none
+- Second compute job again failed before GEOBPE execution, this time on the next missing ESM dependency, `msgpack_numpy`.
+- Inspected ESM 3.2.0 metadata and added the remaining small runtime dependencies for the `ProteinChain` import path.
+
 ## Stop Justification
 - Not stopped.

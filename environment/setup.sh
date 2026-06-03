@@ -29,13 +29,20 @@ uv pip install --system \
   "tqdm>=4.66,<5" \
   "sortedcontainers>=2.4,<3" \
   "biopython>=1.83,<2" \
-  "biotite>=0.41,<1" \
+  "biotite>=1.0,<2" \
   "torch>=2.2,<3" \
+  "transformers>=4.46,<4.48.2" \
+  "einops>=0.8,<1" \
   "seaborn>=0.13,<1" \
   "mpl-scatter-density>=0.8,<1" \
   "astropy>=6,<8" \
   "requests>=2.31,<3" \
   "brotli>=1.1,<2" \
+  "msgpack>=1.0,<2" \
+  "msgpack-numpy>=0.4.8,<1" \
+  "attrs>=23,<26" \
+  "tenacity>=8,<10" \
+  "zstd>=1.5,<2" \
   "cloudpathlib>=0.18,<1" \
   "huggingface-hub>=0.23,<1"
 
