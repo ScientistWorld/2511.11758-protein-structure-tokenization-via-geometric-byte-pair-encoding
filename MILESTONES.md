@@ -20,5 +20,9 @@
 - Replaced the initial scratch implementation as the primary path with the official PT-BPE GEOBPE code release, because the scratch path did not yet implement enough of the paper's algorithm.
 - Prepared a CPU job to run official GEOBPE and evaluation on a small public PDB subset.
 
+### [2026-06-03 05:55] - none
+- First compute job reached the official PT-BPE import path but failed before GEOBPE execution due to a missing `brotli` dependency required by ESM's `ProteinChain`.
+- Added the missing dependency and kept the milestone at `none`.
+
 ## Stop Justification
 - Not stopped.

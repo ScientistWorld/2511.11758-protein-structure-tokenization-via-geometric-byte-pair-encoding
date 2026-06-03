@@ -25,3 +25,4 @@ No completed compute job has been scored yet. The next CPU test job is prepared 
 ## Issues
 
 - The initial local scratch implementation was not faithful enough to claim `method_runs`; the runnable path has been switched to the official implementation.
+- Job `52b4b62d-f5c` failed during import before GEOBPE execution because `esm.utils.structure.protein_chain` requires `brotli`. Added `brotli` to `environment/setup.sh`.

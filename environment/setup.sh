@@ -35,6 +35,7 @@ uv pip install --system \
   "mpl-scatter-density>=0.8,<1" \
   "astropy>=6,<8" \
   "requests>=2.31,<3" \
+  "brotli>=1.1,<2" \
   "cloudpathlib>=0.18,<1" \
   "huggingface-hub>=0.23,<1"
 

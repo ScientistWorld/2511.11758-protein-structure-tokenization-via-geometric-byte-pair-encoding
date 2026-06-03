@@ -69,6 +69,7 @@ docker_*.tar.xz
 trajectory/
 .empty_*/
 outputs/
+jobs/
 logs/
 .venv/
 venv/
@@ -198,6 +199,10 @@ htmlcov/
 __pycache__/
 *.pyc
 *.pyo
+
+# Runtime symlinks created by method/run_official_geobpe.py so the vendored
+# upstream loader sees this workspace's tracked PDB smoke data.
+method/PT-BPE/data/vqvae_pretrain/
 
 # Build artifacts
 *.o
