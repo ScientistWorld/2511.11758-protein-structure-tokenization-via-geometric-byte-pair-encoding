@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
+from typing import Any
 
-import numpy as np
 
+def kabsch_align(p: Any, q: Any) -> Any:
+    import numpy as np
 
-def kabsch_align(p: np.ndarray, q: np.ndarray) -> np.ndarray:
     p0 = p - p.mean(axis=0, keepdims=True)
     q0 = q - q.mean(axis=0, keepdims=True)
     u, _, vt = np.linalg.svd(q0.T @ p0)
@@ -17,7 +19,9 @@ def kabsch_align(p: np.ndarray, q: np.ndarray) -> np.ndarray:
     return q0 @ r + p.mean(axis=0, keepdims=True)
 
 
-def rmsd(p: np.ndarray, q: np.ndarray) -> float:
+def rmsd(p: Any, q: Any) -> float:
+    import numpy as np
+
     n = min(len(p), len(q))
     pa = p[:n].reshape(-1, 3)
     qa = q[:n].reshape(-1, 3)
@@ -25,8 +29,10 @@ def rmsd(p: np.ndarray, q: np.ndarray) -> float:
     return float(np.sqrt(np.mean(np.sum((pa - aligned) ** 2, axis=1))))
 
 
-def ca_lddt(p: np.ndarray, q: np.ndarray, cutoff: float = 15.0) -> float:
+def ca_lddt(p: Any, q: Any, cutoff: float = 15.0) -> float:
     """Small dependency-free CA lDDT approximation."""
+    import numpy as np
+
     n = min(len(p), len(q))
     pc = p[:n, 1, :]
     qc = q[:n, 1, :]
@@ -56,9 +62,9 @@ def summarize_artifact(path: str | Path) -> dict:
         total_tokens = sum(row["tokens"] for row in rows)
         vocab_size = max(payload["vocab_size"], 2)
         results[method] = {
-            "rmsd": float(np.mean([row["rmsd"] for row in rows])),
-            "lddt": float(np.mean([row["lddt"] for row in rows])),
-            "bpr": float(total_tokens * np.log2(vocab_size) / max(total_res, 1)),
+            "rmsd": sum(float(row["rmsd"]) for row in rows) / max(len(rows), 1),
+            "lddt": sum(float(row["lddt"]) for row in rows) / max(len(rows), 1),
+            "bpr": float(total_tokens * math.log2(vocab_size) / max(total_res, 1)),
             "vocab_size": float(payload["vocab_size"]),
         }
     return results

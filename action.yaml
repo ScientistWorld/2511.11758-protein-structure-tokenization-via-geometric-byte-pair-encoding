@@ -27,8 +27,6 @@
 #   milestone: core_claim
 #   notes: "Reproduced the core claim. Environment packaged."
 
-action: submit
-gpus: 0
-test: false
+action: done
 milestone: method_runs
-notes: "Expanded CPU reproduction after successful smoke run: train official GEOBPE on 8 PDB structures for 3 BPE iterations, induce on 5 CAMEO structures, evaluate scores, and validate the workspace."
+notes: "Validation fixed by correcting the Table 16 reference row and regenerating scores. Official GEOBPE runs end-to-end, but the scaled smoke result does not yet support core_claim."
