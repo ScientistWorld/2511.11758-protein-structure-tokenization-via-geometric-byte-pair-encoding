@@ -119,6 +119,7 @@ def main() -> None:
     env["PYTHONPATH"] = f"{UPSTREAM}:{env.get('PYTHONPATH', '')}"
     env.setdefault("OMP_NUM_THREADS", "1")
     env.setdefault("MKL_NUM_THREADS", "1")
+    env.setdefault("GEOBPE_DATASET_WORKERS", "1")
     # The upstream code uses SLURM_CPUS_PER_TASK=0 as an explicit sequential mode.
     env["SLURM_CPUS_PER_TASK"] = "0"
 

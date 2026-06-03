@@ -28,5 +28,9 @@
 - Second compute job again failed before GEOBPE execution, this time on the next missing ESM dependency, `msgpack_numpy`.
 - Inspected ESM 3.2.0 metadata and added the remaining small runtime dependencies for the `ProteinChain` import path.
 
+### [2026-06-03 06:15] - none
+- Third compute job reached official GEOBPE PDB featurization but failed on a Biotite API change: `filter_backbone` is absent in the installed Biotite version.
+- Added a compatibility shim for backbone filtering and capped featurization workers for the next CPU smoke job.
+
 ## Stop Justification
 - Not stopped.

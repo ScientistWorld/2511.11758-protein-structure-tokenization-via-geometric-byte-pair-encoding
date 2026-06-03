@@ -62,6 +62,21 @@ from foldingdiff import utils
 
 TRIM_STRATEGIES = Literal["leftalign", "randomcrop", "discard"]
 
+
+def _dataset_worker_count() -> int:
+    for key in ("GEOBPE_DATASET_WORKERS", "SLURM_CPUS_PER_TASK"):
+        raw_value = os.environ.get(key)
+        if raw_value is None:
+            continue
+        try:
+            parsed = int(raw_value)
+        except ValueError:
+            continue
+        if parsed > 0:
+            return parsed
+    return max(1, min(mp.cpu_count(), 4))
+
+
 FEATURE_SET_NAMES_TO_ANGULARITY = {
     "canonical": [False, False, False, True, True, True, True, True, True],
     "canonical-full-angles": [True, True, True, True, True, True],
@@ -465,12 +480,11 @@ class CathCanonicalAnglesDataset(Dataset):
         )
         coords_pfunc = functools.partial(extract_backbone_coords, atoms=["CA"])
     
-        logging.info(
-            f"Computing full dataset of {len(fnames)} with {mp.cpu_count()} threads"
-        )
+        workers = _dataset_worker_count()
+        logging.info(f"Computing full dataset of {len(fnames)} with {workers} threads")
         # Generate dihedral angles
         if not self.debug:
-            pool = mp.Pool(processes=mp.cpu_count())
+            pool = mp.Pool(processes=workers)
             struct_arrays = list(pool.map(pfunc, fnames, chunksize=250))
             coord_arrays = list(pool.map(coords_pfunc, fnames, chunksize=250))
             pool.close()
@@ -694,9 +708,10 @@ class FullCathCanonicalCoordsDataset(CathCanonicalAnglesDataset):
             secondary_pfunc=find_secondary_structures if (hasattr(self, "secondary") and self.secondary) else None
         )
 
-        logging.info(f"Computing full dataset of {len(fnames)} with {multiprocessing.cpu_count()} threads")
+        workers = _dataset_worker_count()
+        logging.info(f"Computing full dataset of {len(fnames)} with {workers} threads")
         if not self.debug:
-            with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
+            with multiprocessing.Pool(processes=workers) as pool:
                 structures = list(filter(None, pool.map(featurizer, fnames, chunksize=50)))
         else:
             structures = []

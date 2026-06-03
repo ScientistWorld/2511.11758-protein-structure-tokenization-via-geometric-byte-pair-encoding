@@ -6,7 +6,7 @@ import gzip
 import os
 import logging
 import glob
-from collections import namedtuple, defaultdict
+from collections import OrderedDict, namedtuple, defaultdict
 from itertools import groupby
 from typing import *
 import warnings
@@ -66,6 +66,20 @@ MINIMAL_ANGLES = ["phi", "psi", "omega"]
 MINIMAL_DISTS = []
 
 
+def _filter_backbone(atom_array):
+    """Compatibility shim for Biotite versions without structure.filter_backbone()."""
+    if hasattr(struc, "filter_backbone"):
+        return struc.filter_backbone(atom_array)
+    atom_names = np.asarray(atom_array.atom_name).astype(str)
+    residue_names = np.asarray(atom_array.res_name).astype(str)
+    mask = np.isin(atom_names, ["N", "CA", "C"]) & np.isin(
+        residue_names, list(STANDARD_RESIDUES)
+    )
+    if hasattr(atom_array, "hetero"):
+        mask &= ~np.asarray(atom_array.hetero, dtype=bool)
+    return mask
+
+
 def canonical_distances_and_dihedrals(
     fname: str,
     distances: List[str] = MINIMAL_DISTS,
@@ -97,7 +111,7 @@ def canonical_distances_and_dihedrals(
     non_dihedral_angles = [a for a in angles if a not in calc_angles]
     # Gets the N - CA - C for each residue
     # https://www.biotite-python.org/apidoc/biotite.structure.filter_backbone.html
-    backbone_atoms = source_struct[struc.filter_backbone(source_struct)]
+    backbone_atoms = source_struct[_filter_backbone(source_struct)]
     for a in non_dihedral_angles:
         if a == "tau" or a == "N:CA:C":
             # tau = N - CA - C internal angles
@@ -395,7 +409,7 @@ def get_pdb_length(fname: str) -> int:
     if structure.get_model_count() > 1:
         return -1
     chain = structure.get_structure()[0]
-    backbone = chain[struc.filter_backbone(chain)]
+    backbone = chain[_filter_backbone(chain)]
     l = int(len(backbone) / 3)
     return l
 
@@ -423,7 +437,7 @@ def extract_backbone_residue_idxes(
     # if structure.get_model_count() > 1:
     #     return None
     chain = structure.get_structure(1, extra_fields=["atom_id"])
-    backbone = chain[struc.filter_backbone(chain)]
+    backbone = chain[_filter_backbone(chain)]
     ca = [c for c in backbone if c.atom_name in atoms]
     idxes = [c.res_id for c in backbone if c.atom_name in atoms]
     # has 3 atoms per residue and residue id is increasing
@@ -443,7 +457,7 @@ def extract_backbone_coords(
     # if structure.get_model_count() > 1:
     #     return None
     chain = structure.get_structure(1)
-    backbone = chain[struc.filter_backbone(chain)]
+    backbone = chain[_filter_backbone(chain)]
     ca = [c for c in backbone if c.atom_name in atoms]
     coords = [c.coord for c in ca]
     if len(coords) == 0:
@@ -493,7 +507,7 @@ def extract_c_beta_coords(fname):
     atoms = atom_stack if isinstance(atom_stack, struc.AtomArray) else atom_stack[0]
 
     # 1) Replicate extract_aa_seq’s residue ordering
-    bb_mask = struc.filter_backbone(atoms)
+    bb_mask = _filter_backbone(atoms)
     backbone = atoms[bb_mask]
     has_ic = "ins_code" in backbone.get_annotation_categories()
     ins_codes = backbone.ins_code if has_ic else [""] * backbone.array_length()
@@ -557,7 +571,7 @@ def extract_aa_seq(fname):
     # Pull out the atomarray from atomarraystack
     source_struct = source.get_structure(model=1)
     # keep caller’s line intact – grab first model as an AtomArray
-    backbone_atoms = source_struct[struc.filter_backbone(source_struct)]
+    backbone_atoms = source_struct[_filter_backbone(source_struct)]
     return aa_seq_from_backbone(backbone_atoms)
 
 
@@ -782,7 +796,7 @@ def collect_aa_sidechain_angles(
             continue
         if residue in retval:
             continue
-        backbone_mask = struc.filter_backbone(res_atoms)
+        backbone_mask = _filter_backbone(res_atoms)
         a, b, c = res_atoms[backbone_mask].coord  # Backbone
         for sidechain_atom in res_atoms[~backbone_mask]:
             d = sidechain_atom.coord

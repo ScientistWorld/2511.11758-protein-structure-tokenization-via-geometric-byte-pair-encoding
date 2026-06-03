@@ -31,4 +31,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "CPU test job: run official PT-BPE GEOBPE on the tracked PDB smoke subset, induce on CAMEO smoke structures, evaluate scores, and validate the workspace."
+notes: "CPU test job after Biotite compatibility patch: run official PT-BPE GEOBPE on the tracked PDB smoke subset, induce on CAMEO smoke structures, evaluate scores, and validate the workspace."
