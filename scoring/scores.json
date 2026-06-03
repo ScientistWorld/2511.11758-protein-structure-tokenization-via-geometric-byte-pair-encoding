@@ -1,0 +1,14 @@
+{
+  "experiments": {
+    "scaled_pdb_tokenization": {
+      "results": {
+        "geobpe_scaled": {
+          "rmsd": 11.671633713294426,
+          "lddt": 0.21001483084160094,
+          "bpr": 3.068251327587917,
+          "vocab_size": 17.0
+        }
+      }
+    }
+  }
+}
