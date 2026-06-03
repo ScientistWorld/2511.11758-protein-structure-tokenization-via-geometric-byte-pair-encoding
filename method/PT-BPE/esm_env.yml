@@ -1,0 +1,14 @@
+name: foldingdiffnew
+channels:
+  - conda-forge
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+dependencies:
+  - salilab::dssp
+  - python=3.10
+  - ipykernel
+  - nglview==3.1.4
+  - imageio==2.36.0
+  - astropy==5.2.2
+  - conda-forge::cudatoolkit
+  - boost==1.73.0

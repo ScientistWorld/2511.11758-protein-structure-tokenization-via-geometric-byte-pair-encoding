@@ -14,6 +14,27 @@
 # Use: uv pip install --system <packages>
 # Do NOT create a venv (python -m venv, virtualenv, etc.).
 
-set -e
+set -euo pipefail
 
-# uv pip install --system <packages>
+uv pip install --system \
+  numpy \
+  pandas \
+  scipy \
+  scikit-learn \
+  matplotlib \
+  imageio \
+  tqdm \
+  sortedcontainers \
+  biopython \
+  biotite==0.34.0 \
+  torch \
+  transformers \
+  pytorch-lightning \
+  seaborn \
+  mpl-scatter-density \
+  astropy \
+  requests \
+  cloudpathlib \
+  huggingface-hub
+
+uv pip install --system esm==3.2.0 --no-deps

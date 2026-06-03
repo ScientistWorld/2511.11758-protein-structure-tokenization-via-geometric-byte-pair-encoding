@@ -1,0 +1,7 @@
+[submodule "StructTokenBench"]
+	path = StructTokenBench
+	url = https://github.com/shiningsunnyday/StructTokenBench.git
+	branch = pt-bpe
+[submodule "ProteinMPNN"]
+	path = ProteinMPNN
+	url = https://github.com/dauparas/ProteinMPNN.git

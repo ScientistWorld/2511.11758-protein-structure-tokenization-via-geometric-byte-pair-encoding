@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Run a baseline method from the paper.
 #
 # Baselines are simple reference methods the paper compares against. 
@@ -13,8 +13,25 @@
 # Usage:
 #   bash scripts/baseline.sh <name>
 
-set -e
+set -euo pipefail
 
 cd /home/user
 
-# TODO: run baseline
+TRAIN_LIMIT="${TRAIN_LIMIT:-12}"
+TEST_SPLIT="${TEST_SPLIT:-cameo}"
+RESIDUE_K="${RESIDUE_K:-16}"
+BINS="${BINS:-24}"
+SEED="${SEED:-0}"
+
+python -m method.geobpe_repro.geobpe \
+  --data-root data/pdb_smoke \
+  --output-dir checkpoints/residue_baseline \
+  --train-limit "$TRAIN_LIMIT" \
+  --test-split "$TEST_SPLIT" \
+  --residue-k "$RESIDUE_K" \
+  --pair-k 1 \
+  --bins "$BINS" \
+  --iterations 0 \
+  --seed "$SEED"
+
+bash scripts/evaluate.sh checkpoints/residue_baseline/results.json

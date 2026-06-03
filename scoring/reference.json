@@ -1,0 +1,36 @@
+{
+  "experiments": {
+    "scaled_pdb_tokenization": {
+      "description": "Protein backbone structure tokenization with geometric reconstruction quality and token efficiency. Reference values use the paper's low-resolution GEOBPE setting from Table 16.",
+      "weight": 1.0,
+      "primary_metric": "rmsd",
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -1.0
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 0.8
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.4
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.1
+        }
+      },
+      "results": {
+        "geobpe_scaled": {
+          "type": "proposed",
+          "rmsd": 1.78,
+          "lddt": 0.71,
+          "bpr": 30.81,
+          "vocab_size": 65.0
+        }
+      }
+    }
+  }
+}

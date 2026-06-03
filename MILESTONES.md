@@ -15,7 +15,10 @@
 
 ## Progress Log
 
-<!-- Write your progress here -->
+### [2026-06-03 00:00] - none
+- Read the paper and identified GEOBPE as a geometry-grounded BPE tokenizer over protein backbone motifs.
+- Replaced the initial scratch implementation as the primary path with the official PT-BPE GEOBPE code release, because the scratch path did not yet implement enough of the paper's algorithm.
+- Prepared a CPU job to run official GEOBPE and evaluation on a small public PDB subset.
 
 ## Stop Justification
-- Completed at milestone `none`.
+- Not stopped.

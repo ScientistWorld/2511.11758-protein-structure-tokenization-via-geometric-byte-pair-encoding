@@ -13,3 +13,15 @@ How success is measured. Describe only the metrics, targets, and evaluation proc
 ## Evaluation Protocol
 
 <!-- How should evaluation be run? What data split, what conditions? Any important details about how to compare fairly (e.g., fixed seeds, specific test sets, averaging over runs). -->
+# Evaluation
+
+Evaluation reads a method artifact, not method code. `scripts/evaluate.sh` calls only `eval/` and writes `scoring/scores.json`.
+
+The main experiment is `scaled_pdb_tokenization`. Metrics are:
+
+- `rmsd`: lower is better; backbone reconstruction RMSD after Kabsch alignment.
+- `lddt`: higher is better; a dependency-free CA lDDT approximation.
+- `bpr`: lower is better; bits per residue computed as token count times `log2(vocab_size)` divided by residue count.
+- `vocab_size`: lower is better as a compactness constraint.
+
+The reference values in `scoring/reference.json` are the paper's low-resolution GEOBPE values from Table 16. The reproduction uses a much smaller public PDB subset, so exact numerical agreement is not expected; the important signal is whether learned geometric merges improve compression while maintaining reconstruction quality.

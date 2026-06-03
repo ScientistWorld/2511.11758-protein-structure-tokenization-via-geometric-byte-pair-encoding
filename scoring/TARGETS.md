@@ -48,3 +48,10 @@ Delete this comment block and fill in your actual targets below.
 <!-- This is high-level. IT IS ABOUT CONCEPT, NOT NUMBERS. DO NOT INCLUDE ANY ACTUAL VALUES FROM THE PAPER OR YOUR EXPERIMENTS HERE. -->
 
 <!-- This should EXACTLY corresponds to the structure in your scores.json. -->
+# Targets
+
+Optimize `scaled_pdb_tokenization`.
+
+Primary target: reduce `rmsd` on held-out PDB chains.
+
+Secondary targets: increase `lddt`, reduce `bpr`, and keep `vocab_size` compact. A valid improvement should not simply expand the vocabulary until every local fragment is memorized.

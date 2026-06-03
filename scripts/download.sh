@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Download all data and models needed for this environment.
 #
 # Run on a node with internet access BEFORE building the container
@@ -9,22 +9,62 @@
 #
 # Update the storage estimate below as you add downloads.
 #
-# Estimated total download size: TODO GB
-# Estimated disk usage after extraction: TODO GB
+# Estimated total download size: ~35 MB
+# Estimated disk usage after extraction: ~35 MB
 #
-# During reproduction, prefer downloading to shared directories
-# (shared/datasets/, shared/models/) so other papers can reuse them.
-# You do not need to run this script during reproduction — it exists
-# for future portability. Write it to download to workspace-local
-# paths (data/, checkpoints/) instead of the shared directories
-# so a future user with just the workspace can run this script and get everything they need.
+# This script is intentionally workspace-local so a future user with just
+# this repository can repopulate the needed public PDB files.
 
-set -e
+set -euo pipefail
 
-cd "$(dirname "$0")"
+cd /home/user
 
-# TODO: implement downloads
-# Examples:
-#   wget -nc https://example.com/dataset.tar.gz -P data/
-#   python -c "from huggingface_hub import snapshot_download; snapshot_download('model/name', local_dir='checkpoints/')"
-#   huggingface-cli download Qwen/Qwen3-1.7B --local-dir /checkpoints/Qwen3-1.7B
+mkdir -p data/downloads/rcsb_pdb data/pdb_smoke/train data/pdb_smoke/validation data/pdb_smoke/cameo data/pdb_smoke/casp14
+
+fetch_pdb() {
+  local pdb_id="$1"
+  local chain_id="$2"
+  local split="$3"
+  local upper raw out
+  upper="$(printf '%s' "$pdb_id" | tr '[:lower:]' '[:upper:]')"
+  raw="data/downloads/rcsb_pdb/${upper}.pdb"
+  out="data/pdb_smoke/${split}/${pdb_id}_${chain_id}.pdb"
+  if [ ! -s "$raw" ]; then
+    curl -fsSL "https://files.rcsb.org/download/${upper}.pdb" -o "$raw"
+  fi
+  if [ ! -s "$out" ]; then
+    awk -v c="$chain_id" 'substr($0,1,6)=="ATOM  " && substr($0,22,1)==c {print} /^END/ {print}' "$raw" > "$out"
+  fi
+}
+
+fetch_pdb 1a0o F train
+fetch_pdb 1a1k A train
+fetch_pdb 1a28 A train
+fetch_pdb 1a2a G train
+fetch_pdb 1a40 A train
+fetch_pdb 1a4m A train
+fetch_pdb 1a55 A train
+fetch_pdb 1a6p A train
+fetch_pdb 1a7d A train
+fetch_pdb 1a7u A train
+fetch_pdb 1ab1 A train
+fetch_pdb 1ae8 H train
+
+fetch_pdb 1a8r I validation
+fetch_pdb 1a92 A validation
+fetch_pdb 1ai6 A validation
+fetch_pdb 1aok A validation
+fetch_pdb 1aph B validation
+fetch_pdb 1aut C validation
+
+fetch_pdb 7b8b A cameo
+fetch_pdb 7ctx B cameo
+fetch_pdb 7dri A cameo
+fetch_pdb 7egt B cameo
+fetch_pdb 7ejg C cameo
+
+fetch_pdb 6n64 A casp14
+fetch_pdb 6poo A casp14
+fetch_pdb 6px4 R casp14
+fetch_pdb 6px4 T casp14
+fetch_pdb 6s44 A casp14

@@ -2,36 +2,26 @@
 
 ## What Works
 
-<!-- What has been successfully reproduced so far. -->
+- Paper analysis identified the central claim: GEOBPE tokenizes protein backbone structure with geometric BPE merges while preserving reconstruction quality and improving token efficiency.
+- The official PT-BPE code release is vendored under `method/PT-BPE/` at commit `68ff87eaf13068c1ef93dd72139efe4b91532219`, with bundled benchmark payloads removed.
+- `method/run_official_geobpe.py` runs the official `bin/encode.py` and `bin/induce.py` path on the tracked public PDB smoke subset, then writes a method artifact for evaluation.
+- Evaluation is separated in `eval/` and reads only `checkpoints/geobpe_scaled/results.json`.
 
-## Results
+## Results Achieved
 
-<!-- Reproduced numbers compared to the paper's reported numbers. -->
+No completed compute job has been scored yet. The next CPU test job is prepared to execute official GEOBPE and write `scoring/scores.json`.
 
-## Remaining
+## Deviations From Paper
 
-<!-- What still needs to be done to reach higher milestones. -->
+- The paper trains on large PDB-scale/CATH-style collections; this reproduction starts with a small public PDB subset to keep the benchmark lightweight.
+- Vocabulary size, BPE iterations, and number of medoid candidates are scaled down for the initial smoke job.
+- The algorithm itself is not substituted: the job calls the official GEOBPE implementation, including residue initialization, RMSD medoid partitioning, geometric pair merging, and glue optimization.
+
+## What Remains
+
+- Run the prepared compute job and inspect `scoring/scores.json`.
+- If the smoke run succeeds, scale up train/test limits or add an ablation while staying within the GPU-hour budget.
 
 ## Issues
 
-<!-- Blockers, bugs, or difficulties encountered. -->
-
-## Deviations from Paper
-
-<!-- Do not edit this section unless you deviated from the paper's original setup.
-     For each deviation, document: what the paper used, what you substituted, and why.
-
-     ACCEPTABLE deviations (data/resource/scale substitutions — milestones still valid):
-       - Replaced a proprietary dataset with a public one
-       - Used a smaller model of the same architecture
-       - Scaled down training (fewer epochs, smaller batch)
-       - Used a different library for the same algorithm
-
-     UNACCEPTABLE deviations (algorithm substitutions — milestones above 'none' are void):
-       - Replaced the paper's algorithm with a fundamentally different one
-       - Wrote a generic model trained to approximate the method's outputs
-         instead of implementing the method's computational steps
-
-     The test: could someone reading your code identify which algorithm from
-     the paper you implemented? If not, you replaced the method. -->
-
+- The initial local scratch implementation was not faithful enough to claim `method_runs`; the runnable path has been switched to the official implementation.

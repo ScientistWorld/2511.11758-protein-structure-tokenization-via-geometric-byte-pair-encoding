@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Reproduce the paper's results end-to-end.
 #
 # This script runs inside the compute container and should call
@@ -14,11 +14,9 @@
 # You do not need to run this, but keep this in good shape
 # so other agents can easily run a full loop of reproduction and get the paper's numbers.
 
-set -e
+set -euo pipefail
 
 cd /home/user
 
-# TODO: implement full reproduction pipeline
-# e.g.:
-#   bash scripts/baseline.sh
-#   bash scripts/method.sh
+bash scripts/method.sh
+bash scripts/evaluate.sh checkpoints/geobpe_scaled/results.json

@@ -92,3 +92,8 @@ sequence-processing component. ...
 
 Delete this comment block and fill in your actual direction below.
 -->
+# Direction
+
+Future work should stay in the paper's problem family: discrete tokenization of protein backbone geometry with reusable structural motifs.
+
+Reasonable extensions include better geometric pair definitions, better motif clustering, improved glue or reconstruction refinement, additional public protein splits, and stronger baselines. Switching to a black-box autoencoder that does not expose a reusable discrete structural vocabulary is outside this benchmark's direction.
