@@ -21,7 +21,7 @@ Smoke scores for `scaled_pdb_tokenization` were:
 
 This reached `method_runs` because the paper's actual algorithm executed end-to-end. It did not yet reach `core_claim`: the tiny smoke setting was too small and reconstruction quality was far from the paper's reported low-resolution GEOBPE setting.
 
-Job `b7ac278d-fce` completed the expanded official GEOBPE reproduction on all 12 tracked public training chains and five held-out CAMEO chains. Current scores for `scaled_pdb_tokenization` are:
+Job `b7ac278d-fce` completed the expanded official GEOBPE reproduction on all 12 tracked public training chains and five held-out CAMEO chains. Scores for the first expanded CAMEO run were:
 
 - `rmsd`: 6.8435
 - `lddt`: 0.5747
@@ -32,7 +32,12 @@ This reaches `core_claim` in the scaled benchmark: the official GEOBPE algorithm
 
 The scoring reference uses the paper's lowest-resolution GEOBPE row in Table 16 (`|V|=109`, RMSD 3.96, LDDT 0.53, BPR 27.26), which is the closest reported setting to the scaled reproduction. The reproduced RMSD remains worse than the full-scale paper result, but the run now supports the core claim because the same official method substantially improves over the failed smoke setting and preserves held-out geometry with compact tokenization in this reusable benchmark.
 
-`scoring/scores.json` now reports the expanded run, not the earlier failed smoke diagnostics. The score file covers every target listed in `scoring/TARGETS.md`: reconstruction quality (`rmsd`, `lddt`), token efficiency (`bpr`), and compactness (`vocab_size`).
+Job `0df68540-c81` completed the multisplit reproduction using the same learned GEOBPE vocabulary and two held-out splits. Current `scoring/scores.json` reports:
+
+- `scaled_pdb_tokenization_cameo`: RMSD 6.8435, lDDT 0.5747, BPR 7.7748, vocabulary size 219
+- `scaled_pdb_tokenization_casp14`: RMSD 4.5192, lDDT 0.6146, BPR 7.7748, vocabulary size 219
+
+This reaches `core_claim_plus`: the paper's official GEOBPE algorithm preserves meaningful held-out backbone geometry and compact tokenization on more than one held-out setting. The score file covers every target listed in `scoring/TARGETS.md`: reconstruction quality (`rmsd`, `lddt`), token efficiency (`bpr`), and compactness (`vocab_size`).
 
 ## Deviations From Paper
 
@@ -43,10 +48,8 @@ The scoring reference uses the paper's lowest-resolution GEOBPE row in Table 16 
 
 ## What Remains
 
-- To go beyond `core_claim`, add another independent held-out split such as CASP14 or reproduce a larger portion of the paper's Table 16 vocabulary/resolution sweep.
-- The current public-data benchmark is intentionally compact; a higher milestone would require expanding the dataset and experiment matrix while keeping the same official GEOBPE procedure.
-- Current turn prepared a CASP14 held-out job using the same official GEOBPE encode/induce pipeline and separate output directories (`checkpoints/geobpe_scaled_casp14`, `checkpoints/geobpe_scaled_casp14_induce`).
-- Continuation audit found the implementation and evaluation separation trustworthy enough to restore `core_claim`, but the proposed CASP14 extension would have overwritten the old generic score key. The evaluator, reference file, and target docs now track CAMEO and CASP14 as separate experiments.
+- To go beyond `core_claim_plus`, expand the dataset and reproduce a larger portion of the paper's Table 16 vocabulary/resolution sweep while keeping the same official GEOBPE procedure.
+- The current public-data benchmark is intentionally compact. Higher milestones would require more training chains, more held-out splits, or additional paper ablations rather than more repeats of the same two-split setting.
 
 ## Issues
 
@@ -72,3 +75,4 @@ The scoring reference uses the paper's lowest-resolution GEOBPE row in Table 16 
 - Fixed `method/run_official_geobpe.py` to pass the upstream CASP14 split name with the required capitalization. The next submission retries the same multisplit run and should preserve the already-established `core_claim` while pursuing `core_claim_plus`.
 - Job `4d54b035-f53` showed the uppercase guess was still not the accepted command-line key. Inspecting `method/PT-BPE/foldingdiff/datasets.py` confirmed that the official loader registers CASP14 files under the key `casp`, with `CASP_DIR` pointing to `data/vqvae_pretrain/CASP14`.
 - Updated the wrapper to pass `--data-dir casp` for the public CASP14 split while keeping the prepared upstream directory name unchanged.
+- Job `0df68540-c81` completed after the `casp` mapping fix. It wrote multisplit method artifacts, `scoring/scores.json`, and passed `python validate.py --compare`.

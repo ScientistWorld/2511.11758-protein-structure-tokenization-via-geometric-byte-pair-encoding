@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: core_claim**
+**Current: core_claim_plus**
 
 ## Progress Log
 
@@ -13,3 +13,8 @@
 - Continuation audit confirmed the runnable method uses the official GEOBPE implementation rather than a surrogate and that `eval/` reads artifacts independently from `method/`.
 - Fixed the planned extension so CAMEO and CASP14 are scored as distinct experiments instead of overwriting one generic score key.
 - Submitted a multisplit CPU job to pursue `core_claim_plus`; do not claim it until that job completes successfully.
+
+### [2026-06-04 12:42] - core_claim_plus
+- Job `0df68540-c81` completed the official GEOBPE multisplit reproduction on the tracked public PDB subset.
+- The same learned structural vocabulary was induced and evaluated on both CAMEO and CASP14 held-out chains.
+- `python validate.py --compare` passed with separate score entries for both held-out splits.

@@ -1,8 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: submit
+action: done
 gpus: 0
 test: false
-milestone: core_claim
-notes: "Retry multisplit official GEOBPE after mapping the gym CASP14 split to upstream PT-BPE key casp."
+milestone: core_claim_plus
+notes: "Official GEOBPE reproduction validated on CAMEO and CASP14 held-out splits; scoring covers reconstruction quality plus token efficiency and compactness constraints."
