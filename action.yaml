@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Retry multisplit official GEOBPE after fixing the CASP14 split-name mapping used by upstream PT-BPE induction."
+notes: "Retry multisplit official GEOBPE after mapping the gym CASP14 split to upstream PT-BPE key casp."
