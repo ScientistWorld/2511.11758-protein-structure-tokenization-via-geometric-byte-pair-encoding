@@ -210,8 +210,10 @@ def summarize_methods(methods: dict) -> dict:
                 ca_lddt(row["original_coords"], row["reconstructed_coords"]) for row in rows
             ) / max(len(rows), 1)
         elif has_quality:
-            results[method]["rmsd"] = sum(float(row["rmsd"]) for row in rows) / max(len(rows), 1)
-            results[method]["lddt"] = sum(float(row["lddt"]) for row in rows) / max(len(rows), 1)
+            raise ValueError(
+                f"{method} advertises reconstruction quality metrics but is missing "
+                "original_coords/reconstructed_coords for at least one structure"
+            )
     return results
 
 

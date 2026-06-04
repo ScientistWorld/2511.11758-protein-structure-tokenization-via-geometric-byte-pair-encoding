@@ -6,7 +6,7 @@
 - The official PT-BPE code release is vendored under `method/PT-BPE/` at commit `68ff87eaf13068c1ef93dd72139efe4b91532219`, with bundled benchmark payloads removed.
 - `method/run_official_geobpe.py` runs the official `bin/encode.py` and `bin/induce.py` path on the tracked public PDB smoke subset, then writes a method artifact for evaluation.
 - Evaluation is separated in `eval/` and reads only method artifacts, with backward-compatible support for the older single-split artifact and the new multi-experiment artifact.
-- New method artifacts include original and reconstructed coordinates so `eval/` can compute RMSD/lDDT independently; older smoke artifacts with precomputed quality metrics remain readable as diagnostics.
+- Method artifacts include original and reconstructed coordinates so `eval/` computes RMSD/lDDT independently. Artifacts that advertise reconstruction quality without coordinates now fail closed instead of trusting precomputed metric fields.
 
 ## Results Achieved
 
@@ -43,7 +43,7 @@ This strengthens `core_claim`: the paper's official GEOBPE algorithm preserves m
 
 - The paper trains on large PDB-scale/CATH-style collections; this reproduction starts with a small public PDB subset to keep the benchmark lightweight.
 - Vocabulary size, BPE iterations, and number of medoid candidates are scaled down for the initial smoke job.
-- The reference target was corrected from the `{2:10,3:50,5:1,6:5,8:1}` Table 16 row to the paper's lower-resolution `{2:2,3:5,5:1,6:2,8:1}` row after the initial wrapper used an intentionally smaller GEOBPE configuration. The next job moves the wrapper back toward the `{2:10,3:50,5:1,6:5,8:1}` setting while retaining the same small public PDB subset.
+- The scoring reference now covers both the current `{2:10,3:50,5:1,6:5,8:1}` Table 16 setting and the lower-resolution `{2:2,3:5,5:1,6:2,8:1}` setting. The next job adds the lower-resolution run and scores both settings in one merged artifact.
 - The algorithm itself is not substituted: the job calls the official GEOBPE implementation, including residue initialization, RMSD medoid partitioning, geometric pair merging, and glue optimization.
 
 ## What Remains
@@ -80,3 +80,5 @@ This strengthens `core_claim`: the paper's official GEOBPE algorithm preserves m
 - `scripts/evaluate.sh checkpoints/geobpe_scaled_multisplit/results.json` now works in the current shell without NumPy by using the dependency-free metric fallback in `eval/metrics.py`; `python validate.py --compare` passes.
 - The current audited milestone is `core_claim`. The official method is real and the multisplit benchmark is useful, but `core_claim_plus` is not claimed until a broader paper result or ablation is reproduced.
 - Final verification removed an unrun glue-ablation scoring entry so `reference.json`, `scores.json`, `TARGETS.md`, and `EXPERIMENTS.md` again describe only completed experiments.
+- Prepared a two-setting Table 16 sweep: the already-completed high-resolution artifact will be merged with a new lower-resolution GEOBPE run, then evaluated through the same method-agnostic scoring path.
+- Tightened scoring integrity so RMSD/lDDT are recomputed from emitted coordinates, documented the legacy scratch prototype as non-submitted code, and renamed the completed score entries to `geobpe_table16_high`.

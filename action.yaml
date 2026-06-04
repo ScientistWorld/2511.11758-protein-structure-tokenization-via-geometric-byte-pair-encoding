@@ -1,3 +1,5 @@
-action: done
+action: submit
+gpus: 0
+test: true
 milestone: core_claim
-notes: "Final verification passed after removing an unrun ablation from the scoring contract and cleaning method-agnostic docs."
+notes: "Run the lower-resolution Table 16 GEOBPE setting, merge it with the completed high-resolution artifact, and validate the two-setting sweep."

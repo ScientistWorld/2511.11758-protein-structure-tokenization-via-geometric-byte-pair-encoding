@@ -27,5 +27,10 @@
 - Final verification confirmed the workspace remains at `core_claim`.
 - Removed an unrun ablation from the scoring contract so the documented targets match completed scores.
 
+### [2026-06-04 13:25] - core_claim
+- Prepared a two-setting Table 16 sweep without claiming the next milestone before the new run completes.
+- Renamed the completed multisplit artifact in scoring as `geobpe_table16_high` and added the pending `geobpe_table16_low` reference target.
+- Tightened evaluator integrity so reconstruction quality metrics require emitted coordinate arrays.
+
 ## Stop Justification
-- Completed at milestone `core_claim`.
+- Not stopped; the next submitted job adds the lower-resolution Table 16 setting.
