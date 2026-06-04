@@ -73,3 +73,4 @@
 - Reproduced scores support the core claim in the scaled setting: held-out lDDT improved to 0.575, RMSD improved to 6.843, and the encoded-token BPR proxy stayed compact at 7.775 with vocabulary size 219.
 
 ## Stop Justification
+- Completed at milestone `core_claim`.
