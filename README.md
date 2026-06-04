@@ -235,4 +235,7 @@ The reference values in `scoring/reference.json` are the paper's low-resolution 
 
 # Reproduction Milestones
 
-**Current: core_claim_plus**
+**Current: core_claim**
+
+## Stop Justification
+- Completed at milestone `core_claim`.
