@@ -61,10 +61,9 @@ def ca_lddt(p: Any, q: Any, cutoff: float = 15.0) -> float:
     return float(scores[mask].mean())
 
 
-def summarize_artifact(path: str | Path) -> dict:
-    data = json.loads(Path(path).read_text())
+def summarize_methods(methods: dict) -> dict:
     results = {}
-    for method, payload in data["methods"].items():
+    for method, payload in methods.items():
         rows = payload["structures"]
         total_res = sum(row["residues"] for row in rows)
         total_tokens = sum(row["tokens"] for row in rows)
@@ -90,3 +89,13 @@ def summarize_artifact(path: str | Path) -> dict:
             results[method]["rmsd"] = sum(float(row["rmsd"]) for row in rows) / max(len(rows), 1)
             results[method]["lddt"] = sum(float(row["lddt"]) for row in rows) / max(len(rows), 1)
     return results
+
+
+def summarize_artifact(path: str | Path) -> dict:
+    data = json.loads(Path(path).read_text())
+    if "experiments" in data:
+        return {
+            experiment: summarize_methods(payload["methods"])
+            for experiment, payload in data["experiments"].items()
+        }
+    return {"scaled_pdb_tokenization_cameo": summarize_methods(data["methods"])}

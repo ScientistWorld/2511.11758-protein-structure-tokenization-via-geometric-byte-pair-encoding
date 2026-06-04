@@ -13,12 +13,11 @@ def main() -> None:
     parser.add_argument("--output", default="scoring/scores.json")
     args = parser.parse_args()
 
-    method_results = summarize_artifact(args.artifact)
+    experiment_results = summarize_artifact(args.artifact)
     scores = {
         "experiments": {
-            "scaled_pdb_tokenization": {
-                "results": method_results,
-            }
+            experiment: {"results": method_results}
+            for experiment, method_results in experiment_results.items()
         }
     }
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)

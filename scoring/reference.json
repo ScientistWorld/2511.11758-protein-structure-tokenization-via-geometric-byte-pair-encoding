@@ -1,8 +1,40 @@
 {
   "experiments": {
-    "scaled_pdb_tokenization": {
-      "description": "Protein backbone structure tokenization with geometric reconstruction quality and token efficiency. Reference values use the paper's lowest-resolution GEOBPE setting from Table 16.",
-      "weight": 1.0,
+    "scaled_pdb_tokenization_cameo": {
+      "description": "Protein backbone structure tokenization on the scaled CAMEO held-out split. Reference values use the paper's lowest-resolution GEOBPE setting from Table 16.",
+      "weight": 0.5,
+      "primary_metric": "rmsd",
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -1.0
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 0.8
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.4
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.1
+        }
+      },
+      "results": {
+        "geobpe_scaled": {
+          "type": "proposed",
+          "rmsd": 3.96,
+          "lddt": 0.53,
+          "bpr": 27.26,
+          "vocab_size": 109.0
+        }
+      }
+    },
+    "scaled_pdb_tokenization_casp14": {
+      "description": "Protein backbone structure tokenization on the scaled CASP14 held-out split. Reference values use the paper's lowest-resolution GEOBPE setting from Table 16.",
+      "weight": 0.5,
       "primary_metric": "rmsd",
       "metrics": {
         "rmsd": {

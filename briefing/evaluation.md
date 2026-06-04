@@ -2,7 +2,7 @@
 
 Evaluation reads a method artifact, not method code. `scripts/evaluate.sh` calls only `eval/` and writes `scoring/scores.json`. If an artifact contains `original_coords` and `reconstructed_coords`, the evaluator computes reconstruction metrics itself. Older smoke artifacts with only per-structure `rmsd` and `lddt` remain readable as diagnostics.
 
-The main experiment is `scaled_pdb_tokenization`. Metrics are:
+The main experiments are `scaled_pdb_tokenization_cameo` and `scaled_pdb_tokenization_casp14`. Metrics are:
 
 - `rmsd`: lower is better; backbone reconstruction RMSD after Kabsch alignment.
 - `lddt`: higher is better; a dependency-free CA lDDT approximation.

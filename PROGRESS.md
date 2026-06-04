@@ -5,7 +5,7 @@
 - Paper analysis identified the central claim: GEOBPE tokenizes protein backbone structure with geometric BPE merges while preserving reconstruction quality and improving token efficiency.
 - The official PT-BPE code release is vendored under `method/PT-BPE/` at commit `68ff87eaf13068c1ef93dd72139efe4b91532219`, with bundled benchmark payloads removed.
 - `method/run_official_geobpe.py` runs the official `bin/encode.py` and `bin/induce.py` path on the tracked public PDB smoke subset, then writes a method artifact for evaluation.
-- Evaluation is separated in `eval/` and reads only `checkpoints/geobpe_scaled/results.json`.
+- Evaluation is separated in `eval/` and reads only method artifacts, with backward-compatible support for the older single-split artifact and the new multi-experiment artifact.
 - New method artifacts include original and reconstructed coordinates so `eval/` can compute RMSD/lDDT independently; older smoke artifacts with precomputed quality metrics remain readable as diagnostics.
 
 ## Results Achieved
@@ -46,6 +46,7 @@ The scoring reference uses the paper's lowest-resolution GEOBPE row in Table 16 
 - To go beyond `core_claim`, add another independent held-out split such as CASP14 or reproduce a larger portion of the paper's Table 16 vocabulary/resolution sweep.
 - The current public-data benchmark is intentionally compact; a higher milestone would require expanding the dataset and experiment matrix while keeping the same official GEOBPE procedure.
 - Current turn prepared a CASP14 held-out job using the same official GEOBPE encode/induce pipeline and separate output directories (`checkpoints/geobpe_scaled_casp14`, `checkpoints/geobpe_scaled_casp14_induce`).
+- Continuation audit found the implementation and evaluation separation trustworthy enough to restore `core_claim`, but the proposed CASP14 extension would have overwritten the old generic score key. The evaluator, reference file, and target docs now track CAMEO and CASP14 as separate experiments.
 
 ## Issues
 
@@ -66,3 +67,4 @@ The scoring reference uses the paper's lowest-resolution GEOBPE row in Table 16 
 - Job `fd339299-859` completed the expanded official GEOBPE encode/induce run on the tracked public PDB subset, but failed during wrapper postprocessing before writing `results.json`. The crash came from reading `tok._coords` as if it were always a full N/CA/C backbone; one held-out tokenizer exposed a CA-only `(N, 3)` array.
 - Fixed `method/run_official_geobpe.py` to export original coordinates through the official tokenizer reconstruction path, `tok.compute_coords(orig=True)`, and to fall back to the official per-structure RMSD/LDDT metrics if coordinate export has an unexpected shape.
 - Local host validation note: `python validate.py --compare` passes, but `bash scripts/evaluate.sh ...` cannot run in the host shell because NumPy is only installed in the reproducible container overlay via `environment/setup.sh`. The submitted job runs inside that container.
+- The next job trains GEOBPE once and induces both CAMEO and CASP14 held-out structures, writing `checkpoints/geobpe_scaled_multisplit/results.json`; `scripts/evaluate.sh` will then write two score entries matching `scoring/reference.json`.

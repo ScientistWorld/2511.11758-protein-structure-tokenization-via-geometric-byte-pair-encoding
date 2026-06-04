@@ -76,9 +76,8 @@ def latest_iter_checkpoint(output_dir: Path) -> Path:
     return max(candidates, key=lambda p: int(p.stem.split("=")[1]))
 
 
-def summarize_induction(induce_dir: Path, bpe_path: Path, output_path: Path) -> None:
+def summarize_induction(induce_dir: Path, bpe: Any) -> dict[str, Any]:
     sys.path.insert(0, str(UPSTREAM))
-    bpe = load_pickle(bpe_path)
     rows: list[dict[str, float | int | str]] = []
     for path in sorted(induce_dir.glob("[0-9]*.pkl"), key=lambda p: int(p.stem)):
         stats, tok = load_pickle(path)
@@ -110,18 +109,29 @@ def summarize_induction(induce_dir: Path, bpe_path: Path, output_path: Path) -> 
         rows.append(row)
     if not rows:
         raise RuntimeError(f"No induced structure pickles found in {induce_dir}")
+    return {
+        "geobpe_scaled": {
+            "vocab_size": int(bpe.vocab_size),
+            "include_quality_metrics": True,
+            "structures": rows,
+        }
+    }
+
+
+def write_artifact(
+    experiments: dict[str, dict[str, Any]],
+    bpe_path: Path,
+    output_path: Path,
+) -> None:
     artifact = {
         "metadata": {
             "source": "official PT-BPE GEOBPE code",
             "upstream_commit": "68ff87eaf13068c1ef93dd72139efe4b91532219",
             "checkpoint": str(bpe_path),
         },
-        "methods": {
-            "geobpe_scaled": {
-                "vocab_size": int(bpe.vocab_size),
-                "include_quality_metrics": True,
-                "structures": rows,
-            }
+        "experiments": {
+            name: {"methods": methods}
+            for name, methods in experiments.items()
         },
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -136,7 +146,7 @@ def main() -> None:
     parser.add_argument("--induce-dir", default=str(WORKSPACE / "checkpoints" / "geobpe_scaled_cameo"))
     parser.add_argument(
         "--test-split",
-        choices=["cameo", "casp14", "validation"],
+        choices=["cameo", "casp14", "validation", "all"],
         default="cameo",
         help="Held-out split to induce/tokenize after fitting GEOBPE.",
     )
@@ -229,26 +239,35 @@ def main() -> None:
     run_command(encode_cmd, env)
 
     ckpt = latest_iter_checkpoint(output_dir)
-    induce_cmd = [
-        sys.executable,
-        "bin/induce.py",
-        "--src-pkl",
-        str(ckpt),
-        "--save-dir",
-        str(induce_dir),
-        "--log-dir",
-        str(WORKSPACE / "logs"),
-        "--data-dir",
-        {"cameo": "cameo", "casp14": "casp14", "validation": "validation"}[args.test_split],
-        "--toy",
-        str(args.test_limit),
-        "--pad",
-        "512",
-        "--processed",
-        "False",
-    ]
-    run_command(induce_cmd, env)
-    summarize_induction(induce_dir, ckpt, output_dir / "results.json")
+    sys.path.insert(0, str(UPSTREAM))
+    bpe = load_pickle(ckpt)
+    split_names = ["cameo", "casp14"] if args.test_split == "all" else [args.test_split]
+    experiments: dict[str, dict[str, Any]] = {}
+    for split_name in split_names:
+        split_induce_dir = induce_dir if len(split_names) == 1 else induce_dir / split_name
+        split_induce_dir.mkdir(parents=True, exist_ok=True)
+        induce_cmd = [
+            sys.executable,
+            "bin/induce.py",
+            "--src-pkl",
+            str(ckpt),
+            "--save-dir",
+            str(split_induce_dir),
+            "--log-dir",
+            str(WORKSPACE / "logs"),
+            "--data-dir",
+            {"cameo": "cameo", "casp14": "casp14", "validation": "validation"}[split_name],
+            "--toy",
+            str(args.test_limit),
+            "--pad",
+            "512",
+            "--processed",
+            "False",
+        ]
+        run_command(induce_cmd, env)
+        experiment_name = f"scaled_pdb_tokenization_{split_name}"
+        experiments[experiment_name] = summarize_induction(split_induce_dir, bpe)
+    write_artifact(experiments, ckpt, output_dir / "results.json")
 
 
 if __name__ == "__main__":

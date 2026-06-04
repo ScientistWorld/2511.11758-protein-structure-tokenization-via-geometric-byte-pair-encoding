@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Run official GEOBPE on the same tracked training subset and evaluate a second held-out CASP14 split to pursue core_claim_plus."
+notes: "Run official GEOBPE on the tracked training subset, then evaluate both CAMEO and CASP14 as separate score entries to pursue core_claim_plus."
