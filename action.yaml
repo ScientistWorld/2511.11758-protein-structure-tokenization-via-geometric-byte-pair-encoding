@@ -1,5 +1,5 @@
-action: submit
+action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Run evaluate_{train,test}.sh against final GEOBPE artifact; populate scores_train/test.json for split validation."
+notes: "Fixed held-out structure split; scored 8 train metrics and 8 test metrics for geobpe_scaled. Geometry differs by slice (CAMEO RMSD +1.68 test gap, CASP14 RMSD -0.52); bpr/vocab constraints are identical because this artifact emits one token per residue with a fixed vocabulary."
