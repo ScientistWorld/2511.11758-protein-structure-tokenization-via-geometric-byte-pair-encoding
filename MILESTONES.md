@@ -25,4 +25,3 @@
 
 ## Stop Justification
 - Completed at milestone `core_claim`.
-- Higher milestones would require a larger PDB-scale sweep or downstream/SSLM experiments beyond the current lightweight public-data benchmark.
