@@ -93,6 +93,7 @@ def summarize_induction(induce_dir: Path, bpe_path: Path, output_path: Path) -> 
         "methods": {
             "geobpe_scaled": {
                 "vocab_size": int(bpe.vocab_size),
+                "include_quality_metrics": True,
                 "structures": rows,
             }
         },
@@ -110,6 +111,9 @@ def main() -> None:
     parser.add_argument("--train-limit", type=int, default=2)
     parser.add_argument("--test-limit", type=int, default=2)
     parser.add_argument("--max-iter", type=int, default=1)
+    parser.add_argument("--bins", default="1-50")
+    parser.add_argument("--num-p", default="2-10:3-50:5-1:6-5:8-1")
+    parser.add_argument("--max-num-strucs", type=int, default=100)
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
 
@@ -161,7 +165,7 @@ def main() -> None:
         "--bin-strategy",
         "histogram",
         "--bins",
-        "1-4:3-3:5-2",
+        args.bins,
         "--sec",
         "False",
         "--sec-eval",
@@ -169,9 +173,9 @@ def main() -> None:
         "--p-min-size",
         "2",
         "--num-p",
-        "2-2:3-2:5-1",
+        args.num_p,
         "--max-num-strucs",
-        "20",
+        str(args.max_num_strucs),
         "--glue-opt",
         "True",
         "--glue-opt-prior",

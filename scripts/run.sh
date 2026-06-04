@@ -13,9 +13,12 @@ set -euo pipefail
 
 cd /home/user
 
-export TRAIN_LIMIT="${TRAIN_LIMIT:-8}"
+export TRAIN_LIMIT="${TRAIN_LIMIT:-12}"
 export TEST_LIMIT="${TEST_LIMIT:-5}"
 export ITERATIONS="${ITERATIONS:-3}"
+export GEOBPE_BINS="${GEOBPE_BINS:-1-50}"
+export GEOBPE_NUM_P="${GEOBPE_NUM_P:-2-10:3-50:5-1:6-5:8-1}"
+export GEOBPE_MAX_NUM_STRUCS="${GEOBPE_MAX_NUM_STRUCS:-100}"
 export SEED="${SEED:-0}"
 
 bash scripts/reproduce.sh

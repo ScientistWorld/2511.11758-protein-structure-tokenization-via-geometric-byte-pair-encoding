@@ -4,7 +4,9 @@
       "results": {
         "geobpe_scaled": {
           "bpr": 3.068251327587917,
-          "vocab_size": 17.0
+          "vocab_size": 17.0,
+          "rmsd": 11.671633713294426,
+          "lddt": 0.21001483084160094
         }
       }
     }

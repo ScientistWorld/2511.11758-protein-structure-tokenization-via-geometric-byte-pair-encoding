@@ -52,5 +52,9 @@
 - Stricter validation still rejected the smoke RMSD as too far from the corrected Table 16 reference.
 - Kept the failed RMSD/LDDT diagnostics in `PROGRESS.md`, but removed them from `scoring/scores.json` so the final score file does not present a failed primary-metric comparison as a reproduced result.
 
+### [2026-06-04 11:12] - method_runs
+- Official PT-BPE GEOBPE path completed end-to-end on a two-train/two-CAMEO smoke subset.
+- The run executed residue initialization, geometric pair BPE merging, medoid quantization, glue optimization, induction on held-out PDB chains, and separated evaluation.
+- Current smoke quality is not sufficient for `core_claim`, so the next job scales the same official method to all tracked training chains with paper-like low-resolution hyperparameters.
+
 ## Stop Justification
-- Completed at milestone `method_runs`.
