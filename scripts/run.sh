@@ -19,6 +19,9 @@ export ITERATIONS="${ITERATIONS:-3}"
 export GEOBPE_BINS="${GEOBPE_BINS:-1-50}"
 export GEOBPE_NUM_P="${GEOBPE_NUM_P:-2-10:3-50:5-1:6-5:8-1}"
 export GEOBPE_MAX_NUM_STRUCS="${GEOBPE_MAX_NUM_STRUCS:-100}"
+export GEOBPE_TEST_SPLIT="${GEOBPE_TEST_SPLIT:-casp14}"
+export GEOBPE_OUTPUT_DIR="${GEOBPE_OUTPUT_DIR:-checkpoints/geobpe_scaled_casp14}"
+export GEOBPE_INDUCE_DIR="${GEOBPE_INDUCE_DIR:-checkpoints/geobpe_scaled_casp14_induce}"
 export SEED="${SEED:-0}"
 
 bash scripts/reproduce.sh

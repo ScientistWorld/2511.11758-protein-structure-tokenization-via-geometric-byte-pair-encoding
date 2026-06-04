@@ -45,6 +45,7 @@ The scoring reference uses the paper's lowest-resolution GEOBPE row in Table 16 
 
 - To go beyond `core_claim`, add another independent held-out split such as CASP14 or reproduce a larger portion of the paper's Table 16 vocabulary/resolution sweep.
 - The current public-data benchmark is intentionally compact; a higher milestone would require expanding the dataset and experiment matrix while keeping the same official GEOBPE procedure.
+- Current turn prepared a CASP14 held-out job using the same official GEOBPE encode/induce pipeline and separate output directories (`checkpoints/geobpe_scaled_casp14`, `checkpoints/geobpe_scaled_casp14_induce`).
 
 ## Issues
 
@@ -64,3 +65,4 @@ The scoring reference uses the paper's lowest-resolution GEOBPE row in Table 16 
 - Audit after milestone reset confirmed the method path uses the official PT-BPE GEOBPE algorithm and the scoring reference is aligned with Table 16. Fixed stale briefing text from the earlier scratch implementation and updated the artifact/evaluator contract to compute quality from coordinates when present.
 - Job `fd339299-859` completed the expanded official GEOBPE encode/induce run on the tracked public PDB subset, but failed during wrapper postprocessing before writing `results.json`. The crash came from reading `tok._coords` as if it were always a full N/CA/C backbone; one held-out tokenizer exposed a CA-only `(N, 3)` array.
 - Fixed `method/run_official_geobpe.py` to export original coordinates through the official tokenizer reconstruction path, `tok.compute_coords(orig=True)`, and to fall back to the official per-structure RMSD/LDDT metrics if coordinate export has an unexpected shape.
+- Local host validation note: `python validate.py --compare` passes, but `bash scripts/evaluate.sh ...` cannot run in the host shell because NumPy is only installed in the reproducible container overlay via `environment/setup.sh`. The submitted job runs inside that container.

@@ -134,6 +134,12 @@ def main() -> None:
     parser.add_argument("--data-root", default=str(WORKSPACE / "data" / "pdb_smoke"))
     parser.add_argument("--output-dir", default=str(WORKSPACE / "checkpoints" / "geobpe_scaled"))
     parser.add_argument("--induce-dir", default=str(WORKSPACE / "checkpoints" / "geobpe_scaled_cameo"))
+    parser.add_argument(
+        "--test-split",
+        choices=["cameo", "casp14", "validation"],
+        default="cameo",
+        help="Held-out split to induce/tokenize after fitting GEOBPE.",
+    )
     parser.add_argument("--train-limit", type=int, default=2)
     parser.add_argument("--test-limit", type=int, default=2)
     parser.add_argument("--max-iter", type=int, default=1)
@@ -233,7 +239,7 @@ def main() -> None:
         "--log-dir",
         str(WORKSPACE / "logs"),
         "--data-dir",
-        "cameo",
+        {"cameo": "cameo", "casp14": "casp14", "validation": "validation"}[args.test_split],
         "--toy",
         str(args.test_limit),
         "--pad",

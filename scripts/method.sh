@@ -12,8 +12,9 @@ cd /home/user
 
 python method/run_official_geobpe.py \
   --data-root data/pdb_smoke \
-  --output-dir checkpoints/geobpe_scaled \
-  --induce-dir checkpoints/geobpe_scaled_cameo \
+  --output-dir "${GEOBPE_OUTPUT_DIR:-checkpoints/geobpe_scaled}" \
+  --induce-dir "${GEOBPE_INDUCE_DIR:-checkpoints/geobpe_scaled_${GEOBPE_TEST_SPLIT:-cameo}}" \
+  --test-split "${GEOBPE_TEST_SPLIT:-cameo}" \
   --train-limit "${TRAIN_LIMIT:-2}" \
   --test-limit "${TEST_LIMIT:-2}" \
   --max-iter "${ITERATIONS:-1}" \

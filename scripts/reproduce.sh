@@ -19,4 +19,4 @@ set -euo pipefail
 cd /home/user
 
 bash scripts/method.sh
-bash scripts/evaluate.sh checkpoints/geobpe_scaled/results.json
+bash scripts/evaluate.sh "${GEOBPE_OUTPUT_DIR:-checkpoints/geobpe_scaled}/results.json"
