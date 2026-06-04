@@ -27,5 +27,5 @@ cd /home/user
 mkdir -p scoring
 
 python -m eval.evaluate \
-  --artifact "${1:-checkpoints/geobpe_scaled/results.json}" \
+  --artifact "${1:-checkpoints/geobpe_scaled_multisplit/results.json}" \
   --output scoring/scores.json

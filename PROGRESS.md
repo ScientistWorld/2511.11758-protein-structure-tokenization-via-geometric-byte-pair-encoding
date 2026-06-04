@@ -35,9 +35,9 @@ The scoring reference uses the paper's lowest-resolution GEOBPE row in Table 16 
 Job `0df68540-c81` completed the multisplit reproduction using the same learned GEOBPE vocabulary and two held-out splits. Current `scoring/scores.json` reports:
 
 - `scaled_pdb_tokenization_cameo`: RMSD 6.8435, lDDT 0.5747, BPR 7.7748, vocabulary size 219
-- `scaled_pdb_tokenization_casp14`: RMSD 4.5192, lDDT 0.6146, BPR 7.7748, vocabulary size 219
+- `scaled_pdb_tokenization_casp14`: RMSD 4.5237, lDDT 0.6146, BPR 7.7748, vocabulary size 219
 
-This reaches `core_claim_plus`: the paper's official GEOBPE algorithm preserves meaningful held-out backbone geometry and compact tokenization on more than one held-out setting. The score file covers every target listed in `scoring/TARGETS.md`: reconstruction quality (`rmsd`, `lddt`), token efficiency (`bpr`), and compactness (`vocab_size`).
+This strengthens `core_claim`: the paper's official GEOBPE algorithm preserves meaningful held-out backbone geometry and compact tokenization on more than one held-out setting. After the continuation audit, I am not restoring `core_claim_plus` because the current gym does not yet reproduce a broader Pareto sweep, paper baseline comparison, downstream transfer result, or glue ablation. The score file covers every target listed in `scoring/TARGETS.md`: reconstruction quality (`rmsd`, `lddt`), token efficiency (`bpr`), and compactness (`vocab_size`).
 
 ## Deviations From Paper
 
@@ -48,7 +48,7 @@ This reaches `core_claim_plus`: the paper's official GEOBPE algorithm preserves 
 
 ## What Remains
 
-- To go beyond `core_claim_plus`, expand the dataset and reproduce a larger portion of the paper's Table 16 vocabulary/resolution sweep while keeping the same official GEOBPE procedure.
+- To go beyond `core_claim`, expand the dataset and reproduce a larger portion of the paper's Table 16 vocabulary/resolution sweep while keeping the same official GEOBPE procedure.
 - The current public-data benchmark is intentionally compact. Higher milestones would require more training chains, more held-out splits, or additional paper ablations rather than more repeats of the same two-split setting.
 
 ## Issues
@@ -76,3 +76,6 @@ This reaches `core_claim_plus`: the paper's official GEOBPE algorithm preserves 
 - Job `4d54b035-f53` showed the uppercase guess was still not the accepted command-line key. Inspecting `method/PT-BPE/foldingdiff/datasets.py` confirmed that the official loader registers CASP14 files under the key `casp`, with `CASP_DIR` pointing to `data/vqvae_pretrain/CASP14`.
 - Updated the wrapper to pass `--data-dir casp` for the public CASP14 split while keeping the prepared upstream directory name unchanged.
 - Job `0df68540-c81` completed after the `casp` mapping fix. It wrote multisplit method artifacts, `scoring/scores.json`, and passed `python validate.py --compare`.
+- Continuation audit found two packaging issues: `scripts/evaluate.sh` defaulted to the older single-split artifact, and `scoring/CONSTRAINTS.md` lacked the promised compliance checklist. Fixed both.
+- `scripts/evaluate.sh checkpoints/geobpe_scaled_multisplit/results.json` now works in the current shell without NumPy by using the dependency-free metric fallback in `eval/metrics.py`; `python validate.py --compare` passes.
+- The current audited milestone is `core_claim`. The official method is real and the multisplit benchmark is useful, but `core_claim_plus` is not claimed until a broader paper result or ablation is reproduced.
