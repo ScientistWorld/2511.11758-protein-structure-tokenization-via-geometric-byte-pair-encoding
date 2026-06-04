@@ -1,12 +1,22 @@
 {
   "experiments": {
-    "scaled_pdb_tokenization": {
+    "scaled_pdb_tokenization_cameo": {
       "results": {
         "geobpe_scaled": {
           "bpr": 7.7747870596011746,
           "vocab_size": 219.0,
           "rmsd": 6.843490248971969,
           "lddt": 0.5746735706706039
+        }
+      }
+    },
+    "scaled_pdb_tokenization_casp14": {
+      "results": {
+        "geobpe_scaled": {
+          "bpr": 7.774787059601173,
+          "vocab_size": 219.0,
+          "rmsd": 4.519160080237768,
+          "lddt": 0.6146033330741248
         }
       }
     }
