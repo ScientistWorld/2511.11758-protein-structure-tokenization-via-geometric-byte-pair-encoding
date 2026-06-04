@@ -53,4 +53,4 @@
 - Kept the failed RMSD/LDDT diagnostics in `PROGRESS.md`, but removed them from `scoring/scores.json` so the final score file does not present a failed primary-metric comparison as a reproduced result.
 
 ## Stop Justification
-- Completed at milestone `none`.
+- Completed at milestone `method_runs`.
