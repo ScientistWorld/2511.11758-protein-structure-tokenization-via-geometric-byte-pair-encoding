@@ -1,28 +1,12 @@
 #!/usr/bin/env bash
-# Example job script submitted via the end-of-turn YAML block.
-#
-# This runs inside the compute container with:
-#   - Your workspace mounted at /home/user
-#   - GPU(s) available
-#   - No internet access
-#
-# Make sure all data, code, and dependencies are already in the
-# workspace or baked into the container before submitting.
+# Score the frozen final GEOBPE artifact on the visible train slice and the
+# held-out test slice. This job performs post-hoc evaluation only.
 
 set -euo pipefail
 
 cd /home/user
 
-export TRAIN_LIMIT="${TRAIN_LIMIT:-12}"
-export TEST_LIMIT="${TEST_LIMIT:-5}"
-export ITERATIONS="${ITERATIONS:-3}"
-export GEOBPE_BINS="${GEOBPE_BINS:-1-50}"
-export GEOBPE_NUM_P="${GEOBPE_NUM_P:-2-10:3-50:5-1:6-5:8-1}"
-export GEOBPE_MAX_NUM_STRUCS="${GEOBPE_MAX_NUM_STRUCS:-100}"
-export GEOBPE_TEST_SPLIT="${GEOBPE_TEST_SPLIT:-all}"
-export GEOBPE_OUTPUT_DIR="${GEOBPE_OUTPUT_DIR:-checkpoints/geobpe_scaled_multisplit}"
-export GEOBPE_INDUCE_DIR="${GEOBPE_INDUCE_DIR:-checkpoints/geobpe_scaled_multisplit_induce}"
-export SEED="${SEED:-0}"
+ARTIFACT="${1:-checkpoints/geobpe_scaled_multisplit/results.json}"
 
-bash scripts/reproduce.sh
-python validate.py --compare
+bash scripts/evaluate_train.sh "$ARTIFACT"
+bash scripts/evaluate_test.sh "$ARTIFACT"

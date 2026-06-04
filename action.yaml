@@ -1,9 +1,5 @@
-# This iteration writes files only — do NOT submit compute jobs.
-# Once you set action to 'done', STOP immediately.
-# Do NOT sleep, poll, or wait. The system reads this file
-# only after your turn ends.
-action: done
+action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Improvements: fixed row-omission shortcut with fixed required train/test structures; reduced split leakage; added duplicate-row validation and metric descriptions. Notes: see DESIGN_NOTES.md."
+notes: "Run evaluate_{train,test}.sh against final GEOBPE artifact; populate scores_train/test.json for split validation."
