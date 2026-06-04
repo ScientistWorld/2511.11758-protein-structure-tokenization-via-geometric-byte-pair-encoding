@@ -256,7 +256,7 @@ def main() -> None:
             "--log-dir",
             str(WORKSPACE / "logs"),
             "--data-dir",
-            {"cameo": "cameo", "casp14": "casp14", "validation": "validation"}[split_name],
+            {"cameo": "cameo", "casp14": "CASP14", "validation": "validation"}[split_name],
             "--toy",
             str(args.test_limit),
             "--pad",

@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Run official GEOBPE on the tracked training subset, then evaluate both CAMEO and CASP14 as separate score entries to pursue core_claim_plus."
+notes: "Retry multisplit official GEOBPE after fixing the CASP14 split-name mapping used by upstream PT-BPE induction."
