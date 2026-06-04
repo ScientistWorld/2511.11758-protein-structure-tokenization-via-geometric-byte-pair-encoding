@@ -23,5 +23,9 @@
 - Added the missing `scoring/CONSTRAINTS.md` compliance checklist.
 - Did not restore `core_claim_plus`: the multisplit run strengthens the core claim, but the current benchmark does not yet include a broader Table 16 sweep, baseline comparison, downstream transfer result, or glue ablation.
 
+### [2026-06-04 13:13] - core_claim
+- Prepared a CPU job for the paper's glue-optimization ablation using the official PT-BPE switch, with matched data and hyperparameter scale.
+- Added an ablation artifact combiner and scoring reference, but did not claim `core_claim_plus` before the job result exists.
+
 ## Stop Justification
-- Completed at milestone `core_claim`.
+- Not stopping; next action submits the glue-optimization ablation job.

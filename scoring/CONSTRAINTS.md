@@ -82,6 +82,8 @@ Use the provided PDB splits unless explicitly documenting a new experiment. Do n
 
 Report token efficiency with the same encoded-token `bpr` proxy used by `eval/`: total tokens times `log2(vocab_size)` divided by total residues. The paper's full BPR additionally includes tokenizer description length; in this compact benchmark, `vocab_size` is reported alongside `bpr` to preserve a compactness constraint.
 
+For `glue_optimization_ablation`, compare the standard and disabled-correction conditions on the same held-out split and with the same training data, iteration count, binning, and prototype-count settings. The ablation is invalid if one side changes scale or data access.
+
 Do not improve scores by using private data, fetching extra files during evaluation, hardcoding held-out structures, or changing `scripts/evaluate.sh` to depend on a particular method implementation.
 
 ## Compliance Checklist
@@ -91,4 +93,5 @@ Do not improve scores by using private data, fetching extra files during evaluat
 - [ ] Does not fetch data, models, or remote resources during `scripts/evaluate.sh`.
 - [ ] Keeps `scripts/evaluate.sh` method-agnostic; evaluation code does not import from `method/`.
 - [ ] Reports `rmsd`, `lddt`, encoded-token `bpr`, and `vocab_size` for every submitted benchmark experiment.
+- [ ] Runs the ablation with matched data and hyperparameter scale across the compared conditions.
 - [ ] Does not improve reconstruction by memorizing held-out coordinates or using an unbounded vocabulary.

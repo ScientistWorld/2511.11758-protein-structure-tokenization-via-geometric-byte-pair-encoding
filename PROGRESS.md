@@ -48,7 +48,8 @@ This strengthens `core_claim`: the paper's official GEOBPE algorithm preserves m
 
 ## What Remains
 
-- To go beyond `core_claim`, expand the dataset and reproduce a larger portion of the paper's Table 16 vocabulary/resolution sweep while keeping the same official GEOBPE procedure.
+- A glue-optimization ablation has been prepared for the next CPU job. It runs the official PT-BPE path with glue optimization disabled, combines it with the existing with-glue artifact, and scores both conditions under `glue_optimization_ablation`.
+- To go further after that, expand the dataset and reproduce a larger portion of the paper's Table 16 vocabulary/resolution sweep while keeping the same official GEOBPE procedure.
 - The current public-data benchmark is intentionally compact. Higher milestones would require more training chains, more held-out splits, or additional paper ablations rather than more repeats of the same two-split setting.
 
 ## Issues
@@ -79,3 +80,4 @@ This strengthens `core_claim`: the paper's official GEOBPE algorithm preserves m
 - Continuation audit found two packaging issues: `scripts/evaluate.sh` defaulted to the older single-split artifact, and `scoring/CONSTRAINTS.md` lacked the promised compliance checklist. Fixed both.
 - `scripts/evaluate.sh checkpoints/geobpe_scaled_multisplit/results.json` now works in the current shell without NumPy by using the dependency-free metric fallback in `eval/metrics.py`; `python validate.py --compare` passes.
 - The current audited milestone is `core_claim`. The official method is real and the multisplit benchmark is useful, but `core_claim_plus` is not claimed until a broader paper result or ablation is reproduced.
+- Prepared the official glue-optimization ablation: `method/run_official_geobpe.py` now exposes upstream `--glue-opt`, `scripts/glue_ablation.sh` runs the no-glue condition, `method/combine_ablation_artifacts.py` writes a side-by-side artifact, and `scoring/reference.json` includes the paper's reported with-glue/no-glue ablation numbers. The next submitted job will determine whether this supports `core_claim_plus`.

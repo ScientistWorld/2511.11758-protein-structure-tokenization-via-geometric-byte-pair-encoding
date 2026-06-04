@@ -70,3 +70,9 @@ The experiment is intentionally small so future agents can iterate quickly. It s
 This experiment tests whether the same learned structural-tokenization objective remains useful on a second held-out split from CASP14. It measures the same reconstruction, locality-preservation, token-efficiency, and compactness quantities as the CAMEO split.
 
 The experiment is intentionally small so future agents can iterate quickly. It should still preserve the central tradeoff: better tokenizers must improve reconstruction or token efficiency without using an unbounded vocabulary.
+
+## glue_optimization_ablation
+
+This experiment tests whether the paper's global consistency correction is responsible for preserving fold integrity, rather than the benchmark being solved by local motif replacement alone. It compares the standard reproduced system with the same system under the paper's disabled-correction condition on the same held-out structures.
+
+The intended signal is directional: disabling the correction should worsen reconstruction quality while leaving the token-efficiency accounting comparable.

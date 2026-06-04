@@ -21,4 +21,6 @@ python method/run_official_geobpe.py \
   --bins "${GEOBPE_BINS:-1-50}" \
   --num-p "${GEOBPE_NUM_P:-2-10:3-50:5-1:6-5:8-1}" \
   --max-num-strucs "${GEOBPE_MAX_NUM_STRUCS:-100}" \
+  --glue-opt "${GEOBPE_GLUE_OPT:-true}" \
+  --method-name "${GEOBPE_METHOD_NAME:-geobpe_scaled}" \
   --seed "${SEED:-0}"

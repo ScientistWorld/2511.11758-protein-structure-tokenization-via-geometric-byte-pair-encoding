@@ -2,7 +2,7 @@
   "experiments": {
     "scaled_pdb_tokenization_cameo": {
       "description": "Protein backbone structure tokenization on the scaled CAMEO held-out split. Reference values use the paper's lowest-resolution GEOBPE setting from Table 16.",
-      "weight": 0.5,
+      "weight": 0.4,
       "primary_metric": "rmsd",
       "metrics": {
         "rmsd": {
@@ -38,7 +38,7 @@
     },
     "scaled_pdb_tokenization_casp14": {
       "description": "Protein backbone structure tokenization on the scaled CASP14 held-out split. Reference values use the paper's lowest-resolution GEOBPE setting from Table 16.",
-      "weight": 0.5,
+      "weight": 0.4,
       "primary_metric": "rmsd",
       "metrics": {
         "rmsd": {
@@ -69,6 +69,49 @@
           "lddt": 0.53,
           "bpr": 27.26,
           "vocab_size": 109.0
+        }
+      }
+    },
+    "glue_optimization_ablation": {
+      "description": "Ablation of GEOBPE glue optimization. Reference values use the paper's Fig. 6 / Appendix A ablation reporting reconstruction quality with glue optimization enabled and disabled.",
+      "weight": 0.2,
+      "primary_metric": "rmsd",
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -1.0,
+          "description": "Geometric reconstruction error; disabling the global correction should increase drift."
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 0.8,
+          "description": "Local distance preservation score."
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.2,
+          "description": "Encoded-token bits-per-residue proxy."
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.1,
+          "description": "Vocabulary compactness constraint."
+        }
+      },
+      "results": {
+        "geobpe_scaled": {
+          "type": "proposed",
+          "rmsd": 1.66,
+          "lddt": 0.73,
+          "bpr": 27.26,
+          "vocab_size": 600.0
+        },
+        "geobpe_no_glue": {
+          "type": "baseline",
+          "rmsd": 4.39,
+          "lddt": 0.69,
+          "bpr": 27.26,
+          "vocab_size": 600.0
         }
       }
     }

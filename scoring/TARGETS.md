@@ -50,8 +50,10 @@ Delete this comment block and fill in your actual targets below.
 <!-- This should EXACTLY corresponds to the structure in your scores.json. -->
 # Targets
 
-Optimize `scaled_pdb_tokenization_cameo` and `scaled_pdb_tokenization_casp14`.
+Optimize `scaled_pdb_tokenization_cameo`, `scaled_pdb_tokenization_casp14`, and `glue_optimization_ablation`.
 
 Primary target: reduce `rmsd` on held-out PDB chains for both splits.
 
 Secondary targets: increase `lddt`, reduce the encoded-token `bpr` proxy, and keep `vocab_size` compact. A valid improvement should not simply expand the vocabulary until every local fragment is memorized.
+
+Ablation target: in `glue_optimization_ablation`, the standard condition should have lower `rmsd` and higher `lddt` than the disabled-correction condition while using comparable `bpr` and `vocab_size`.

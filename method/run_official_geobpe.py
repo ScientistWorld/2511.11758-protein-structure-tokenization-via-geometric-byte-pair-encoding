@@ -25,6 +25,17 @@ def workspace_path(path: str | Path) -> Path:
     return WORKSPACE / candidate
 
 
+def str2bool(value: str | bool) -> bool:
+    if isinstance(value, bool):
+        return value
+    lowered = value.lower()
+    if lowered in {"true", "1", "yes", "y"}:
+        return True
+    if lowered in {"false", "0", "no", "n"}:
+        return False
+    raise argparse.ArgumentTypeError(f"Expected boolean value, got {value!r}")
+
+
 def _link_or_copy(src: Path, dst: Path) -> None:
     if dst.is_symlink() or dst.exists():
         return
@@ -156,6 +167,8 @@ def main() -> None:
     parser.add_argument("--bins", default="1-50")
     parser.add_argument("--num-p", default="2-10:3-50:5-1:6-5:8-1")
     parser.add_argument("--max-num-strucs", type=int, default=100)
+    parser.add_argument("--glue-opt", type=str2bool, default=True)
+    parser.add_argument("--method-name", default="geobpe_scaled")
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
 
@@ -220,7 +233,7 @@ def main() -> None:
         "--max-num-strucs",
         str(args.max_num_strucs),
         "--glue-opt",
-        "True",
+        str(args.glue_opt),
         "--glue-opt-prior",
         "0.0",
         "--glue-opt-every",
@@ -266,7 +279,10 @@ def main() -> None:
         ]
         run_command(induce_cmd, env)
         experiment_name = f"scaled_pdb_tokenization_{split_name}"
-        experiments[experiment_name] = summarize_induction(split_induce_dir, bpe)
+        methods = summarize_induction(split_induce_dir, bpe)
+        if args.method_name != "geobpe_scaled":
+            methods = {args.method_name: methods["geobpe_scaled"]}
+        experiments[experiment_name] = methods
     write_artifact(experiments, ckpt, output_dir / "results.json")
 
 

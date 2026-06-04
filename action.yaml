@@ -1,5 +1,5 @@
-action: done
+action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Made download and run scripts resolve the repository root from their own locations; verified RCSB URLs and validation pass."
+notes: "Run the official PT-BPE glue-optimization ablation on CPU, combine with the existing with-glue artifact, evaluate it, and validate the expanded scoring schema. Pursuing core_claim_plus; not claimed until results are inspected."
