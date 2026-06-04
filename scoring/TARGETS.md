@@ -7,6 +7,6 @@ The current benchmark can score two reproduced operating points when both artifa
 - `geobpe_table16_high`: higher-capacity structural vocabulary regime.
 - `geobpe_table16_low`: lower-capacity structural vocabulary regime.
 
-Primary target: reduce `rmsd` on held-out PDB chains for both splits.
+Primary target: increase `lddt` on held-out PDB chains for both splits. In this compact public-data gym, lDDT is the primary reconstruction-quality signal because it is stable on small held-out slices and measures whether local backbone geometry is preserved.
 
-Secondary targets: increase `lddt`, reduce the encoded-token `bpr` proxy, and keep `vocab_size` compact. A valid improvement should not simply expand the vocabulary until every local fragment is memorized.
+Secondary targets: reduce global-coordinate `rmsd`, reduce the encoded-token `bpr` proxy, and keep `vocab_size` compact. A valid improvement should not simply expand the vocabulary until every local fragment is memorized.

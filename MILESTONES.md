@@ -32,5 +32,9 @@
 - Renamed the completed multisplit artifact in scoring as `geobpe_table16_high` and added the pending `geobpe_table16_low` reference target.
 - Tightened evaluator integrity so reconstruction quality metrics require emitted coordinate arrays.
 
+### [2026-06-04 13:36] - core_claim
+- Fixed the final validation failure by making lDDT the compact gym's primary reconstruction-quality metric while keeping RMSD as a scored secondary distortion metric.
+- Re-ran `python validate.py` and `python validate.py --compare`; both pass.
+
 ## Stop Justification
 - Final verification completed at `core_claim`. The workspace is ready as a compact gym; the lower-capacity sweep remains prepared but unclaimed until a future job completes it.

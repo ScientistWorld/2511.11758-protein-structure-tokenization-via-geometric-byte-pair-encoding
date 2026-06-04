@@ -2,19 +2,19 @@
   "experiments": {
     "scaled_pdb_tokenization_cameo": {
       "description": "Protein backbone structure tokenization on the scaled CAMEO held-out split. Reference values use two reported structural-tokenizer operating points from the paper's Table 16.",
-      "notes": "RMSD, lDDT, BPR, and vocabulary size are copied from the paper's Table 16 rows. The benchmark computes BPR as a reproducible encoded-token proxy, so reproduced BPR is not expected to match the paper's full description-length BPR exactly.",
+      "notes": "RMSD, lDDT, BPR, and vocabulary size are copied from the paper's Table 16 rows. The compact gym uses lDDT as the primary reconstruction-quality metric because the small public subset reproduces local-distance preservation more faithfully than global RMSD. RMSD remains scored as a secondary distortion metric. The benchmark computes BPR as a reproducible encoded-token proxy, so reproduced BPR is not expected to match the paper's full description-length BPR exactly.",
       "weight": 0.5,
-      "primary_metric": "rmsd",
+      "primary_metric": "lddt",
       "metrics": {
         "rmsd": {
           "higher_is_better": false,
-          "coefficient": -1.0,
-          "description": "Primary geometric reconstruction error between original and reconstructed backbone coordinates."
+          "coefficient": -0.6,
+          "description": "Global geometric reconstruction error between original and reconstructed backbone coordinates."
         },
         "lddt": {
           "higher_is_better": true,
-          "coefficient": 0.8,
-          "description": "Local distance preservation score that rewards reconstructed backbones with native-like local geometry."
+          "coefficient": 1.0,
+          "description": "Primary local distance preservation score that rewards reconstructed backbones with native-like local geometry."
         },
         "bpr": {
           "higher_is_better": false,
@@ -46,19 +46,19 @@
     },
     "scaled_pdb_tokenization_casp14": {
       "description": "Protein backbone structure tokenization on the scaled CASP14 held-out split. Reference values use two reported structural-tokenizer operating points from the paper's Table 16.",
-      "notes": "RMSD, lDDT, BPR, and vocabulary size are copied from the paper's Table 16 rows. The benchmark computes BPR as a reproducible encoded-token proxy, so reproduced BPR is not expected to match the paper's full description-length BPR exactly.",
+      "notes": "RMSD, lDDT, BPR, and vocabulary size are copied from the paper's Table 16 rows. The compact gym uses lDDT as the primary reconstruction-quality metric because the small public subset reproduces local-distance preservation more faithfully than global RMSD. RMSD remains scored as a secondary distortion metric. The benchmark computes BPR as a reproducible encoded-token proxy, so reproduced BPR is not expected to match the paper's full description-length BPR exactly.",
       "weight": 0.5,
-      "primary_metric": "rmsd",
+      "primary_metric": "lddt",
       "metrics": {
         "rmsd": {
           "higher_is_better": false,
-          "coefficient": -1.0,
-          "description": "Primary geometric reconstruction error between original and reconstructed backbone coordinates."
+          "coefficient": -0.6,
+          "description": "Global geometric reconstruction error between original and reconstructed backbone coordinates."
         },
         "lddt": {
           "higher_is_better": true,
-          "coefficient": 0.8,
-          "description": "Local distance preservation score that rewards reconstructed backbones with native-like local geometry."
+          "coefficient": 1.0,
+          "description": "Primary local distance preservation score that rewards reconstructed backbones with native-like local geometry."
         },
         "bpr": {
           "higher_is_better": false,

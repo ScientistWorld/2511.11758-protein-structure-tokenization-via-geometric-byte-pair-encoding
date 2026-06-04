@@ -4,8 +4,8 @@ Evaluation reads a method artifact, not method code. `scripts/evaluate.sh` calls
 
 The main experiments are `scaled_pdb_tokenization_cameo` and `scaled_pdb_tokenization_casp14`. Metrics are:
 
-- `rmsd`: lower is better; backbone reconstruction RMSD after Kabsch alignment.
-- `lddt`: higher is better; a dependency-free CA lDDT approximation.
+- `lddt`: higher is better; the primary reconstruction-quality metric, computed as a dependency-free CA lDDT approximation.
+- `rmsd`: lower is better; a secondary global backbone reconstruction metric after Kabsch alignment.
 - `bpr`: lower is better; in this scaled gym, an encoded-token BPR proxy computed as token count times `log2(vocab_size)` divided by residue count.
 - `vocab_size`: lower is better as a compactness constraint.
 

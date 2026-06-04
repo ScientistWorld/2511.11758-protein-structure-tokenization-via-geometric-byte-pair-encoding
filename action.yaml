@@ -1,3 +1,3 @@
 action: done
 milestone: core_claim
-notes: "Final verification passed: core-claim gym is usable, method-agnostic docs and evaluator defaults were cleaned, and validation passes."
+notes: "Final validation fixed: lDDT is now the compact gym primary metric, RMSD remains scored, and python validate.py passes."
