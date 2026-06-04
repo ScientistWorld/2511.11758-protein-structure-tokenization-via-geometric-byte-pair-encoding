@@ -1,8 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: done
-gpus: 0
+action: pending
+gpus: 1
 test: false
-milestone: core_claim
-notes: "Official GEOBPE reproduction completed on the scaled public PDB benchmark; scores.json reports RMSD 6.843, lDDT 0.575, BPR proxy 7.775, and vocab size 219."
+milestone: method_runs
+notes: ""
