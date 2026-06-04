@@ -18,5 +18,12 @@ set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
+GEOBPE_OUTPUT_DIR="${GEOBPE_OUTPUT_DIR:-checkpoints/geobpe_scaled_multisplit}" \
+GEOBPE_INDUCE_DIR="${GEOBPE_INDUCE_DIR:-checkpoints/geobpe_scaled_multisplit_induce}" \
+GEOBPE_TEST_SPLIT="${GEOBPE_TEST_SPLIT:-all}" \
+TRAIN_LIMIT="${TRAIN_LIMIT:-12}" \
+TEST_LIMIT="${TEST_LIMIT:-5}" \
+ITERATIONS="${ITERATIONS:-3}" \
 bash scripts/method.sh
-bash scripts/evaluate.sh "${GEOBPE_OUTPUT_DIR:-checkpoints/geobpe_scaled}/results.json"
+
+bash scripts/evaluate.sh "${GEOBPE_OUTPUT_DIR:-checkpoints/geobpe_scaled_multisplit}/results.json"
