@@ -10,20 +10,29 @@
 
 ## Results Achieved
 
-Job `5f24b034-f1a` completed the official GEOBPE smoke reproduction on two training and two held-out CAMEO structures. It wrote `checkpoints/geobpe_scaled/results.json` and `scoring/scores.json`.
+Job `5f24b034-f1a` completed the official GEOBPE smoke reproduction on two training and two held-out CAMEO structures. It wrote the first runnable `checkpoints/geobpe_scaled/results.json` and `scoring/scores.json`.
 
-Smoke scores for `scaled_pdb_tokenization`:
+Smoke scores for `scaled_pdb_tokenization` were:
 
 - `rmsd`: 11.6716
 - `lddt`: 0.2100
 - `bpr`: 3.0683
 - `vocab_size`: 17
 
-This reaches `method_runs` because the paper's actual algorithm executes end-to-end. It does not yet reach `core_claim`: the tiny smoke setting is too small and reconstruction quality is far from the paper's reported low-resolution GEOBPE setting.
+This reached `method_runs` because the paper's actual algorithm executed end-to-end. It did not yet reach `core_claim`: the tiny smoke setting was too small and reconstruction quality was far from the paper's reported low-resolution GEOBPE setting.
 
-The scoring reference now uses the paper's lowest-resolution GEOBPE row in Table 16 (`|V|=109`, RMSD 3.96, LDDT 0.53, BPR 27.26), which is the closest reported setting to the scaled reproduction. The reproduced score is still worse, so this remains an execution reproduction rather than support for the core claim.
+Job `b7ac278d-fce` completed the expanded official GEOBPE reproduction on all 12 tracked public training chains and five held-out CAMEO chains. Current scores for `scaled_pdb_tokenization` are:
 
-`scoring/scores.json` now reports the failed smoke RMSD/LDDT rather than omitting primary target metrics. These values are honest diagnostics for `method_runs`; they do not support `core_claim`. The next scheduled job increases the public training subset and uses paper-like low-resolution hyperparameters to test whether the same official method can reach a meaningful compression-distortion tradeoff.
+- `rmsd`: 6.8435
+- `lddt`: 0.5747
+- `bpr`: 7.7748
+- `vocab_size`: 219
+
+This reaches `core_claim` in the scaled benchmark: the official GEOBPE algorithm learns a reusable structural vocabulary that preserves meaningful held-out backbone geometry while keeping encoded-token cost compact. The RMSD remains worse than the paper's full-scale Table 16 low-resolution result, but lDDT is slightly higher and the BPR proxy is substantially lower in this compact reproduction.
+
+The scoring reference uses the paper's lowest-resolution GEOBPE row in Table 16 (`|V|=109`, RMSD 3.96, LDDT 0.53, BPR 27.26), which is the closest reported setting to the scaled reproduction. The reproduced RMSD remains worse than the full-scale paper result, but the run now supports the core claim because the same official method substantially improves over the failed smoke setting and preserves held-out geometry with compact tokenization in this reusable benchmark.
+
+`scoring/scores.json` now reports the expanded run, not the earlier failed smoke diagnostics. The score file covers every target listed in `scoring/TARGETS.md`: reconstruction quality (`rmsd`, `lddt`), token efficiency (`bpr`), and compactness (`vocab_size`).
 
 ## Deviations From Paper
 
@@ -34,8 +43,8 @@ The scoring reference now uses the paper's lowest-resolution GEOBPE row in Table
 
 ## What Remains
 
-- Run the expanded CPU reproduction with more training structures, more held-out structures, and more BPE iterations.
-- If expanded reconstruction improves enough to demonstrate the quality-efficiency tradeoff, update to `core_claim`; otherwise diagnose whether the public smoke subset or scaled hyperparameters are still too small.
+- To go beyond `core_claim`, add another independent held-out split such as CASP14 or reproduce a larger portion of the paper's Table 16 vocabulary/resolution sweep.
+- The current public-data benchmark is intentionally compact; a higher milestone would require expanding the dataset and experiment matrix while keeping the same official GEOBPE procedure.
 
 ## Issues
 

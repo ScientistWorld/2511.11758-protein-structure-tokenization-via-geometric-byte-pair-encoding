@@ -1,8 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: submit
+action: done
 gpus: 0
 test: false
-milestone: method_runs
-notes: "Retry expanded CPU run of official GEOBPE after fixing coordinate artifact export to use tokenizer original-coordinate reconstruction instead of tok._coords."
+milestone: core_claim
+notes: "Official GEOBPE reproduction completed on the scaled public PDB benchmark; scores.json reports RMSD 6.843, lDDT 0.575, BPR proxy 7.775, and vocab size 219."

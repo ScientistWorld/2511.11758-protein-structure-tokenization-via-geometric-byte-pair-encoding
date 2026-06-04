@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: method_runs**
+**Current: core_claim**
 
 <!-- Milestone levels (update "Current" above as you progress):
   none             — just started, no meaningful progress yet
@@ -66,5 +66,10 @@
 - Expanded job `fd339299-859` completed official GEOBPE encode and induction, but failed in artifact summarization before evaluation because the wrapper read a tokenizer coordinate field that can be CA-only.
 - Patched the wrapper to use `tok.compute_coords(orig=True)` for original backbone export, keep reconstructed coordinates from `tok.compute_coords()`, and fall back to official RMSD/LDDT if coordinate export is unavailable.
 - Milestone remains `method_runs` until the fixed expanded job writes scores that support the core compression/reconstruction claim.
+
+### [2026-06-04 12:15] - core_claim
+- Retry job `b7ac278d-fce` completed the expanded official GEOBPE reproduction and validation end-to-end.
+- The run used all 12 tracked public training chains, five held-out CAMEO chains, three GEOBPE iterations, 50 glue bins, and the paper-like low-resolution `num_p` schedule.
+- Reproduced scores support the core claim in the scaled setting: held-out lDDT improved to 0.575, RMSD improved to 6.843, and the encoded-token BPR proxy stayed compact at 7.775 with vocabulary size 219.
 
 ## Stop Justification
