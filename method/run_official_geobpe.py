@@ -59,6 +59,16 @@ def load_pickle(path: Path) -> Any:
         return pickle.load(handle)
 
 
+def backbone_coords(coords: Any) -> np.ndarray | None:
+    """Normalize N/CA/C backbone coordinates to (residue, atom, xyz)."""
+    arr = np.asarray(coords, dtype=float)
+    if arr.ndim == 3 and arr.shape[1:] == (3, 3):
+        return arr
+    if arr.ndim == 2 and arr.shape[1] == 3 and arr.shape[0] % 3 == 0:
+        return arr.reshape(-1, 3, 3)
+    return None
+
+
 def latest_iter_checkpoint(output_dir: Path) -> Path:
     candidates = sorted(output_dir.glob("bpe_iter=*.pkl"))
     if not candidates:
@@ -75,19 +85,29 @@ def summarize_induction(induce_dir: Path, bpe_path: Path, output_path: Path) -> 
         rmsd_values = list(stats["rmsd"])
         lddt_values = list(stats["lddt"])
         length_values = list(stats["L"])
-        original_coords = np.asarray(tok._coords, dtype=float).reshape(-1, 3, 3)
-        reconstructed_coords = np.asarray(tok.compute_coords(), dtype=float).reshape(-1, 3, 3)
-        rows.append(
-            {
-                "name": Path(tok.fname).stem,
-                "residues": int(tok.n),
-                "tokens": int(length_values[-1]),
-                "rmsd": float(rmsd_values[-1]),
-                "lddt": float(lddt_values[-1]),
-                "original_coords": original_coords.tolist(),
-                "reconstructed_coords": reconstructed_coords.tolist(),
-            }
-        )
+        row: dict[str, Any] = {
+            "name": Path(tok.fname).stem,
+            "residues": int(tok.n),
+            "tokens": int(length_values[-1]),
+            "rmsd": float(rmsd_values[-1]),
+            "lddt": float(lddt_values[-1]),
+        }
+        try:
+            original_coords = backbone_coords(tok.compute_coords(orig=True))
+            reconstructed_coords = backbone_coords(tok.compute_coords())
+        except Exception as exc:
+            print(f"Skipping coordinate export for {tok.fname}: {exc}", flush=True)
+        else:
+            if original_coords is not None and reconstructed_coords is not None:
+                n_residues = min(len(original_coords), len(reconstructed_coords), int(tok.n))
+                row["original_coords"] = original_coords[:n_residues].tolist()
+                row["reconstructed_coords"] = reconstructed_coords[:n_residues].tolist()
+            else:
+                print(
+                    f"Skipping coordinate export for {tok.fname}: unexpected coordinate shape",
+                    flush=True,
+                )
+        rows.append(row)
     if not rows:
         raise RuntimeError(f"No induced structure pickles found in {induce_dir}")
     artifact = {
@@ -140,6 +160,7 @@ def main() -> None:
     env.setdefault("MKL_NUM_THREADS", "1")
     env.setdefault("GEOBPE_DATASET_WORKERS", "1")
     env["SLURM_CPUS_PER_TASK"] = "1"
+    env["PYTHONWARNINGS"] = "ignore::FutureWarning"
 
     encode_cmd = [
         sys.executable,

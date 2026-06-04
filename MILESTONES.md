@@ -62,4 +62,9 @@
 - Confirmed `eval/` is separated from `method/`, scoring targets match `reference.json` and `scores.json`, and the Table 16 low-resolution reference values are correctly recorded.
 - Fixed stale briefing text and updated new method artifacts to include original/reconstructed coordinates so evaluation can compute RMSD/lDDT directly when the next job runs.
 
+### [2026-06-04 12:09] - method_runs
+- Expanded job `fd339299-859` completed official GEOBPE encode and induction, but failed in artifact summarization before evaluation because the wrapper read a tokenizer coordinate field that can be CA-only.
+- Patched the wrapper to use `tok.compute_coords(orig=True)` for original backbone export, keep reconstructed coordinates from `tok.compute_coords()`, and fall back to official RMSD/LDDT if coordinate export is unavailable.
+- Milestone remains `method_runs` until the fixed expanded job writes scores that support the core compression/reconstruction claim.
+
 ## Stop Justification

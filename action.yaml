@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: method_runs
-notes: "After audit, submit expanded CPU run of official GEOBPE on all tracked train chains and five CAMEO chains using paper-like low-resolution bins/num_p; new artifacts include coordinates for independent RMSD/LDDT evaluation."
+notes: "Retry expanded CPU run of official GEOBPE after fixing coordinate artifact export to use tokenizer original-coordinate reconstruction instead of tok._coords."
