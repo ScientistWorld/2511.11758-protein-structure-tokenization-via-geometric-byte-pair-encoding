@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-cd /home/user
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 ARTIFACT="${1:-checkpoints/geobpe_scaled_multisplit/results.json}"
 

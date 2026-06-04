@@ -15,7 +15,7 @@
 
 set -euo pipefail
 
-cd /home/user
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 TRAIN_LIMIT="${TRAIN_LIMIT:-12}"
 TEST_SPLIT="${TEST_SPLIT:-cameo}"

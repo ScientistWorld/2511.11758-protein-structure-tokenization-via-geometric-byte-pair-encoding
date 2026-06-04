@@ -17,7 +17,7 @@
 
 set -euo pipefail
 
-cd /home/user
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 mkdir -p data/downloads/rcsb_pdb data/pdb_smoke/train data/pdb_smoke/validation data/pdb_smoke/cameo data/pdb_smoke/casp14
 

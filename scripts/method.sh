@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-cd /home/user
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 python method/run_official_geobpe.py \
   --data-root data/pdb_smoke \

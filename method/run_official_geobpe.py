@@ -13,7 +13,7 @@ from typing import Any
 import numpy as np
 
 
-WORKSPACE = Path("/home/user")
+WORKSPACE = Path(__file__).resolve().parents[1]
 UPSTREAM = WORKSPACE / "method" / "PT-BPE"
 UPSTREAM_DATA = UPSTREAM / "data" / "vqvae_pretrain"
 

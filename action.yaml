@@ -2,4 +2,4 @@ action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Fixed held-out structure split; scored 8 train metrics and 8 test metrics for geobpe_scaled. Geometry differs by slice (CAMEO RMSD +1.68 test gap, CASP14 RMSD -0.52); bpr/vocab constraints are identical because this artifact emits one token per residue with a fixed vocabulary."
+notes: "Made download and run scripts resolve the repository root from their own locations; verified RCSB URLs and validation pass."
