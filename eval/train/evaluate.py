@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -10,7 +9,10 @@ from eval.metrics import summarize_methods
 
 
 SLICE = "train"
-SPLIT_SEED = "2511.11758-geobpe-eval-split-v1"
+REQUIRED_STRUCTURES = {
+    "scaled_pdb_tokenization_cameo": {"7egt_B", "7dri_A"},
+    "scaled_pdb_tokenization_casp14": {"6px4_T", "6px4_R", "6poo_A"},
+}
 
 
 def _load_experiment_methods(path: str | Path) -> dict[str, dict[str, Any]]:
@@ -23,62 +25,34 @@ def _load_experiment_methods(path: str | Path) -> dict[str, dict[str, Any]]:
     return {"scaled_pdb_tokenization_cameo": data["methods"]}
 
 
-def _row_key(experiment: str, row: dict[str, Any]) -> str:
-    name = str(row.get("name", ""))
-    residues = str(row.get("residues", ""))
-    return f"{SPLIT_SEED}:{experiment}:{name}:{residues}"
-
-
-def _train_count(experiment: str, row_count: int) -> int:
-    if row_count <= 1:
-        return row_count
-    tie_breaker = int(
-        hashlib.sha256(f"{SPLIT_SEED}:count:{experiment}".encode("utf-8")).hexdigest(),
-        16,
-    ) % 2
-    return max(1, min(row_count - 1, row_count // 2 + tie_breaker))
-
-
-def _select_structure_names(
-    experiment: str,
-    rows: list[dict[str, Any]],
-    slice_name: str,
-) -> set[str]:
-    keyed = sorted(
-        (
-            hashlib.sha256(_row_key(experiment, row).encode("utf-8")).hexdigest(),
-            str(row.get("name", index)),
-        )
-        for index, row in enumerate(rows)
-    )
-    if not keyed:
-        return set()
-    if len(keyed) == 1:
-        return {keyed[0][1]}
-
-    midpoint = _train_count(experiment, len(keyed))
-    selected = keyed[:midpoint] if slice_name == "train" else keyed[midpoint:]
-    return {name for _, name in selected}
-
-
 def _filter_methods_for_slice(
     experiment: str,
     methods: dict[str, Any],
-    slice_name: str,
 ) -> dict[str, Any]:
+    required_names = REQUIRED_STRUCTURES.get(experiment)
+    if required_names is None:
+        raise ValueError(f"No {SLICE} split definition for experiment: {experiment}")
+
     filtered: dict[str, Any] = {}
     for method_name, payload in methods.items():
         rows = list(payload.get("structures", []))
-        selected_names = _select_structure_names(experiment, rows, slice_name)
-        selected_rows = [
-            row
-            for row in rows
-            if str(row.get("name", "")) in selected_names
-        ]
-        if rows and not selected_rows:
+        row_names = [str(row.get("name", "")) for row in rows]
+        duplicate_names = sorted(
+            {name for name in row_names if row_names.count(name) > 1}
+        )
+        if duplicate_names:
             raise ValueError(
-                f"{experiment}.{method_name} has no rows selected for {slice_name}"
+                f"{experiment}.{method_name} has duplicate structure rows: "
+                + ", ".join(duplicate_names)
             )
+        rows_by_name = {str(row.get("name", "")): row for row in rows}
+        missing = sorted(required_names - set(rows_by_name))
+        if missing:
+            raise ValueError(
+                f"{experiment}.{method_name} is missing required {SLICE} "
+                "structures: " + ", ".join(missing)
+            )
+        selected_rows = [rows_by_name[name] for name in sorted(required_names)]
         filtered_payload = dict(payload)
         filtered_payload["structures"] = selected_rows
         filtered[method_name] = filtered_payload
@@ -89,7 +63,7 @@ def summarize_artifact_slice(path: str | Path, slice_name: str) -> dict[str, dic
     experiments = _load_experiment_methods(path)
     return {
         experiment: summarize_methods(
-            _filter_methods_for_slice(experiment, methods, slice_name)
+            _filter_methods_for_slice(experiment, methods)
         )
         for experiment, methods in experiments.items()
     }
@@ -106,7 +80,10 @@ def main() -> None:
         "_metadata": {
             "slice": SLICE,
             "artifact": str(args.artifact),
-            "split_seed": SPLIT_SEED,
+            "required_structures": {
+                experiment: sorted(names)
+                for experiment, names in REQUIRED_STRUCTURES.items()
+            },
         },
         "experiments": {
             experiment: {"results": method_results}
