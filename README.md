@@ -39,7 +39,7 @@ The main deviations are scale-related: the workspace uses a small public PDB sub
 
 Evaluation reads a method artifact, not method code. `scripts/evaluate.sh` calls only `eval/` and writes `scoring/scores.json`. If an artifact contains `original_coords` and `reconstructed_coords`, the evaluator computes reconstruction metrics itself. Older smoke artifacts with only per-structure `rmsd` and `lddt` remain readable as diagnostics.
 
-The main experiment is `scaled_pdb_tokenization`. Metrics are:
+The main experiments are `scaled_pdb_tokenization_cameo` and `scaled_pdb_tokenization_casp14`. Metrics are:
 
 - `rmsd`: lower is better; backbone reconstruction RMSD after Kabsch alignment.
 - `lddt`: higher is better; a dependency-free CA lDDT approximation.
@@ -205,12 +205,34 @@ The reference values in `scoring/reference.json` are the paper's low-resolution 
 
 </details>
 
+### Iteration 2: gpt-5.5
+- **Milestone**: `core_claim_plus` | **Status**: done
+- **Working time**: 9m | **GPU**: 0.0h
+- **Jobs**: 11 total (3 completed, 7 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-06-04 12:18] - core_claim
+- Official PT-BPE GEOBPE code ran end-to-end on the tracked public PDB subset.
+- The expanded CAMEO held-out run produced `scoring/scores.json` with reconstruction quality (`rmsd`, `lddt`) and compactness/efficiency metrics (`bpr`, `vocab_size`), supporting the scaled core tokenization claim.
+- Prepared a second held-out CASP14 run to test whether the scaled result extends beyond the first held-out split.
+
+### [2026-06-04 12:18] - core_claim
+- Continuation audit confirmed the runnable method uses the official GEOBPE implementation rather than a surrogate and that `eval/` reads artifacts independently from `method/`.
+- Fixed the planned extension so CAMEO and CASP14 are scored as distinct experiments instead of overwriting one generic score key.
+- Submitted a multisplit CPU job to pursue `core_claim_plus`; do not claim it until that job completes successfully.
+
+### [2026-06-04 12:42] - core_claim_plus
+- Job `0df68540-c81` completed the official GEOBPE multisplit reproduction on the tracked public PDB subset.
+- The same learned structural vocabulary was induced and evaluated on both CAMEO and CASP14 held-out chains.
+- `python validate.py --compare` passed with separate score entries for both held-out splits.
+
+</details>
+
 
 ---
 
 # Reproduction Milestones
 
-**Current: method_runs**
-
-## Stop Justification
-- Completed at milestone `method_runs`.
+**Current: core_claim_plus**
