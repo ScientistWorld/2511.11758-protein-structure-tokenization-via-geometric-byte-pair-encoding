@@ -1,27 +1,12 @@
 # Evaluation
 
-How success is measured. Describe only the metrics, targets, and evaluation procedure — do NOT describe the paper's method or how they achieved these results. Think of this as a general evaluation protocal for other scientists trying to solve the same problem, where they should not see this paper's solution.
-
-## Metrics
-
-<!-- What metrics are used? How are they computed? What does higher/lower mean? -->
-
-## Baselines and Targets
-
-<!-- What performance levels exist as reference points? Include the paper's reported numbers as targets, and any standard baselines. A scientist agent should know what "good" looks like. -->
-
-## Evaluation Protocol
-
-<!-- How should evaluation be run? What data split, what conditions? Any important details about how to compare fairly (e.g., fixed seeds, specific test sets, averaging over runs). -->
-# Evaluation
-
-Evaluation reads a method artifact, not method code. `scripts/evaluate.sh` calls only `eval/` and writes `scoring/scores.json`.
+Evaluation reads a method artifact, not method code. `scripts/evaluate.sh` calls only `eval/` and writes `scoring/scores.json`. If an artifact contains `original_coords` and `reconstructed_coords`, the evaluator computes reconstruction metrics itself. Older smoke artifacts with only per-structure `rmsd` and `lddt` remain readable as diagnostics.
 
 The main experiment is `scaled_pdb_tokenization`. Metrics are:
 
 - `rmsd`: lower is better; backbone reconstruction RMSD after Kabsch alignment.
 - `lddt`: higher is better; a dependency-free CA lDDT approximation.
-- `bpr`: lower is better; bits per residue computed as token count times `log2(vocab_size)` divided by residue count.
+- `bpr`: lower is better; in this scaled gym, an encoded-token BPR proxy computed as token count times `log2(vocab_size)` divided by residue count.
 - `vocab_size`: lower is better as a compactness constraint.
 
-The reference values in `scoring/reference.json` are the paper's low-resolution GEOBPE values from Table 16. The reproduction uses a much smaller public PDB subset, so exact numerical agreement is not expected; the important signal is whether learned geometric merges improve compression while maintaining reconstruction quality.
+The reference values in `scoring/reference.json` are the paper's low-resolution GEOBPE values from Table 16. The paper's full BPR includes tokenizer description length, while this compact benchmark uses the encoded-token term as a reproducible proxy and separately reports `vocab_size` as a compactness constraint. The reproduction uses a much smaller public PDB subset, so exact numerical agreement is not expected; the important signal is whether learned structural tokenization improves compression while maintaining reconstruction quality.

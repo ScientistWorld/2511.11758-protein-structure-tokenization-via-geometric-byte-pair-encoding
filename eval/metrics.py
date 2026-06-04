@@ -22,6 +22,8 @@ def kabsch_align(p: Any, q: Any) -> Any:
 def rmsd(p: Any, q: Any) -> float:
     import numpy as np
 
+    p = np.asarray(p, dtype=float)
+    q = np.asarray(q, dtype=float)
     n = min(len(p), len(q))
     pa = p[:n].reshape(-1, 3)
     qa = q[:n].reshape(-1, 3)
@@ -33,7 +35,13 @@ def ca_lddt(p: Any, q: Any, cutoff: float = 15.0) -> float:
     """Small dependency-free CA lDDT approximation."""
     import numpy as np
 
+    p = np.asarray(p, dtype=float)
+    q = np.asarray(q, dtype=float)
     n = min(len(p), len(q))
+    if p.ndim == 2:
+        p = p.reshape(-1, 3, 3)
+    if q.ndim == 2:
+        q = q.reshape(-1, 3, 3)
     pc = p[:n, 1, :]
     qc = q[:n, 1, :]
     if n < 2:
@@ -68,7 +76,17 @@ def summarize_artifact(path: str | Path) -> dict:
         has_quality = payload.get("include_quality_metrics", False) or all(
             "rmsd" in row and "lddt" in row for row in rows
         )
-        if has_quality:
+        has_coords = all(
+            "original_coords" in row and "reconstructed_coords" in row for row in rows
+        )
+        if has_coords:
+            results[method]["rmsd"] = sum(
+                rmsd(row["original_coords"], row["reconstructed_coords"]) for row in rows
+            ) / max(len(rows), 1)
+            results[method]["lddt"] = sum(
+                ca_lddt(row["original_coords"], row["reconstructed_coords"]) for row in rows
+            ) / max(len(rows), 1)
+        elif has_quality:
             results[method]["rmsd"] = sum(float(row["rmsd"]) for row in rows) / max(len(rows), 1)
             results[method]["lddt"] = sum(float(row["lddt"]) for row in rows) / max(len(rows), 1)
     return results

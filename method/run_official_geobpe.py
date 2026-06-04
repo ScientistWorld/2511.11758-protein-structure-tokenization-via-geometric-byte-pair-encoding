@@ -10,6 +10,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 
 WORKSPACE = Path("/home/user")
 UPSTREAM = WORKSPACE / "method" / "PT-BPE"
@@ -73,6 +75,8 @@ def summarize_induction(induce_dir: Path, bpe_path: Path, output_path: Path) -> 
         rmsd_values = list(stats["rmsd"])
         lddt_values = list(stats["lddt"])
         length_values = list(stats["L"])
+        original_coords = np.asarray(tok._coords, dtype=float).reshape(-1, 3, 3)
+        reconstructed_coords = np.asarray(tok.compute_coords(), dtype=float).reshape(-1, 3, 3)
         rows.append(
             {
                 "name": Path(tok.fname).stem,
@@ -80,6 +84,8 @@ def summarize_induction(induce_dir: Path, bpe_path: Path, output_path: Path) -> 
                 "tokens": int(length_values[-1]),
                 "rmsd": float(rmsd_values[-1]),
                 "lddt": float(lddt_values[-1]),
+                "original_coords": original_coords.tolist(),
+                "reconstructed_coords": reconstructed_coords.tolist(),
             }
         )
     if not rows:

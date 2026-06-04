@@ -57,4 +57,9 @@
 - The run executed residue initialization, geometric pair BPE merging, medoid quantization, glue optimization, induction on held-out PDB chains, and separated evaluation.
 - Current smoke quality is not sufficient for `core_claim`, so the next job scales the same official method to all tracked training chains with paper-like low-resolution hyperparameters.
 
+### [2026-06-04 12:05] - method_runs
+- Audited the reset workspace and restored `method_runs`: the runnable path calls the official PT-BPE GEOBPE implementation, not the older scratch surrogate.
+- Confirmed `eval/` is separated from `method/`, scoring targets match `reference.json` and `scores.json`, and the Table 16 low-resolution reference values are correctly recorded.
+- Fixed stale briefing text and updated new method artifacts to include original/reconstructed coordinates so evaluation can compute RMSD/lDDT directly when the next job runs.
+
 ## Stop Justification

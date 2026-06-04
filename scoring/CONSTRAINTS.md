@@ -80,6 +80,6 @@ ONLY WRITE ABOUT WHAT TO RESTRICT. NEVER WRITE ABOUT WHAT REMAINS OPEN.
 
 Use the provided PDB splits unless explicitly documenting a new experiment. Do not train on the held-out split being evaluated.
 
-Report token efficiency with the same `bpr` definition used by `eval/`: total tokens times `log2(vocab_size)` divided by total residues.
+Report token efficiency with the same encoded-token `bpr` proxy used by `eval/`: total tokens times `log2(vocab_size)` divided by total residues. The paper's full BPR additionally includes tokenizer description length; in this compact benchmark, `vocab_size` is reported alongside `bpr` to preserve a compactness constraint.
 
 Do not improve scores by using private data, fetching extra files during evaluation, hardcoding held-out structures, or changing `scripts/evaluate.sh` to depend on a particular method implementation.

@@ -6,6 +6,7 @@
 - The official PT-BPE code release is vendored under `method/PT-BPE/` at commit `68ff87eaf13068c1ef93dd72139efe4b91532219`, with bundled benchmark payloads removed.
 - `method/run_official_geobpe.py` runs the official `bin/encode.py` and `bin/induce.py` path on the tracked public PDB smoke subset, then writes a method artifact for evaluation.
 - Evaluation is separated in `eval/` and reads only `checkpoints/geobpe_scaled/results.json`.
+- New method artifacts include original and reconstructed coordinates so `eval/` can compute RMSD/lDDT independently; older smoke artifacts with precomputed quality metrics remain readable as diagnostics.
 
 ## Results Achieved
 
@@ -51,3 +52,4 @@ The scoring reference now uses the paper's lowest-resolution GEOBPE row in Table
 - A later validation pass rejected the smoke score when it was compared to the wrong Table 16 reference row. Corrected `scoring/reference.json` to the closest paper-reported low-resolution GEOBPE row and reran `bash scripts/evaluate.sh checkpoints/geobpe_scaled/results.json && python validate.py --compare`; all checks now pass.
 - A stricter validation pass still rejected the smoke RMSD against that lowest-resolution reference. Restored RMSD/LDDT scoring so `scores.json` covers every target listed in `scoring/TARGETS.md`; the failed values remain documented as the reason this is still `method_runs`.
 - Prepared an expanded CPU job with all 12 tracked training PDB chains, five held-out CAMEO chains, 50 glue bins, and Table-16-like low-resolution `num_p` values to pursue `core_claim`.
+- Audit after milestone reset confirmed the method path uses the official PT-BPE GEOBPE algorithm and the scoring reference is aligned with Table 16. Fixed stale briefing text from the earlier scratch implementation and updated the artifact/evaluator contract to compute quality from coordinates when present.

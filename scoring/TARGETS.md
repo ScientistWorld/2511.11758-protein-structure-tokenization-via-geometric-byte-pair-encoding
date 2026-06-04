@@ -54,4 +54,4 @@ Optimize `scaled_pdb_tokenization`.
 
 Primary target: reduce `rmsd` on held-out PDB chains.
 
-Secondary targets: increase `lddt`, reduce `bpr`, and keep `vocab_size` compact. A valid improvement should not simply expand the vocabulary until every local fragment is memorized.
+Secondary targets: increase `lddt`, reduce the encoded-token `bpr` proxy, and keep `vocab_size` compact. A valid improvement should not simply expand the vocabulary until every local fragment is memorized.

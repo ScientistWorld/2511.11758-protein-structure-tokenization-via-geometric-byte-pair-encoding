@@ -61,6 +61,6 @@ Delete this comment block and fill in your actual experiments below.
 
 ## scaled_pdb_tokenization
 
-This experiment tests whether a learned structural vocabulary can encode held-out protein backbones compactly while preserving geometric reconstruction quality. The evaluator compares reconstructed coordinates with the original backbone and reports RMSD, lDDT, bits per residue, and vocabulary size.
+This experiment tests whether a learned structural vocabulary can encode held-out protein backbones compactly while preserving geometric reconstruction quality. The evaluator compares reconstructed coordinates with the original backbone when available and reports RMSD, lDDT, an encoded-token bits-per-residue proxy, and vocabulary size.
 
 The experiment is intentionally small so future agents can iterate quickly. It should still preserve the central tradeoff: better tokenizers must improve reconstruction or token efficiency without using an unbounded vocabulary.
