@@ -37,16 +37,16 @@ The main deviations are scale-related: the workspace uses a small public PDB sub
 
 # Evaluation
 
-Evaluation reads a method artifact, not method code. `scripts/evaluate.sh` calls only `eval/` and writes `scoring/scores.json`. If an artifact contains `original_coords` and `reconstructed_coords`, the evaluator computes reconstruction metrics itself. Older smoke artifacts with only per-structure `rmsd` and `lddt` remain readable as diagnostics.
+Evaluation reads a method artifact, not method code. `scripts/evaluate.sh` calls only `eval/` and writes `scoring/scores.json`. Artifacts that report reconstruction quality must include `original_coords` and `reconstructed_coords`; the evaluator recomputes RMSD and lDDT from those coordinates instead of trusting precomputed metric fields.
 
 The main experiments are `scaled_pdb_tokenization_cameo` and `scaled_pdb_tokenization_casp14`. Metrics are:
 
-- `rmsd`: lower is better; backbone reconstruction RMSD after Kabsch alignment.
-- `lddt`: higher is better; a dependency-free CA lDDT approximation.
+- `lddt`: higher is better; the primary reconstruction-quality metric, computed as a dependency-free CA lDDT approximation.
+- `rmsd`: lower is better; a secondary global backbone reconstruction metric after Kabsch alignment.
 - `bpr`: lower is better; in this scaled gym, an encoded-token BPR proxy computed as token count times `log2(vocab_size)` divided by residue count.
 - `vocab_size`: lower is better as a compactness constraint.
 
-The reference values in `scoring/reference.json` are the paper's lowest-resolution reported values from Table 16 for the proposed structural tokenizer. The paper's full BPR includes tokenizer description length, while this compact benchmark uses the encoded-token term as a reproducible proxy and separately reports `vocab_size` as a compactness constraint. The reproduction uses a much smaller public PDB subset, so exact numerical agreement is not expected; the important signal is whether structural tokenization improves compression while maintaining reconstruction quality.
+The reference values in `scoring/reference.json` are paper-reported structural-tokenizer results for two vocabulary-size regimes. The paper's full BPR includes tokenizer description length, while this compact benchmark uses the encoded-token term as a reproducible proxy and separately reports `vocab_size` as a compactness constraint. The reproduction uses a much smaller public PDB subset, so exact numerical agreement is not expected; the important signal is whether structural tokenization improves compression while maintaining reconstruction quality across operating points.
 
 ---
 
@@ -405,6 +405,44 @@ The reference values in `scoring/reference.json` are the paper's lowest-resoluti
 ### [2026-06-04 13:13] - core_claim
 - Final verification confirmed the workspace remains at `core_claim`.
 - Removed an unrun ablation from the scoring contract so the documented targets match completed scores.
+
+</details>
+
+### Iteration 9: gpt-5.5 (verifier)
+- **Milestone**: `core_claim` | **Status**: done
+- **Working time**: 13m | **GPU**: 0.0h
+- **Jobs**: 12 total (4 completed, 7 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-06-03 02:18] - method_runs
+- Ran the official PT-BPE GEOBPE encode/induce path end-to-end on the tracked public PDB smoke subset.
+- Confirmed the paper's actual algorithm executes: residue initialization, Geo-Pair merging, RMSD medoid partitioning, quantization, and glue optimization.
+
+### [2026-06-04 08:10] - core_claim
+- Expanded the scaled benchmark to all 12 tracked training chains and five held-out CAMEO chains.
+- Official GEOBPE produced compact tokenization with meaningful held-out reconstruction quality, supporting the paper's core compression-distortion claim at small public-data scale.
+
+### [2026-06-04 08:36] - core_claim
+- Reused the learned GEOBPE vocabulary on both CAMEO and CASP14 held-out splits.
+- `scoring/scores.json` now covers reconstruction quality (`rmsd`, `lddt`) and compactness constraints (`bpr`, `vocab_size`) for both experiments.
+- `python validate.py --compare` passes.
+
+### [2026-06-04 12:48] - core_claim
+- Continuation audit confirmed the runnable path uses the official PT-BPE GEOBPE algorithm rather than a surrogate.
+- Fixed standalone evaluator packaging by defaulting `scripts/evaluate.sh` to the multisplit artifact and adding a dependency-free metric fallback when NumPy is unavailable.
+- Added the missing `scoring/CONSTRAINTS.md` compliance checklist.
+- Did not restore `core_claim_plus`: the multisplit run strengthens the core claim, but the current benchmark does not yet include a broader Table 16 sweep, baseline comparison, downstream transfer result, or glue ablation.
+
+### [2026-06-04 13:13] - core_claim
+- Final verification confirmed the workspace remains at `core_claim`.
+- Removed an unrun ablation from the scoring contract so the documented targets match completed scores.
+
+### [2026-06-04 13:25] - core_claim
+- Prepared a two-setting Table 16 sweep without claiming the next milestone before the new run completes.
+- Renamed the completed multisplit artifact in scoring as `geobpe_table16_high` and added the pending `geobpe_table16_low` reference target.
+- Tightened evaluator integrity so reconstruction quality metrics require emitted coordinate arrays.
 
 </details>
 

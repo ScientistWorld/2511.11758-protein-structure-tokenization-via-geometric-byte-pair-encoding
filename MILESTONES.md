@@ -37,4 +37,4 @@
 - Re-ran `python validate.py` and `python validate.py --compare`; both pass.
 
 ## Stop Justification
-- Final verification completed at `core_claim`. The workspace is ready as a compact gym; the lower-capacity sweep remains prepared but unclaimed until a future job completes it.
+- Completed at milestone `core_claim`.
