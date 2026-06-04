@@ -2,26 +2,29 @@
 
 ## Initial Assessment
 
-The workspace started at `core_claim`. That milestone is justified: the runnable artifact in `checkpoints/geobpe_scaled_multisplit/results.json` comes from the official PT-BPE GEOBPE implementation path, and the evaluator scores held-out CAMEO and CASP14 splits on reconstruction quality plus compactness constraints.
+The workspace started at `core_claim`. That milestone remains justified: the submitted method path uses the official PT-BPE implementation, produces held-out CAMEO and CASP14 artifacts, and the evaluator scores reconstruction quality plus compactness from method outputs without importing from `method/`.
 
 ## Issues Found
 
-- Critical: an unrun glue-optimization ablation had been added to the scoring contract and target docs, but no corresponding results existed in `scoring/scores.json`. A future scientist would have seen a phantom target that the gym could not score.
-- Minor: several scoring guidance files still contained large template comment blocks, and `briefing/evaluation.md` named the paper method in a method-agnostic context.
-- Minor: `scripts/reproduce.sh` still defaulted to an older smoke-scale artifact path rather than the multisplit artifact used for the current core-claim scores.
+- Minor: method-agnostic documentation leaked solution-specific vocabulary in `briefing/evaluation.md` and `scoring/TARGETS.md`.
+- Minor: `scripts/evaluate.sh`, `scripts/evaluate_train.sh`, `scripts/evaluate_test.sh`, and their Python entry points defaulted to the older unrenamed artifact instead of the current scored sweep artifact.
+- Minor: `method/run_official_geobpe.py` printed full coordinate artifacts to stdout, making job logs unnecessarily large.
+- Minor: `README.md` is mounted as `/dev/null` (`devtmpfs[/null]`) in this environment and cannot be replaced from the workspace. It remains an external system-state caveat; the gym documentation lives in `briefing/`, `scoring/`, `PROGRESS.md`, and `MILESTONES.md`.
 
 ## Fixes Applied
 
-- Removed the unrun ablation from `scoring/reference.json`, `scoring/TARGETS.md`, `scoring/EXPERIMENTS.md`, and `scoring/CONSTRAINTS.md`, and deleted the unused ablation runner/combiner files.
-- Cleaned method-agnostic documentation in `briefing/evaluation.md` and the scoring guidance files.
-- Updated `scripts/reproduce.sh` so its default end-to-end run targets the multisplit core-claim setting.
-- Verified all URLs in `scripts/download.sh` return HTTP 200, confirmed there are no committed `shared/` path references, reran `scripts/evaluate.sh`, `scripts/evaluate_train.sh`, `scripts/evaluate_test.sh`, and confirmed `python validate.py --compare` passes.
+- Rephrased method-agnostic docs to describe structural-tokenization operating points without naming internal method knobs.
+- Updated evaluator defaults to `checkpoints/geobpe_table16_sweep/results.json`, matching the current scored artifact format.
+- Added explicit notes in `scoring/reference.json` explaining that paper BPR values are full description-length BPR while the compact gym computes an encoded-token proxy.
+- Changed the method wrapper to print a compact artifact summary instead of full coordinate arrays.
+- Verified all `scripts/download.sh` RCSB URLs with `curl -I -L --max-time 15`; every URL returned HTTP 200.
+- Confirmed there are no `shared/` references in committed method/eval/baseline/script/data files and no `eval/` imports from `method/`.
 
 ## Final Judgment
 
-The workspace is ready to serve as a compact research gym. Improve-mode agents can work from the reproduced method artifact and code, while from-scratch agents can use the method-agnostic problem, data, and evaluation interface without importing from `method/`.
+The workspace is ready to serve as a compact research gym. Improve-mode agents can build on the official-method reproduction, while from-scratch agents can use the data and method-agnostic evaluation contract without depending on the paper implementation.
 
 - Milestone: core_claim
 - Ready for gym use: yes
 - Confidence: medium
-- Key limitation: compact public PDB subset only; broader table sweeps and ablations remain future work.
+- Key limitation: compact public PDB subset only; broader vocabulary sweeps and ablations remain future work.

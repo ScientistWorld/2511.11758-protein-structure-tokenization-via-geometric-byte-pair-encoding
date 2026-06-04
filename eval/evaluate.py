@@ -9,7 +9,7 @@ from eval.metrics import summarize_artifact
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--artifact", default="checkpoints/geobpe_scaled/results.json")
+    parser.add_argument("--artifact", default="checkpoints/geobpe_table16_sweep/results.json")
     parser.add_argument("--output", default="scoring/scores.json")
     args = parser.parse_args()
 

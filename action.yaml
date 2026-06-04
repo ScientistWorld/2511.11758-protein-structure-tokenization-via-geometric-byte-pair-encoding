@@ -1,5 +1,3 @@
-action: submit
-gpus: 0
-test: true
+action: done
 milestone: core_claim
-notes: "Run the lower-resolution Table 16 GEOBPE setting, merge it with the completed high-resolution artifact, and validate the two-setting sweep."
+notes: "Final verification passed: core-claim gym is usable, method-agnostic docs and evaluator defaults were cleaned, and validation passes."

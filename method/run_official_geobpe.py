@@ -147,7 +147,18 @@ def write_artifact(
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(artifact, indent=2) + "\n")
-    print(json.dumps(artifact, indent=2), flush=True)
+    summary = {
+        experiment: {
+            method: {
+                "structures": len(payload.get("structures", [])),
+                "vocab_size": payload.get("vocab_size"),
+            }
+            for method, payload in methods.items()
+        }
+        for experiment, methods in experiments.items()
+    }
+    print(f"Wrote method artifact to {output_path}", flush=True)
+    print(json.dumps({"experiments": summary}, indent=2), flush=True)
 
 
 def main() -> None:

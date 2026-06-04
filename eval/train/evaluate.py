@@ -71,7 +71,7 @@ def summarize_artifact_slice(path: str | Path, slice_name: str) -> dict[str, dic
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--artifact", default="checkpoints/geobpe_scaled_multisplit/results.json")
+    parser.add_argument("--artifact", default="checkpoints/geobpe_table16_sweep/results.json")
     parser.add_argument("--output", default="scoring/scores_train.json")
     args = parser.parse_args()
 

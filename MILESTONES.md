@@ -33,4 +33,4 @@
 - Tightened evaluator integrity so reconstruction quality metrics require emitted coordinate arrays.
 
 ## Stop Justification
-- Not stopped; the next submitted job adds the lower-resolution Table 16 setting.
+- Final verification completed at `core_claim`. The workspace is ready as a compact gym; the lower-capacity sweep remains prepared but unclaimed until a future job completes it.

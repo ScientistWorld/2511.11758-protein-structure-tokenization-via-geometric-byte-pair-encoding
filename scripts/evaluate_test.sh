@@ -10,6 +10,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 mkdir -p scoring
 
 python -m eval.test.evaluate \
-  --artifact "${1:-checkpoints/geobpe_scaled_multisplit/results.json}" \
+  --artifact "${1:-checkpoints/geobpe_table16_sweep/results.json}" \
   --train-scores scoring/scores_train.json \
   --output scoring/scores_test.json
