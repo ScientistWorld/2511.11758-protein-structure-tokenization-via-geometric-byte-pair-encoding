@@ -1,5 +1,5 @@
 # Direction
 
-Future work should stay in the paper's problem family: discrete tokenization of protein backbone geometry into reusable structural units.
+Develop reusable compact representations of three-dimensional protein backbone structure. Seek better generalization and fidelity at a lower complete description length, particularly when errors accumulate on longer chains. Alternative vocabulary construction, encoding strategies, and reconstruction improvements can use the finite decoder interface without changing the scientific measurements.
 
-Reasonable extensions include alternative structure-aware discretization schemes, improved compactness-quality tradeoffs, reconstruction refinements, additional public protein splits, and stronger baselines. Switching to a black-box coordinate regressor or autoencoder that does not expose a reusable discrete structural vocabulary is outside this benchmark's direction.
+Increasing uncharged side information, transmitting complete coordinates outside the rate limit, memorizing visible structures, or modifying the evaluation contract is outside this task. Improvements are judged against a fixed reproduced reference on paired unseen inputs; published paper numbers are historical context only.

@@ -784,7 +784,7 @@ class BPE():
             t, i1, length,
             R_occ=R_occ, t_occ=t_occ,
             init_glue=init_glue,
-            wR=1.0, wt=0.1, 
+            wR=1.0, wt=1.0, 
             lambda_prior=glue_opt_prior,
             bin_centers=bin_centers,
             bin_weights=bin_weights,
@@ -1176,17 +1176,10 @@ class BPE():
         left_edges = [start for start, _ in values]
         # Locate the interval whose left edge is ≤ v.
         ind = bisect.bisect_right(left_edges, v) - 1
-        if ind < 0:
-            raise ValueError(f"value {v} is below the first bin range")
-        # The candidate bin
-        start, end = values[ind]
-        # Special-case: final right edge belongs to the last bin
-        if ind == len(values) - 1 and v == end:
-            return ind
-        # Usual containment check
-        if start <= v < end:
-            return ind
-        raise ValueError(f"value {v} does not fall into any bin")
+        # Appendix K: unseen values outside the empirical range snap to an end bin.
+        if not np.isfinite(v):
+            raise ValueError("nonfinite geometry")
+        return max(0, min(ind, len(values)-1))
     
 
     def compute_geo_key(self, token_pair, tokenizer_or_index, ignore_left=False, ignore_right=False):
@@ -1741,7 +1734,7 @@ class BPE():
         super_res = self.rmsd_super_res if hasattr(self, "rmsd_super_res") else False
         key_dict = json.loads(k)
         length = Tokenizer.num_bonds(key_dict)
-        all_pos = list(self._geo_dict[k]) # for indexing        
+        all_pos = sorted(self._geo_dict[k]) # for indexing        
         N = len(all_pos)
         if N > self.max_num_strucs:
             active_inds = self.rng.choice(N, self.max_num_strucs, replace=False)
@@ -1826,7 +1819,7 @@ class BPE():
                 active_coords = [Tokenizer.key_coords(kk) for kk in self._sphere_dict[key]]
                 medoid_inds = list(range(len(active_coords)))
                 super_res = self.rmsd_super_res if hasattr(self, "rmsd_super_res") else False
-                all_pos = list(self._geo_dict[key])
+                all_pos = sorted(self._geo_dict[key])
                 N = len(all_pos)
                 assignments = [None for _ in range(N)]
                 with ProcessPoolExecutor(
@@ -1885,8 +1878,8 @@ class BPE():
         }        
         # we will running update token_pos
         start_time = time.perf_counter()
-        vals = list(self._geo_dict[key])
-        uniq_idxes = set((v[0] for v in vals))
+        vals = sorted(self._geo_dict[key])
+        uniq_idxes = sorted(set((v[0] for v in vals)))
         # if rmsd_key is not None and not self.rmsd_only and self.glue_opt and self.glue_opt_method == "all":
         #     for idx in uniq_idxes:
         #         t = self.tokenizers[idx]

@@ -1,8 +1,5 @@
-# Once you set action to 'submit' or 'done', STOP immediately.
-# Do NOT sleep, poll, or wait for jobs. The system reads this file
-# only after your turn ends.
 action: pending
 gpus: 0
 test: false
-milestone: core_claim
-notes: ""
+milestone: method_runs
+notes: "Final hardening patches ready; combined reference, variant, baseline and attack check pending."

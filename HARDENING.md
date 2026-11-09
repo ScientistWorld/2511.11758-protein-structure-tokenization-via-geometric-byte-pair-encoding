@@ -1,0 +1,48 @@
+# Hardening audit
+
+## Report and decisions
+
+The original REDTEAM report found a strong genuine improvement (`better_bins300`, audit/control ranks +0.693188/+0.629933) and a clearly worse low-capacity variant (−1.238218/−3.488790). The old reference's seed-to-seed rank range was 0.128686/0.359406, while the translation-weight change was below that range. Its three merge rounds did not affect held-out geometry: the no-merge alternative tied reconstruction and slightly improved the flawed rate proxy. This is an honest headroom problem, not an exploit to prohibit.
+
+The report also found that the test trusted supplied targets, sizes, and token/vocabulary counts, omitted boundary information and dictionary cost, accepted negative counts, truncated predictions to the smaller length, and took experiment selection from a mutable public score file. Five public test chains let a ten-entry dictionary memorize all answers. The supplied baseline transmitted exact native frames without charging them and dominated the reference.
+
+All fixes were decided together before a single combined compute job. Final-code reference, stronger and weaker variants, no-merge control, independent baseline, and former supplied baseline are rerun; evaluator-only attacks reuse the final reference raw outputs. No training is performed by the hidden test. The test does not defend against leftover processes or Python environment changes.
+
+## Changes
+
+The test owns targets, size, thresholds, reference measurements, representation decoder, and rank contract. It decodes raw symbols and recomputes every scientific quantity; method-written metrics, targets, sizes, and flags are never consumed. Complete-chain checks reject truncation, unknown fields and invalid symbols fail, and feasibility gates place every failed attempt below every successful one. All finite dictionary floats, lengths, boundary indices, and stream symbols are charged. The continuous-coordinate diagnostic pays 288 bits per residue before headers and fails the 96-BPR limit.
+
+The new data has 128 fitting chains, 64 public evaluation chains, and 128 unseen private evaluation chains, split equally between 64–192 and 256–512 residues. Every chain has a complete, continuous backbone. Source entries and exact sequences are disjoint between public and private data. Private source lists, downloads, raw predictions, repeatability checks, and the frozen reference with per-chain measurements live only under eval/test/. A public download command fetches every source from RCSB on a fresh clone. No committed code refers to shared/.
+
+The reference restores the paper's histogram bins 500, free bond quantization, original-geometry reassignment, prior-regularized global glue optimization every ten rounds, and the paper's Pareto translation weight 1. It retains the paper's Table 16 smaller codebook, scales fitting to 128 chains, caps clustering candidates at 512, and performs 50 merges. The stronger control uses 1,000 bins and twice as many initial medoids; the weaker control uses 50 bins and 5/2 initial medoids. File/occurrence ordering and random seeds are fixed. An additional inference replay checks identical raw output, and paired bootstrap intervals measure between-input uncertainty.
+
+Long backbones are the added scored experiment, weighted 0.5: the paper reports accumulation of local errors into global drift, which the former five-chain test barely measured. No reconstruction or rate metric is deliberately saturated. The reference cannot reach the zero-error/perfect-lDDT limits with a finite lossy representation; measured bound checks and stronger-variant evidence appear below.
+
+Coefficient magnitudes remain RMSD 0.6, lDDT 1, BPR 0.4. Vocabulary size decreases from 0.1 to 0.02 because dictionary storage is now already fully charged in BPR; it retains a small preference for a compact alphabet without the former double penalty. Rank uses better-direction improvements over the frozen reproduced reference, divided by each metric's standard deviation among feasible attempts, and sums with 0.5 experiment weights. Failed attempts never enter this scientific ranking. The paper's numerical results are preserved verbatim under `_paper_reported`, separate from scaled measured reference results.
+
+## Major shortcuts: before and fix
+
+Ranks below are the old report's control-cohort ranks. Their magnitudes are not comparable with the new cohort's standardized ranks. The final table gives all rerun outcomes on the new hidden corpus.
+
+| Shortcut | Before | Fix / final replay |
+|---|---:|---|
+| Supplied baseline's free exact frames | +2.352529 | Preserve its 16-prototype geometry, transmit and charge its entire continuous coordinate output; rate gate applies. |
+| Forged target coordinates | +2.352333 | Only evaluator PDBs are targets; supplied target fields fail the interface. |
+| Forged counts / vocabulary | +0.003025 | Derive counts, size and alphabet from decoded representation; forged fields fail. |
+| Public whole-chain dictionary | +2.355349 | New private unseen sources; whole-chain dictionary storage charged. Replay a visible structure as a dictionary entry against unseen inputs. |
+| Invented two-residue template | +2.355358 | Expected native size and complete reconstruction are fixed; short output fails. |
+| Truncated native output | +2.352333 | No min-length matching; any incomplete chain fails. |
+| Negative counts | −1.667061 in audit (arbitrarily favorable under fixed scaling) | No claimed counts; negative indices fail before measurement. |
+| Pruned comparisons | Incomplete CASP-only result | Both experiments and method enumeration are evaluator-owned. Its valid full reference predictions now tie the reference, with no pruning benefit. |
+
+The pruning replay is a valid unchanged reference representation; structural checks verify that the evaluator never reads scoring/scores_train.json. The other major attacks run through the same hidden entry point after registration. Already ineffective scalar/null/empty-output and scalar-quality attacks are not replayed. Strict decoder validation also rejects them.
+
+## Limitations and deliberately open alternatives
+
+A no-merge model is an honest alternative. If it still ties or improves the final reference, report that scientific limitation; do not manufacture a prohibition or bonus for using merges. The stronger-variant paired confidence interval, not merely a metric below its mathematical bound, determines whether headroom is demonstrated. If the final interval is not positive, the requested scientific headroom remains unresolved.
+
+The corpus is larger but far below the paper's 33,992-chain fitting corpus and thousands of merge rounds. This iteration does not establish full PDB-scale compression gains, downstream transfer, or performance against the paper's external learned tokenizers. Exact sequence and source disjointness do not establish remote-homology separation. General-purpose dictionary learning and more efficient coding remain scientific research opportunities; attempts must still freeze their representation before private requests.
+
+There is no exhaustive candidate-enumeration task here: encoding the input geometry is allowed, but storing each entire unseen chain costs its full geometry and cannot satisfy compact coding. The former public-answer lookup is closed by unseen inputs and dictionary accounting. The finite decoder interface supports motif dictionaries, independent internal-coordinate alphabets, and full coordinates; new decoder families would require an explicit benchmark extension. Serialized JSON whitespace is not charged; the fixed binary description-length convention is documented.
+
+The old reference had CAMEO/CASP RMSD 7.516185/4.207396, lDDT 0.577381/0.574539, BPR proxy 7.774787/7.774787, and vocabulary 219. Its rank was zero by definition. The final reference also has rank zero, with full rate and evaluator-native targets on a different corpus; its new scientific measurements appear below. The higher-resolution and weaker controls have changed data and restored paper settings, so the before/after evidence establishes ranking behavior rather than a numerical longitudinal comparison.

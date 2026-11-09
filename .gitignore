@@ -235,3 +235,14 @@ tmp/
 protocol.md
 *.egg-info
 core.[0-9]*
+
+# Private downloaded inputs and all per-attempt raw predictions are regenerated.
+eval/test/downloads/
+eval/test/runs/
+eval/train/runs/
+eval/test/measurements.json
+eval/train/measurements.json
+eval/test/scores_all.json
+eval/train/scores_all.json
+eval/test/ranking.json
+eval/train/ranking.json

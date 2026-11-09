@@ -1,25 +1,24 @@
 #!/usr/bin/env bash
-# Add the lower-resolution Table 16 GEOBPE setting and score the merged sweep.
-
+# One combined final hardening check. All computation runs in this job.
 set -euo pipefail
-
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
-
-GEOBPE_OUTPUT_DIR=checkpoints/geobpe_table16_low_multisplit \
-GEOBPE_INDUCE_DIR=checkpoints/geobpe_table16_low_multisplit_induce \
-GEOBPE_TEST_SPLIT=all \
-GEOBPE_NUM_P="2-2:3-5:5-1:6-2:8-1" \
-TRAIN_LIMIT=12 \
-TEST_LIMIT=5 \
-ITERATIONS=3 \
-bash scripts/method.sh
-
-python scripts/merge_artifacts.py \
-  --input checkpoints/geobpe_scaled_multisplit/results.json:geobpe_scaled:geobpe_table16_high \
-  --input checkpoints/geobpe_table16_low_multisplit/results.json:geobpe_scaled:geobpe_table16_low \
-  --output checkpoints/geobpe_table16_sweep/results.json
-
-bash scripts/evaluate.sh checkpoints/geobpe_table16_sweep/results.json
-bash scripts/evaluate_train.sh checkpoints/geobpe_table16_sweep/results.json
-bash scripts/evaluate_test.sh checkpoints/geobpe_table16_sweep/results.json
-python validate.py --compare
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+export GEOBPE_DATASET_WORKERS=1 SLURM_CPUS_PER_TASK=1 PYTHONHASHSEED=0 MPLBACKEND=Agg
+mkdir -p logs/hardening
+python scripts/check_codec.py
+python method/train.py --name geobpe_reference --bins 500 --iterations 50 > logs/hardening/reference.log 2>&1
+python method/train.py --name higher_capacity --bins 1000 --interior 100 --terminal 20 --iterations 50 > logs/hardening/higher.log 2>&1
+python method/train.py --name lower_capacity --bins 50 --interior 5 --terminal 2 --iterations 50 > logs/hardening/lower.log 2>&1
+python method/train.py --name no_bpe --export-only checkpoints/hardening/geobpe_reference/post_init.pkl
+python baseline/internal.py --fit
+python baseline/residue_quantized.py --fit
+# Fresh final-code encoding on both sides, followed by one evaluator-only replay of attacks.
+EVAL_FREEZE_REFERENCE=1 EVAL_REFERENCE_NAME=geobpe_reference bash scripts/evaluate_train.sh > logs/hardening/train.log 2>&1
+EVAL_FREEZE_REFERENCE=1 EVAL_REFERENCE_NAME=geobpe_reference bash scripts/evaluate_test.sh > logs/hardening/test.log 2>&1
+python eval/test/check_replay.py
+python eval/test/prepare_probes.py
+# Replay a pruned public selector too; hidden enumeration and experiments must stay complete.
+python -c 'from pathlib import Path; Path("scoring/scores_train.json").write_text("{\"experiments\":{}}\n")'
+EVAL_RESCORE=1 bash scripts/evaluate_test.sh > logs/hardening/probes.log 2>&1
+python scripts/package_scores.py
+python validate.py

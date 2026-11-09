@@ -1,13 +1,11 @@
 # Experiments
 
-## scaled_pdb_tokenization_cameo
+## short_backbones
 
-This experiment tests whether structural vocabularies at multiple operating points can encode held-out CAMEO protein backbones compactly while preserving geometric reconstruction quality. The evaluator compares reconstructed coordinates with the original backbone and reports lDDT as the primary local-geometry metric, plus RMSD, an encoded-token bits-per-residue proxy, and vocabulary size.
+Measure compact lossy coding on complete, unseen protein backbones with 64–192 residues. Report aligned backbone error, local distance preservation, complete transmitted bits per residue, and alphabet size. This tests whether a representation generalizes while balancing fidelity against storage. Private evaluation uses 64 chains; the comparable public evaluation uses 32.
 
-The experiment is intentionally small so future agents can iterate quickly. It should still preserve the central tradeoff: better tokenizers must improve reconstruction or token efficiency without using an unbounded vocabulary.
+## long_backbones
 
-## scaled_pdb_tokenization_casp14
+Measure the same quantities on complete, unseen backbones with 256–512 residues. Small local errors can accumulate into large global errors over long chains, so success on short inputs alone is insufficient. This experiment supplies scientific headroom below perfect reconstruction, with half the total experiment weight. Private evaluation uses 64 chains; public evaluation uses 32 under the same selection rules.
 
-This experiment tests whether structural tokenization remains useful on a second held-out split from CASP14 across the same operating points. It measures the same local reconstruction, global reconstruction, token-efficiency, and compactness quantities as the CAMEO split.
-
-The experiment is intentionally small so future agents can iterate quickly. It should still preserve the central tradeoff: better tokenizers must improve reconstruction or token efficiency without using an unbounded vocabulary.
+A fixed representation is encoded separately on each experiment. Its dictionary storage is charged once in each experiment. Every method sees identical inputs, complete predictions are required, and both distortion and rate constraints must pass. Aggregate reference-only results are in scores_test.json and scores_train.json. Hardening controls and attack results are in HARDENING.md.

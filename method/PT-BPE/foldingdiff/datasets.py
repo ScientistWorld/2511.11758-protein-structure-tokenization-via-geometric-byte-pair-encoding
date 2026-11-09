@@ -426,7 +426,7 @@ class CathCanonicalAnglesDataset(Dataset):
         if demo_pdb in fnames:
             fnames.remove(demo_pdb)
             fnames = [demo_pdb] + fnames
-        return fnames
+        return sorted(fnames)
 
     @property
     def cache_fname(self) -> str:

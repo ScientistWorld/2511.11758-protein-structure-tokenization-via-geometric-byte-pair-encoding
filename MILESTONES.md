@@ -38,3 +38,7 @@
 
 ## Stop Justification
 - Completed at milestone `core_claim`.
+
+### 2026-11-09 — method_runs
+
+Hardening audit supersedes the earlier `core_claim` assessment. That assessment relied on proximity to a published lDDT value on a tiny corpus and omitted full representation cost. The actual released algorithm runs, but a compression advantage over honest alternatives must be demonstrated, not inferred from matching numbers. The final enlarged, restored-setting comparison is pending; no broader claim is made before its results.

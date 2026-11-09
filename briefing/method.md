@@ -1,16 +1,9 @@
-# Method
+# Reference method
 
-The paper proposes GEOBPE, a protein structure tokenizer that adapts byte pair encoding to 3D backbone geometry.
+The reference directly calls the released PT-BPE GEOBPE implementation (upstream commit 68ff87eaf13068c1ef93dd72139efe4b91532219). It fits empirical histograms, initializes residue medoids, performs global SE(3) glue optimization and quantization, prioritizes geometric adjacent pairs, clusters selected occurrences by RMSD k-medoids, substitutes medoids, and updates the pair map. Held-out encoding replays the learned vocabulary without extending it. This is the paper's algorithm, not the legacy scratch implementation.
 
-The reproduction uses the official PT-BPE GEOBPE code release at a reduced data scale. The implemented path runs the paper's tokenizer rather than a surrogate:
+Restored paper settings: free bond-length quantization, histogram bins 500, original-geometry reassignment (`rmsd_super_res=True`), global glue optimization every 10 rounds with prior 1, and translation weight 1 as used for the paper's Pareto experiments after Table 17. Small-codebook counts are the Table 16 regime {2:10,3:50,5:1,6:5,8:1}. Out-of-range values snap to the nearest end bin, as Appendix K prescribes. Sorting occurrence lists and file paths fixes seeded sampling order.
 
-- initialize residue-level tokens by clustering residue backbone frames with Kabsch RMSD;
-- build pair keys from adjacent token ids and quantized boundary geometry;
-- repeatedly select frequent geometric pair keys;
-- cluster occurrences of the selected pair into prototype structural motifs using RMSD medoids;
-- greedily merge non-overlapping occurrences and hard-quantize them to medoid prototypes;
-- optimize inter-motif glue angles with the official global glue optimization path;
-- encode held-out structures by replaying the learned merge order without creating new keys;
-- reconstruct structures and score RMSD, lDDT, bits per residue, and vocabulary size.
+Resource reductions are 128 fitting chains instead of 33,992, 512 clustering candidates instead of 5,000, and 50 merge rounds. The full training corpus and original clustering setting would exceed this iteration's CPU budget; the computational steps and inference regime are preserved. The driver omits plots and intermediate training-score plots, not algorithm steps. Original published results remain unchanged under `_paper_reported`.
 
-The main deviations are scale-related: the workspace uses a small public PDB subset, fewer BPE iterations, and a lower-resolution vocabulary than the paper's full PDB-scale experiments.
+`method/train.py` saves resumable checkpoints and exports the finite dictionary. `method/encode.py` applies the frozen official tokenizer and exports only motif and boundary indices. Independent evaluation reconstructs the backbone, charges the complete dictionary and stream, and never reads method-written metric claims. `baseline/internal.py` supplies an independent fixed-bin baseline; `baseline/residue_quantized.py` retains the old baseline's favorable geometry while charging its full continuous output.

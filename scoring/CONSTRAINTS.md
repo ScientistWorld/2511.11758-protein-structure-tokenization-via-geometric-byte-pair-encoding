@@ -1,16 +1,9 @@
 # Constraints
 
-Use the provided PDB splits unless explicitly documenting a new experiment. Do not train on the held-out split being evaluated.
+Fit only on `data/downloads/pdb/train`; use public visible splits for model selection. Freeze all dictionary contents and operating points before receiving private requests. Do not train, tune, extend the dictionary, or select parameters on private inputs. Inference encodes each requested backbone using the frozen representation.
 
-Report token efficiency with the same encoded-token `bpr` proxy used by `eval/`: total tokens times `log2(vocab_size)` divided by total residues. The paper's full BPR additionally includes tokenizer description length; in this compact benchmark, `vocab_size` is reported alongside `bpr` to preserve a compactness constraint.
+Each experiment must satisfy RMSD ≤15 Å, lDDT ≥0.35, 0<BPR≤96, and vocabulary between 1 and 8192. A failure in either experiment fails the attempt, below all feasible methods. These broad operating limits prevent lossless continuous geometry from replacing compact coding and prevent sacrificing reconstruction to get a tiny stream.
 
-Do not improve scores by using private data, fetching extra files during evaluation, hardcoding held-out structures, or changing `scripts/evaluate.sh` to depend on a particular method implementation.
+Transmit every value required for reconstruction in a supported decoder format. The evaluator charges dictionaries, boundary symbols, coordinate floats, and headers; it derives sizes and native residue counts itself. Supply every requested structure in full, with no extra or repeated ids. NaNs, infinities, negative indices, claimed metrics, supplied targets, invented counts, and unknown fields fail validation.
 
-## Compliance Requirements
-
-- Use the provided `data/pdb_smoke` train, CAMEO, and CASP14 splits for the benchmark experiments.
-- Do not train, tune, or select vocabulary elements using the held-out split being evaluated.
-- Do not fetch data, models, or remote resources during `scripts/evaluate.sh`.
-- Keep `scripts/evaluate.sh` method-agnostic; evaluation code must not import from `method/`.
-- Report `rmsd`, `lddt`, encoded-token `bpr`, and `vocab_size` for every submitted benchmark experiment.
-- Do not improve reconstruction by memorizing held-out coordinates or using an unbounded vocabulary.
+No network access during evaluation. Do not read private evaluation sources or answer artifacts during fitting, or modify evaluation files, reference comparisons, thresholds, or source lists. `eval/` and `data/` do not import the submitted method. Private targets and all artifacts that regenerate them remain under `eval/test/`.

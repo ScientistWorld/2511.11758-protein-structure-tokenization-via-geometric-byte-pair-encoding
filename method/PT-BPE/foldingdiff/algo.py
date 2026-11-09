@@ -1,3 +1,4 @@
+import os
 from copy import deepcopy
 import numpy as np
 from joblib import Parallel, delayed
@@ -175,7 +176,7 @@ def k_medoids(
         i, j = pair
         return i, j, compute_rmsd(strucs[i], strucs[j])
 
-    for i, j, d in Parallel(n_jobs=-1, backend="threading")(
+    for i, j, d in Parallel(n_jobs=int(os.environ.get("SLURM_CPUS_PER_TASK", "1")), backend="threading")(
             delayed(_calc)(p) for p in tqdm(pairs,
                                             desc="Pre-computing distance matrix (parallel)", miniters=10000)):
         D[i, j] = D[j, i] = d

@@ -1,12 +1,5 @@
 # Targets
 
-Optimize `scaled_pdb_tokenization_cameo` and `scaled_pdb_tokenization_casp14`.
+Both scored experiments are `short_backbones` and `long_backbones`, weighted equally. Each has the same four scored quantities: increase `lddt`; decrease `rmsd`, full `bpr`, and `vocab_size`. All four appear in every reference score entry and are described in EXPERIMENTS.md.
 
-The current benchmark can score two reproduced operating points when both artifacts are available:
-
-- `geobpe_table16_high`: higher-capacity structural vocabulary regime.
-- `geobpe_table16_low`: lower-capacity structural vocabulary regime.
-
-Primary target: increase `lddt` on held-out PDB chains for both splits. In this compact public-data gym, lDDT is the primary reconstruction-quality signal because it is stable on small held-out slices and measures whether local backbone geometry is preserved.
-
-Secondary targets: reduce global-coordinate `rmsd`, reduce the encoded-token `bpr` proxy, and keep `vocab_size` compact. A valid improvement should not simply expand the vocabulary until every local fragment is memorized.
+Improve the rate–distortion tradeoff on previously unseen complete backbones. Do not optimize agreement with published numbers. Finite dictionaries and all per-input side information incur storage cost. Longer backbones specifically test reconstruction drift where local accuracy alone is insufficient.
