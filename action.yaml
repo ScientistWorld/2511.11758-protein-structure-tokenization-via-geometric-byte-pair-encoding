@@ -1,5 +1,5 @@
-action: pending
+action: submit
 gpus: 0
 test: false
 milestone: method_runs
-notes: "Final hardening patches ready; combined reference, variant, baseline and attack check pending."
+notes: "One combined final hardening job: decoder compatibility, restored GEOBPE reference, stronger/weaker/no-merge variants, baselines, private paired ranking, deterministic replay, and major shortcut replays."
