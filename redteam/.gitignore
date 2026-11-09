@@ -1,0 +1,11 @@
+cache/
+**/outputs/
+**/code/
+**/logs/
+**/artifact.json
+**/codebook.json
+**/runtime.log
+**/train.stdout.log
+**/train.stderr.log
+**/test.stdout.log
+**/test.stderr.log

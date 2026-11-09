@@ -1,0 +1,19 @@
+ M README.md
+ M jobs/5f24b034-f1a/result.json
+ M jobs/5f24b034-f1a/stderr.log
+ M jobs/836611b5-37b/result.json
+ M jobs/836611b5-37b/stderr.log
+ M jobs/fd339299-859/result.json
+ M jobs/fd339299-859/stderr.log
+ M manifest.json
+ D trajectory/turn_0001_raw.jsonl
+ D trajectory/turn_0002_raw.jsonl
+ D trajectory/turn_0003_raw.jsonl
+ D trajectory/turn_0004_raw.jsonl
+ D trajectory/turn_0005_raw.jsonl
+ D trajectory/turn_0006_raw.jsonl
+ D trajectory/turn_0007_raw.jsonl
+ D trajectory/turn_0008_raw.jsonl
+ D trajectory/turn_0009_raw.jsonl
+ D trajectory/turn_0010_raw.jsonl
+?? redteam/
