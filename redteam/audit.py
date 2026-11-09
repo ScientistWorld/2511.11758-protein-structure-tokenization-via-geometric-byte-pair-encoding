@@ -35,7 +35,13 @@ def write_json(path, payload):
 
 
 def reference_artifact():
-    return json.loads((AUDIT / "cache/reference_artifact.json").read_text())
+    fixture = AUDIT / "cache/reference_artifact.json"
+    if not fixture.exists():
+        folder = AUDIT / "reference_seed0"
+        folder.mkdir(parents=True, exist_ok=True)
+        artifact, _ = full_method("reference_seed0", folder)
+        write_json(fixture, artifact)
+    return json.loads(fixture.read_text())
 
 
 def payloads(artifact):
@@ -140,9 +146,10 @@ def make_shortcut(case, folder):
             elif case == "forged_counts_shortcut":
                 row["tokens"] = 0
             elif case == "truncated_output_shortcut":
-                row["original_coords"] = row["original_coords"][:2]
-                row["reconstructed_coords"] = copy.deepcopy(row["original_coords"])
-                # Deliberately keep full-chain claimed lengths and token counts.
+                row["reconstructed_coords"] = copy.deepcopy(row["original_coords"][:2])
+                # Keep the complete, unmodified target as well as the full-chain
+                # claimed lengths and token counts. This isolates acceptance of
+                # an incomplete prediction from target forgery.
             elif case == "negative_counts_shortcut":
                 row["tokens"] = -1000000
                 row["reconstructed_coords"] = [[[0., 0., 0.]] * 3 for _ in row["original_coords"]]

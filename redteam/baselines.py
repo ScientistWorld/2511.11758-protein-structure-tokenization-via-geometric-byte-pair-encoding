@@ -7,7 +7,7 @@ import pickle
 import subprocess
 import sys
 
-from redteam.audit import AUDIT, ROOT, METHOD, write_json
+from redteam.audit import AUDIT, ROOT, METHOD, full_method, write_json
 
 
 def no_bpe_shortcut():
@@ -17,7 +17,7 @@ def no_bpe_shortcut():
     folder = AUDIT / "no_bpe_shortcut"
     model = AUDIT / "reference_seed0/outputs/model/bpe_post_init.pkl"
     if not model.exists():
-        model = ROOT / "checkpoints/geobpe_scaled_multisplit/bpe_post_init.pkl"
+        full_method("reference_seed0", AUDIT / "reference_seed0")
     with model.open("rb") as handle:
         bpe = pickle.load(handle)
     prepare_upstream_data(ROOT / "data/pdb_smoke")

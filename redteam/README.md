@@ -11,9 +11,9 @@ JSON files are committed. The default artifact and score files are restored in
 a `finally` block after every case.
 
 The reference fixture in `cache/reference_artifact.json` is the original trained
-output, reused only where explicitly permitted by the audit. If absent, create
-it by running `reference_seed0/run.sh` and copying its
-`outputs/model/results.json` there. Honest runs use the visible official method.
+output, reused only where explicitly permitted by the audit. If absent, the
+runner rebuilds it with the visible official seed-0 method. The no-BPE shortcut
+also rebuilds its initial vocabulary if needed. Honest runs use the visible official method.
 Shortcut builders use only visible data, method output, and train feedback;
 they do not read the hidden evaluator, hidden structure list, hidden scores, or
 paper. The dictionary shortcut enumerates all visible held-out PDBs instead of
