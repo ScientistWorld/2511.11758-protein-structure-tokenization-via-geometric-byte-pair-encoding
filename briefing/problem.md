@@ -4,6 +4,6 @@ Compress complete protein backbone structures while preserving their geometry. E
 
 The scientific task is a rate–distortion tradeoff. Better local distance preservation and lower aligned reconstruction error should require fewer transmitted bits. Dictionary storage and all per-input information count toward the rate. Fitting, tuning, dictionary construction, and operating-point selection on private evaluation inputs are prohibited.
 
-Two length ranges measure ordinary reconstruction and accumulated error over longer backbones. Public evaluation contains 32 chains per range; private evaluation contains 64 per range, drawn using the same acquisition and continuity rules. The fitting set contains 64 chains in each range. Public and private source entries and exact sequences are disjoint.
+Two length ranges measure ordinary reconstruction and accumulated error over longer backbones. Public and private evaluation each contain 64 chains per range, drawn using the same acquisition and continuity rules. The fitting set contains 64 chains in each range. Public and private source entries and exact sequences are disjoint.
 
 Any encoding algorithm is allowed within the finite decoder formats described in evaluation.md. A new approach can use the interface without changing the evaluator. The legacy data/pdb_smoke files are development examples, not the private evaluation corpus.

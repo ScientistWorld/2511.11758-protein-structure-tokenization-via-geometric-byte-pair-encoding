@@ -24,7 +24,7 @@ for malformed in ({'id':'synthetic','motifs':[-1],'glue':[]},{'id':'synthetic','
 print('Independent decoder matches released geometry; invalid stream checks pass.')
 # Exercise the released PDB parser before any costly fitting. This includes
 # 1x5n_A, whose planar omega exposed float32 +/-pi boundary rejection.
-for split,count in (('train',128),('visible_short',32),('visible_long',32)):
+for split,count in (('train',128),('visible_short',64),('visible_long',64)):
  dataset=FullCathCanonicalCoordsDataset(str(ROOT/'data/downloads/pdb'/split),use_cache=False,zero_center=False,toy=0,pad=512)
  assert len(dataset.structures)==count,(split,len(dataset.structures),count)
  for structure in dataset.structures:

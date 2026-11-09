@@ -42,3 +42,7 @@
 ### 2026-11-09 — method_runs
 
 Hardening audit supersedes the earlier `core_claim` assessment. That assessment relied on proximity to a published lDDT value on a tiny corpus and omitted full representation cost. The actual released algorithm runs, but a compression advantage over honest alternatives must be demonstrated, not inferred from matching numbers. The final enlarged, restored-setting comparison is pending; no broader claim is made before its results.
+
+### 2026-11-09 — method_runs
+
+All three final 50-round GEOBPE training runs completed. The combined audit was interrupted repeatedly by scheduler preemptions during inference. Atomic per-chain recovery now preserves that work. Public evaluation has been enlarged to the same 64 chains per length range as private evaluation, correcting dictionary-cost amortization. Final paired headroom and attack outcomes remain pending; completed fitting alone does not advance the scientific milestone.

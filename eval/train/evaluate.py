@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
-EXPERIMENTS={'short_backbones':('visible_short',32),'long_backbones':('visible_long',32)}
+EXPERIMENTS={'short_backbones':('visible_short',64),'long_backbones':('visible_long',64)}
 METRICS={'rmsd':(False,.6),'lddt':(True,1.),'bpr':(False,.4),'vocab_size':(False,.02)}
 WEIGHTS={'short_backbones':.5,'long_backbones':.5}
 # Fixed task feasibility constraints, chosen before the final runs.
