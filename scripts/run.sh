@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# One combined final hardening check. All computation runs in this job.
+# Resume the combined hardening check after fixing float32 angle endpoints.
+# Existing official checkpoints/caches are reused; no experiments are split up.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1

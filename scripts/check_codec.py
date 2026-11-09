@@ -4,6 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'method/PT-BPE'))
 import numpy as np
+from foldingdiff.datasets import FullCathCanonicalCoordsDataset
 from foldingdiff.tokenizer import Tokenizer
 spec=importlib.util.spec_from_file_location('public_decoder',ROOT/'eval/train/evaluate.py'); ev=importlib.util.module_from_spec(spec); spec.loader.exec_module(ev)
 d=([1.46,1.53,1.33]*4)[:-1]; a=([1.93,2.04,2.12]*4)[:10]; t=([.7,3.14,5.1]*4)[:9]
@@ -21,3 +22,12 @@ for malformed in ({'id':'synthetic','motifs':[-1],'glue':[]},{'id':'synthetic','
  except ValueError: pass
  else: raise AssertionError('malformed stream accepted')
 print('Independent decoder matches released geometry; invalid stream checks pass.')
+# Exercise the released PDB parser before any costly fitting. This includes
+# 1x5n_A, whose planar omega exposed float32 +/-pi boundary rejection.
+for split,count in (('train',128),('visible_short',32),('visible_long',32)):
+ dataset=FullCathCanonicalCoordsDataset(str(ROOT/'data/downloads/pdb'/split),use_cache=False,zero_center=False,toy=0,pad=512)
+ assert len(dataset.structures)==count,(split,len(dataset.structures),count)
+ for structure in dataset.structures:
+  angles=structure['angles']
+  assert angles['psi'].notna().sum()==len(angles)-1,structure['fname']
+ print('Released parser accepts all',count,split,'chains.',flush=True)

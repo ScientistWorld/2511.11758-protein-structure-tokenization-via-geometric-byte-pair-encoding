@@ -89,6 +89,7 @@ def canonical_distances_and_dihedrals(
     assert os.path.isfile(fname)
     warnings.filterwarnings("ignore", ".*elements were guessed from atom_.*")
     warnings.filterwarnings("ignore", ".*invalid value encountered in true_div.*")
+    warnings.filterwarnings("ignore", ".*invalid value encountered in divide.*")
     opener = gzip.open if fname.endswith(".gz") else open
     with opener(str(fname), "rt") as f:
         source = PDBFile.read(f)
@@ -135,9 +136,14 @@ def canonical_distances_and_dihedrals(
 
     # At this point we've only looked at dihedral and angles; check value range
     for k, v in calc_angles.items():
-        if not (np.nanmin(v) >= -np.pi and np.nanmax(v) <= np.pi):
+        # Biotite returns float32: its rounded +/-pi exceeds the float64
+        # boundary by 8.7e-8. Preserve valid planar peptide angles, while
+        # rejecting values outside the physical range beyond roundoff.
+        v = np.asarray(v, dtype=np.float64)
+        if not (np.nanmin(v) >= -np.pi - 1e-6 and np.nanmax(v) <= np.pi + 1e-6):
             logging.warning(f"Illegal values for {k} in {fname} -- skipping")
             return None
+        calc_angles[k] = np.clip(v, -np.pi, np.pi)
 
     # Get any additional distances
     for d in distances:

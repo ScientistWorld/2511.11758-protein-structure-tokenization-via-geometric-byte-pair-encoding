@@ -44,7 +44,10 @@ def main():
   with ckpt.open('rb') as f: bpe=pickle.load(f)
  else:
   dataset=FullCathCanonicalCoordsDataset(str(ROOT/'data'/'downloads'/'pdb'/'train'),use_cache=False,zero_center=False,toy=0,pad=512)
-  if len(dataset.structures)!=128: raise ValueError(f'expected 128 training chains, got {len(dataset.structures)}')
+  if len(dataset.structures)!=128:
+   expected={str(p) for p in (ROOT/'data/downloads/pdb/train').glob('*.pdb')}
+   missing=sorted(expected-{s['fname'] for s in dataset.structures})
+   raise ValueError(f'expected 128 training chains, got {len(dataset.structures)}; missing: {missing}')
   for s in dataset.structures:
    if s['angles']['psi'].notna().sum()<len(s['angles'])-1: raise ValueError('incomplete training chain')
   bpe=BPE(dataset.structures,bins={1:a.bins},bin_strategy='histogram',save_dir=str(dest),res_init=True,std_bonds=False,rmsd_partition_min_size=2,rmsd_super_res=True,rmsd_only=False,num_partitions={2:a.terminal,3:a.interior,5:1,6:5,8:1},max_num_strucs=512,glue_opt=True,glue_opt_prior=1.,glue_opt_every=10,glue_opt_method='all',seed=0)

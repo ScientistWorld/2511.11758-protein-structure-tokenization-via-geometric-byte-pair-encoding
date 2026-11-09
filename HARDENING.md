@@ -1,5 +1,7 @@
 # Hardening audit
 
+The first combined job passed the independent decoder checks but stopped before fitting on a float32 +/-pi range-check incompatibility in the released PDB loader. This was repaired with a 1e-6 roundoff tolerance and clipping to the physical interval; no chains were removed and no algorithmic settings were changed. The resumed combined audit also checks complete public-corpus parsing before fitting.
+
 ## Report and decisions
 
 The original REDTEAM report found a strong genuine improvement (`better_bins300`, audit/control ranks +0.693188/+0.629933) and a clearly worse low-capacity variant (−1.238218/−3.488790). The old reference's seed-to-seed rank range was 0.128686/0.359406, while the translation-weight change was below that range. Its three merge rounds did not affect held-out geometry: the no-merge alternative tied reconstruction and slightly improved the flawed rate proxy. This is an honest headroom problem, not an exploit to prohibit.
