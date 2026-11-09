@@ -1,0 +1,33 @@
+{
+  "command": [
+    "/usr/local/bin/python",
+    "/home/user/method/run_official_geobpe.py",
+    "--data-root",
+    "/home/user/data/pdb_smoke",
+    "--output-dir",
+    "/home/user/redteam/reference_seed0/outputs/model",
+    "--induce-dir",
+    "/home/user/redteam/reference_seed0/outputs/induce",
+    "--test-split",
+    "all",
+    "--train-limit",
+    "12",
+    "--test-limit",
+    "5",
+    "--max-iter",
+    "3",
+    "--bins",
+    "1-50",
+    "--num-p",
+    "2-10:3-50:5-1:6-5:8-1",
+    "--max-num-strucs",
+    "100",
+    "--glue-opt",
+    "true",
+    "--method-name",
+    "geobpe_table16_high",
+    "--seed",
+    "0"
+  ],
+  "seed": 0
+}

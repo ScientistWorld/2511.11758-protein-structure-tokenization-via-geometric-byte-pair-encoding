@@ -1,0 +1,1016 @@
+{
+  "reference_case": "reference_artifact",
+  "scales": {
+    "audit": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 5.196298353310402,
+        "lddt": 0.27114124857935323,
+        "bpr": 803.8905336888773,
+        "vocab_size": 242111.8222647127
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 3.8182498336895363,
+        "lddt": 0.263120844498316,
+        "bpr": 1553.1506236576458,
+        "vocab_size": 242111.8222647127
+      }
+    },
+    "honest": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 2.479055863323146,
+        "lddt": 0.09733390283358889,
+        "bpr": 0.7914858427528957,
+        "vocab_size": 264.7745286473156
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 1.2085774622038665,
+        "lddt": 0.06293704540830242,
+        "bpr": 0.7874735224929527,
+        "vocab_size": 264.7745286473156
+      }
+    }
+  },
+  "cohort": [
+    "reference_artifact",
+    "reference_seed0",
+    "reference_seed1",
+    "reference_seed2",
+    "better_glue",
+    "better_bins300",
+    "lower_capacity",
+    "no_bpe_shortcut",
+    "supplied_baseline_shortcut",
+    "forged_target_shortcut",
+    "forged_counts_shortcut",
+    "public_dictionary_shortcut",
+    "constant_template_shortcut",
+    "truncated_output_shortcut",
+    "negative_counts_shortcut",
+    "quality_fields_shortcut"
+  ],
+  "honest_cohort": [
+    "reference_artifact",
+    "reference_seed0",
+    "reference_seed1",
+    "reference_seed2",
+    "better_glue",
+    "better_bins300",
+    "lower_capacity"
+  ],
+  "ranks": {
+    "reference_artifact": {
+      "audit": {
+        "rank_points_over_reference": 0.0,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 0.0,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": false,
+      "ties_reference": true
+    },
+    "reference_seed0": {
+      "audit": {
+        "rank_points_over_reference": 0.0,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 0.0,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": false,
+      "ties_reference": true
+    },
+    "reference_seed1": {
+      "audit": {
+        "rank_points_over_reference": -0.12868557319792126,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.012630091243190398,
+            "lddt": -0.07694320202344043,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.043982521070080875,
+            "lddt": 0.004870241138790452,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": -0.3594055686056882,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.026473676249140467,
+            "lddt": -0.2143392513705886,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.13895365337596774,
+            "lddt": 0.020361012390008676,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": false,
+      "ties_reference": false
+    },
+    "reference_seed2": {
+      "audit": {
+        "rank_points_over_reference": -0.06464854949715516,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.043530031155313224,
+            "lddt": -0.0789948132700494,
+            "bpr": 1.6426950057364572e-06,
+            "vocab_size": 2.0651614420270876e-07
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.023808537687576254,
+            "lddt": -0.005378135659676458,
+            "bpr": 8.502375395759531e-07,
+            "vocab_size": 2.0651614420270876e-07
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": -0.22279141951102338,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.09124240907935521,
+            "lddt": -0.22005438678395078,
+            "bpr": 0.0016684404110836545,
+            "vocab_size": 0.00018883991694911446
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.07521813694937547,
+            "lddt": -0.02248436651927583,
+            "bpr": 0.001676941417241558,
+            "vocab_size": 0.00018883991694911446
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": false,
+      "ties_reference": false
+    },
+    "better_glue": {
+      "audit": {
+        "rank_points_over_reference": 0.042925723731097785,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.017879542887111688,
+            "lddt": -0.01161913150423929,
+            "bpr": 1.6426950057364572e-06,
+            "vocab_size": 2.0651614420270876e-07
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 0.022715119490668245,
+            "lddt": 0.04970637266694681,
+            "bpr": 8.502375395759531e-07,
+            "vocab_size": 2.0651614420270876e-07
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 0.21345001061442245,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.037476944604910925,
+            "lddt": -0.03236719921581077,
+            "bpr": 0.0016684404110836545,
+            "vocab_size": 0.00018883991694911446
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 0.0717637089304349,
+            "lddt": 0.2078073838424858,
+            "bpr": 0.001676941417241558,
+            "vocab_size": 0.00018883991694911446
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": false,
+      "ties_reference": false
+    },
+    "better_bins300": {
+      "audit": {
+        "rank_points_over_reference": 0.6931876451251926,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.2397137337090245,
+            "lddt": 0.21682111512353172,
+            "bpr": -0.0005319386625483709,
+            "vocab_size": -0.000153854527431018
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 0.10366183755113059,
+            "lddt": 0.13410593098237972,
+            "bpr": -0.0002753245234636148,
+            "vocab_size": -0.000153854527431018
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 0.6299328384411372,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.5024590603893643,
+            "lddt": 0.6039945605949192,
+            "bpr": -0.5402755579789466,
+            "vocab_size": -0.14068573812709026
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 0.32749807634820033,
+            "lddt": 0.560656535167789,
+            "bpr": -0.5430283598260085,
+            "vocab_size": -0.14068573812709026
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": false,
+      "ties_reference": false
+    },
+    "lower_capacity": {
+      "audit": {
+        "rank_points_over_reference": -1.2382182310346352,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.2893911878802947,
+            "lddt": -0.43267622965811325,
+            "bpr": 0.00011408007746863255,
+            "vocab_size": 1.1564904075351691e-05
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.23158490422977732,
+            "lddt": -0.28475798297517574,
+            "bpr": 5.486382310644608e-05,
+            "vocab_size": 1.1564904075351691e-05
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": -3.4887898439397764,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.6065869572737822,
+            "lddt": -1.205298151258589,
+            "bpr": 0.11586801608548666,
+            "vocab_size": 0.01057503534915041
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.7316444743623695,
+            "lddt": -1.1904874223438109,
+            "bpr": 0.10820907451498736,
+            "vocab_size": 0.01057503534915041
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": false,
+      "ties_reference": false
+    },
+    "no_bpe_shortcut": {
+      "audit": {
+        "rank_points_over_reference": 2.657539170839217e-05,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": 1.5062135800315843e-05,
+            "vocab_size": 1.8586452978243788e-06
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": 7.795965312427566e-06,
+            "vocab_size": 1.8586452978243788e-06
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 0.03407346476302067,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": 0.015298199579787682,
+            "vocab_size": 0.00169955925254203
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": 0.015376146678148928,
+            "vocab_size": 0.00169955925254203
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": true,
+      "ties_reference": false
+    },
+    "supplied_baseline_shortcut": {
+      "audit": {
+        "rank_points_over_reference": 2.3525288924788246,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.433483853567683,
+            "lddt": 0.7793333390815109,
+            "bpr": 0.0009391296206162559,
+            "vocab_size": 4.192277727314988e-05
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 0.3297135843904156,
+            "lddt": 0.8084890590041794,
+            "bpr": 0.0004860812598731227,
+            "vocab_size": 4.192277727314988e-05
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 9.490527795722597,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.9086166503165978,
+            "lddt": 2.1709744340505033,
+            "bpr": 0.953848282736669,
+            "vocab_size": 0.03833450314067023
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 1.0416616875083886,
+            "lddt": 3.380049422287719,
+            "bpr": 0.9587083125413797,
+            "vocab_size": 0.03833450314067023
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": true,
+      "ties_reference": false
+    },
+    "forged_target_shortcut": {
+      "audit": {
+        "rank_points_over_reference": 2.352332621836087,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.4339349695855663,
+            "lddt": 0.7793333390815109,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 0.33057525416483047,
+            "lddt": 0.8084890590041794,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 7.504970036175498,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.9095622253863491,
+            "lddt": 2.1709744340505033,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 1.0443839544509272,
+            "lddt": 3.380049422287719,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": true,
+      "ties_reference": false
+    },
+    "forged_counts_shortcut": {
+      "audit": {
+        "rank_points_over_reference": 0.003025494333555009,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": 0.0019342899894403238,
+            "vocab_size": 4.5020519436190505e-05
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": 0.001001163305242304,
+            "vocab_size": 4.5020519436190505e-05
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 4.021555153989245,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": 1.9646054647192182,
+            "vocab_size": 0.04116710189490695
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": 1.9746154854802125,
+            "vocab_size": 0.04116710189490695
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": true,
+      "ties_reference": false
+    },
+    "public_dictionary_shortcut": {
+      "audit": {
+        "rank_points_over_reference": 2.3553489171311894,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.4339349695855658,
+            "lddt": 0.7793333390815109,
+            "bpr": 0.0019315503337595653,
+            "vocab_size": 4.316187413836613e-05
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 0.3305752541648304,
+            "lddt": 0.8084890590041794,
+            "bpr": 0.0009984212130665288,
+            "vocab_size": 4.316187413836613e-05
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 11.514935192093265,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.909562225386348,
+            "lddt": 2.1709744340505033,
+            "bpr": 1.961822871338055,
+            "vocab_size": 0.03946754264236492
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 1.044383954450927,
+            "lddt": 3.380049422287719,
+            "bpr": 1.9692071992949833,
+            "vocab_size": 0.03946754264236492
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": true,
+      "ties_reference": false
+    },
+    "constant_template_shortcut": {
+      "audit": {
+        "rank_points_over_reference": 2.355358116169643,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.43393496958556693,
+            "lddt": 0.7793333390815109,
+            "bpr": 0.0019342899894403238,
+            "vocab_size": 4.5020519436190505e-05
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 0.33057525416483097,
+            "lddt": 0.8084890590041794,
+            "bpr": 0.001001163305242304,
+            "vocab_size": 4.5020519436190505e-05
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 11.526525190164746,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.9095622253863503,
+            "lddt": 2.1709744340505033,
+            "bpr": 1.9646054647192182,
+            "vocab_size": 0.04116710189490695
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 1.0443839544509288,
+            "lddt": 3.380049422287719,
+            "bpr": 1.9746154854802125,
+            "vocab_size": 0.04116710189490695
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": true,
+      "ties_reference": false
+    },
+    "truncated_output_shortcut": {
+      "audit": {
+        "rank_points_over_reference": 2.352332621836088,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.4339349695855668,
+            "lddt": 0.7793333390815109,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 0.33057525416483097,
+            "lddt": 0.8084890590041794,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 7.504970036175502,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": 0.9095622253863501,
+            "lddt": 2.1709744340505033,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": 1.0443839544509288,
+            "lddt": 3.380049422287719,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": true,
+      "ties_reference": false
+    },
+    "negative_counts_shortcut": {
+      "audit": {
+        "rank_points_over_reference": -1.6670605387689394,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.6959212603956789,
+            "lddt": -1.047259668271593,
+            "bpr": 0.8266528276889443,
+            "vocab_size": 0.20656137123828916
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.9199505087587235,
+            "lddt": -1.070157830597654,
+            "bpr": 0.826453159089187,
+            "vocab_size": 0.20656137123828916
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 2835.6457682712917,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -1.4587063377346694,
+            "lddt": -2.917331841993795,
+            "bpr": 839.6086789309204,
+            "vocab_size": 188.8812728909263
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -2.906392835313426,
+            "lddt": -4.474007801074746,
+            "bpr": 1630.0309823746356,
+            "vocab_size": 188.8812728909263
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": false,
+      "ties_reference": false
+    },
+    "quality_fields_shortcut": {
+      "audit": {
+        "rank_points_over_reference": 0.0,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "honest": {
+        "rank_points_over_reference": 0.0,
+        "components": {
+          "scaled_pdb_tokenization_cameo": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          },
+          "scaled_pdb_tokenization_casp14": {
+            "rmsd": -0.0,
+            "lddt": 0.0,
+            "bpr": -0.0,
+            "vocab_size": -0.0
+          }
+        }
+      },
+      "dominates_reference_any_positive_scales": false,
+      "ties_reference": true
+    }
+  },
+  "seed_spread": {
+    "seeds": [
+      "reference_seed0",
+      "reference_seed1",
+      "reference_seed2"
+    ],
+    "metric_ranges": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": {
+          "min": 6.7622017956312535,
+          "max": 7.73495096743477,
+          "spread": 0.9727491718035166
+        },
+        "lddt": {
+          "min": 0.5345436661611772,
+          "max": 0.5773811707638453,
+          "spread": 0.04283750460266811
+        },
+        "bpr": {
+          "min": 7.768184324776926,
+          "max": 7.774787059601174,
+          "spread": 0.006602734824247669
+        },
+        "vocab_size": {
+          "min": 218.0,
+          "max": 219.0,
+          "spread": 1.0
+        }
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": {
+          "min": 4.207396364122474,
+          "max": 4.767183876659416,
+          "spread": 0.5597875125369427
+        },
+        "lddt": {
+          "min": 0.5717091528611418,
+          "max": 0.5771022759770409,
+          "spread": 0.005393123115899123
+        },
+        "bpr": {
+          "min": 7.768184324776926,
+          "max": 7.774787059601174,
+          "spread": 0.006602734824247669
+        },
+        "vocab_size": {
+          "min": 218.0,
+          "max": 219.0,
+          "spread": 1.0
+        }
+      }
+    },
+    "rank_spreads": {
+      "audit": {
+        "min": -0.12868557319792126,
+        "max": 0.0,
+        "spread": 0.12868557319792126
+      },
+      "honest": {
+        "min": -0.3594055686056882,
+        "max": 0.0,
+        "spread": 0.3594055686056882
+      }
+    }
+  },
+  "invalid": {
+    "weaker_no_glue": {
+      "case": "weaker_no_glue",
+      "error": "RuntimeError('Command failed (1); see /home/user/redteam/weaker_no_glue/runtime.log')"
+    },
+    "scalar_quality_shortcut": {
+      "case": "scalar_quality_shortcut",
+      "method_runtime_seconds": 0.0,
+      "test_command": [
+        "bash",
+        "scripts/evaluate_test.sh"
+      ],
+      "test_has_arguments": false,
+      "train_returncode": 1,
+      "train_error": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/user/eval/train/evaluate.py\", line 99, in <module>\n    main()\n  File \"/home/user/eval/train/evaluate.py\", line 78, in main\n    experiment_results = summarize_artifact_slice(args.artifact, SLICE)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/train/evaluate.py\", line 64, in summarize_artifact_slice\n    return {\n           ^\n  File \"/home/user/eval/train/evaluate.py\", line 65, in <dictcomp>\n    experiment: summarize_methods(\n                ^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 213, in summarize_methods\n    raise ValueError(\nValueError: geobpe_table16_high advertises reconstruction quality metrics but is missing original_coords/reconstructed_coords for at least one structure\n",
+      "test_returncode": 1,
+      "test_error": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/user/eval/test/evaluate.py\", line 163, in <module>\n    main()\n  File \"/home/user/eval/test/evaluate.py\", line 141, in main\n    experiment_results = summarize_artifact_slice(args.artifact, SLICE, args.train_scores)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/test/evaluate.py\", line 124, in summarize_artifact_slice\n    results[experiment] = summarize_methods(\n                          ^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 213, in summarize_methods\n    raise ValueError(\nValueError: geobpe_table16_high advertises reconstruction quality metrics but is missing original_coords/reconstructed_coords for at least one structure\n",
+      "evaluator_unchanged": true
+    },
+    "null_coords_shortcut": {
+      "case": "null_coords_shortcut",
+      "method_runtime_seconds": 0.0,
+      "test_command": [
+        "bash",
+        "scripts/evaluate_test.sh"
+      ],
+      "test_has_arguments": false,
+      "train_returncode": 1,
+      "train_error": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/user/eval/train/evaluate.py\", line 99, in <module>\n    main()\n  File \"/home/user/eval/train/evaluate.py\", line 78, in main\n    experiment_results = summarize_artifact_slice(args.artifact, SLICE)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/train/evaluate.py\", line 64, in summarize_artifact_slice\n    return {\n           ^\n  File \"/home/user/eval/train/evaluate.py\", line 65, in <dictcomp>\n    experiment: summarize_methods(\n                ^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 206, in summarize_methods\n    results[method][\"rmsd\"] = sum(\n                              ^^^^\n  File \"/home/user/eval/metrics.py\", line 207, in <genexpr>\n    rmsd(row[\"original_coords\"], row[\"reconstructed_coords\"]) for row in rows\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 148, in rmsd\n    n = min(len(p), len(q))\n            ^^^^^^\nTypeError: len() of unsized object\n",
+      "test_returncode": 1,
+      "test_error": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/user/eval/test/evaluate.py\", line 163, in <module>\n    main()\n  File \"/home/user/eval/test/evaluate.py\", line 141, in main\n    experiment_results = summarize_artifact_slice(args.artifact, SLICE, args.train_scores)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/test/evaluate.py\", line 124, in summarize_artifact_slice\n    results[experiment] = summarize_methods(\n                          ^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 206, in summarize_methods\n    results[method][\"rmsd\"] = sum(\n                              ^^^^\n  File \"/home/user/eval/metrics.py\", line 207, in <genexpr>\n    rmsd(row[\"original_coords\"], row[\"reconstructed_coords\"]) for row in rows\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 148, in rmsd\n    n = min(len(p), len(q))\n            ^^^^^^\nTypeError: len() of unsized object\n",
+      "evaluator_unchanged": true
+    },
+    "empty_coords_shortcut": {
+      "case": "empty_coords_shortcut",
+      "method_runtime_seconds": 0.0,
+      "test_command": [
+        "bash",
+        "scripts/evaluate_test.sh"
+      ],
+      "test_has_arguments": false,
+      "train_returncode": 1,
+      "train_error": "/home/user/eval/metrics.py:130: RuntimeWarning: Mean of empty slice.\n  p0 = p - p.mean(axis=0, keepdims=True)\n/usr/local/lib/python3.11/site-packages/numpy/core/_methods.py:121: RuntimeWarning: invalid value encountered in divide\n  ret = um.true_divide(\n/home/user/eval/metrics.py:131: RuntimeWarning: Mean of empty slice.\n  q0 = q - q.mean(axis=0, keepdims=True)\n/home/user/eval/metrics.py:137: RuntimeWarning: Mean of empty slice.\n  return q0 @ r + p.mean(axis=0, keepdims=True)\n/usr/local/lib/python3.11/site-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.\n  return _methods._mean(a, axis=axis, dtype=dtype,\n/usr/local/lib/python3.11/site-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide\n  ret = ret.dtype.type(ret / rcount)\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/user/eval/train/evaluate.py\", line 99, in <module>\n    main()\n  File \"/home/user/eval/train/evaluate.py\", line 78, in main\n    experiment_results = summarize_artifact_slice(args.artifact, SLICE)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/train/evaluate.py\", line 64, in summarize_artifact_slice\n    return {\n           ^\n  File \"/home/user/eval/train/evaluate.py\", line 65, in <dictcomp>\n    experiment: summarize_methods(\n                ^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 209, in summarize_methods\n    results[method][\"lddt\"] = sum(\n                              ^^^^\n  File \"/home/user/eval/metrics.py\", line 210, in <genexpr>\n    ca_lddt(row[\"original_coords\"], row[\"reconstructed_coords\"]) for row in rows\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 169, in ca_lddt\n    pc = p[:n, 1, :]\n         ~^^^^^^^^^^\nIndexError: too many indices for array: array is 1-dimensional, but 3 were indexed\n",
+      "test_returncode": 1,
+      "test_error": "/home/user/eval/metrics.py:130: RuntimeWarning: Mean of empty slice.\n  p0 = p - p.mean(axis=0, keepdims=True)\n/usr/local/lib/python3.11/site-packages/numpy/core/_methods.py:121: RuntimeWarning: invalid value encountered in divide\n  ret = um.true_divide(\n/home/user/eval/metrics.py:131: RuntimeWarning: Mean of empty slice.\n  q0 = q - q.mean(axis=0, keepdims=True)\n/home/user/eval/metrics.py:137: RuntimeWarning: Mean of empty slice.\n  return q0 @ r + p.mean(axis=0, keepdims=True)\n/usr/local/lib/python3.11/site-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.\n  return _methods._mean(a, axis=axis, dtype=dtype,\n/usr/local/lib/python3.11/site-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide\n  ret = ret.dtype.type(ret / rcount)\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/user/eval/test/evaluate.py\", line 163, in <module>\n    main()\n  File \"/home/user/eval/test/evaluate.py\", line 141, in main\n    experiment_results = summarize_artifact_slice(args.artifact, SLICE, args.train_scores)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/test/evaluate.py\", line 124, in summarize_artifact_slice\n    results[experiment] = summarize_methods(\n                          ^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 209, in summarize_methods\n    results[method][\"lddt\"] = sum(\n                              ^^^^\n  File \"/home/user/eval/metrics.py\", line 210, in <genexpr>\n    ca_lddt(row[\"original_coords\"], row[\"reconstructed_coords\"]) for row in rows\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 169, in ca_lddt\n    pc = p[:n, 1, :]\n         ~^^^^^^^^^^\nIndexError: too many indices for array: array is 1-dimensional, but 3 were indexed\n",
+      "evaluator_unchanged": true
+    },
+    "prune_comparison_shortcut": {
+      "error": "incomplete or nonfinite metric contract: 'scaled_pdb_tokenization_cameo'",
+      "test_returncode": 0,
+      "experiments": [
+        "scaled_pdb_tokenization_casp14"
+      ]
+    }
+  },
+  "values": {
+    "reference_artifact": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 7.516185226337602,
+        "lddt": 0.5773811707638453,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 4.207396364122474,
+        "lddt": 0.5745393520543429,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      }
+    },
+    "reference_seed0": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 7.516185226337602,
+        "lddt": 0.5773811707638453,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 4.207396364122474,
+        "lddt": 0.5745393520543429,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      }
+    },
+    "reference_seed1": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 7.73495096743477,
+        "lddt": 0.5356562190311872,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 4.767183876659416,
+        "lddt": 0.5771022759770409,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      }
+    },
+    "reference_seed2": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 6.7622017956312535,
+        "lddt": 0.5345436661611772,
+        "bpr": 7.768184324776926,
+        "vocab_size": 218.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 4.510419514342404,
+        "lddt": 0.5717091528611418,
+        "bpr": 7.768184324776926,
+        "vocab_size": 218.0
+      }
+    },
+    "better_glue": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 7.825876690545073,
+        "lddt": 0.571080319116911,
+        "bpr": 7.768184324776926,
+        "vocab_size": 218.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 3.9182896933975337,
+        "lddt": 0.600696917560493,
+        "bpr": 7.768184324776926,
+        "vocab_size": 218.0
+      }
+    },
+    "better_bins300": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 3.3641049605439606,
+        "lddt": 0.6949594665097695,
+        "bpr": 9.912889336229961,
+        "vocab_size": 964.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 2.8880403841572866,
+        "lddt": 0.6451114836789762,
+        "bpr": 9.912889336229961,
+        "vocab_size": 964.0
+      }
+    },
+    "lower_capacity": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 12.528728403153991,
+        "lddt": 0.3427484244836297,
+        "bpr": 7.316247587803536,
+        "vocab_size": 163.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 7.154893104323655,
+        "lddt": 0.42468783013821226,
+        "bpr": 7.348728154231076,
+        "vocab_size": 163.0
+      }
+    },
+    "no_bpe_shortcut": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 7.516185226337602,
+        "lddt": 0.5773811707638453,
+        "bpr": 7.714245517666122,
+        "vocab_size": 210.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 4.207396364122474,
+        "lddt": 0.5745393520543429,
+        "bpr": 7.714245517666122,
+        "vocab_size": 210.0
+      }
+    },
+    "supplied_baseline_shortcut": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 0.007813778069607119,
+        "lddt": 1.0,
+        "bpr": 4.0,
+        "vocab_size": 16.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 0.01096690157618952,
+        "lddt": 1.0,
+        "bpr": 4.0,
+        "vocab_size": 16.0
+      }
+    },
+    "forged_target_shortcut": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 9.560886375740284e-15,
+        "lddt": 1.0,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 6.377132199110434e-15,
+        "lddt": 1.0,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      }
+    },
+    "forged_counts_shortcut": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 7.516185226337602,
+        "lddt": 0.5773811707638453,
+        "bpr": 0.0,
+        "vocab_size": 1.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 4.207396364122474,
+        "lddt": 0.5745393520543429,
+        "bpr": 0.0,
+        "vocab_size": 1.0
+      }
+    },
+    "public_dictionary_shortcut": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 1.8361713394122015e-14,
+        "lddt": 1.0,
+        "bpr": 0.01101191633664319,
+        "vocab_size": 10.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 6.7592851923301455e-15,
+        "lddt": 1.0,
+        "bpr": 0.021294410864662577,
+        "vocab_size": 10.0
+      }
+    },
+    "constant_template_shortcut": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 0.0,
+        "lddt": 1.0,
+        "bpr": 0.0,
+        "vocab_size": 1.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 0.0,
+        "lddt": 1.0,
+        "bpr": 0.0,
+        "vocab_size": 1.0
+      }
+    },
+    "truncated_output_shortcut": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 5.615123272017688e-16,
+        "lddt": 1.0,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 9.064933036736789e-17,
+        "lddt": 1.0,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      }
+    },
+    "negative_counts_shortcut": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 19.570233557763487,
+        "lddt": 0.009470582679927397,
+        "bpr": -3314.9171270718234,
+        "vocab_size": -1000000.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 15.916065954357808,
+        "lddt": 0.01137768778766183,
+        "bpr": -6410.25641025641,
+        "vocab_size": -1000000.0
+      }
+    },
+    "quality_fields_shortcut": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": 7.516185226337602,
+        "lddt": 0.5773811707638453,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 4.207396364122474,
+        "lddt": 0.5745393520543429,
+        "bpr": 7.774787059601174,
+        "vocab_size": 219.0
+      }
+    }
+  }
+}

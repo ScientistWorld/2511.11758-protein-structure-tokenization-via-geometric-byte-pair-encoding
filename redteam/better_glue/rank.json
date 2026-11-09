@@ -1,0 +1,38 @@
+{
+  "audit": {
+    "rank_points_over_reference": 0.042925723731097785,
+    "components": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": -0.017879542887111688,
+        "lddt": -0.01161913150423929,
+        "bpr": 1.6426950057364572e-06,
+        "vocab_size": 2.0651614420270876e-07
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 0.022715119490668245,
+        "lddt": 0.04970637266694681,
+        "bpr": 8.502375395759531e-07,
+        "vocab_size": 2.0651614420270876e-07
+      }
+    }
+  },
+  "honest": {
+    "rank_points_over_reference": 0.21345001061442245,
+    "components": {
+      "scaled_pdb_tokenization_cameo": {
+        "rmsd": -0.037476944604910925,
+        "lddt": -0.03236719921581077,
+        "bpr": 0.0016684404110836545,
+        "vocab_size": 0.00018883991694911446
+      },
+      "scaled_pdb_tokenization_casp14": {
+        "rmsd": 0.0717637089304349,
+        "lddt": 0.2078073838424858,
+        "bpr": 0.001676941417241558,
+        "vocab_size": 0.00018883991694911446
+      }
+    }
+  },
+  "dominates_reference_any_positive_scales": false,
+  "ties_reference": false
+}

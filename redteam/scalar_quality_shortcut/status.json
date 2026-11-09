@@ -1,0 +1,14 @@
+{
+  "case": "scalar_quality_shortcut",
+  "method_runtime_seconds": 0.0,
+  "test_command": [
+    "bash",
+    "scripts/evaluate_test.sh"
+  ],
+  "test_has_arguments": false,
+  "train_returncode": 1,
+  "train_error": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/user/eval/train/evaluate.py\", line 99, in <module>\n    main()\n  File \"/home/user/eval/train/evaluate.py\", line 78, in main\n    experiment_results = summarize_artifact_slice(args.artifact, SLICE)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/train/evaluate.py\", line 64, in summarize_artifact_slice\n    return {\n           ^\n  File \"/home/user/eval/train/evaluate.py\", line 65, in <dictcomp>\n    experiment: summarize_methods(\n                ^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 213, in summarize_methods\n    raise ValueError(\nValueError: geobpe_table16_high advertises reconstruction quality metrics but is missing original_coords/reconstructed_coords for at least one structure\n",
+  "test_returncode": 1,
+  "test_error": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/user/eval/test/evaluate.py\", line 163, in <module>\n    main()\n  File \"/home/user/eval/test/evaluate.py\", line 141, in main\n    experiment_results = summarize_artifact_slice(args.artifact, SLICE, args.train_scores)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/test/evaluate.py\", line 124, in summarize_artifact_slice\n    results[experiment] = summarize_methods(\n                          ^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 213, in summarize_methods\n    raise ValueError(\nValueError: geobpe_table16_high advertises reconstruction quality metrics but is missing original_coords/reconstructed_coords for at least one structure\n",
+  "evaluator_unchanged": true
+}

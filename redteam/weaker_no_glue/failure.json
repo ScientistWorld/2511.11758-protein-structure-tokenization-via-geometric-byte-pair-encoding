@@ -1,0 +1,4 @@
+{
+  "case": "weaker_no_glue",
+  "error": "RuntimeError('Command failed (1); see /home/user/redteam/weaker_no_glue/runtime.log')"
+}

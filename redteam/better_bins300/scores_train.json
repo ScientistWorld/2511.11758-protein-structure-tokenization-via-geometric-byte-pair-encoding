@@ -1,0 +1,39 @@
+{
+  "_metadata": {
+    "slice": "train",
+    "artifact": "checkpoints/geobpe_table16_sweep/results.json",
+    "required_structures": {
+      "scaled_pdb_tokenization_cameo": [
+        "7dri_A",
+        "7egt_B"
+      ],
+      "scaled_pdb_tokenization_casp14": [
+        "6poo_A",
+        "6px4_R",
+        "6px4_T"
+      ]
+    }
+  },
+  "experiments": {
+    "scaled_pdb_tokenization_cameo": {
+      "results": {
+        "geobpe_table16_high": {
+          "bpr": 9.912889336229961,
+          "vocab_size": 964.0,
+          "rmsd": 3.7865139019450456,
+          "lddt": 0.6145472878567277
+        }
+      }
+    },
+    "scaled_pdb_tokenization_casp14": {
+      "results": {
+        "geobpe_table16_high": {
+          "bpr": 9.912889336229961,
+          "vocab_size": 964.0,
+          "rmsd": 3.1852980261386414,
+          "lddt": 0.6944816155297836
+        }
+      }
+    }
+  }
+}

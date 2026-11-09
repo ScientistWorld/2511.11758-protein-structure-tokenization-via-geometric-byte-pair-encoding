@@ -1,0 +1,12 @@
+{
+  "case": "quality_fields_shortcut",
+  "method_runtime_seconds": 0.0,
+  "test_command": [
+    "bash",
+    "scripts/evaluate_test.sh"
+  ],
+  "test_has_arguments": false,
+  "train_returncode": 0,
+  "test_returncode": 0,
+  "evaluator_unchanged": true
+}
