@@ -1,0 +1,13 @@
+{
+  "starting_revision": "3014ed56c087309089a50a1037ce660984261867",
+  "evaluated_cases": 20,
+  "all_evaluators_unchanged": true,
+  "all_test_commands_no_arguments": true,
+  "successful_test_commands": 17,
+  "failed_test_commands": 3,
+  "original_test_scores_restored": true,
+  "original_run_script_restored": true,
+  "original_method_artifact_restored": true,
+  "original_train_scores_restored": true,
+  "protected_tracked_diff_from_start": []
+}
