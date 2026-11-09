@@ -1,4 +1,4 @@
 action: submit
 gpus: 0
 test: false
-notes: "Run bundled scoring audit: three reference seeds, stronger/weaker official variants, baselines, and artifact shortcuts through no-argument hidden test."
+notes: "Validate incomplete-output shortcut against unchanged full targets, then refresh audit ranks."
