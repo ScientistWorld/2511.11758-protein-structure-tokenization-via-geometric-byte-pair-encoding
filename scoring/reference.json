@@ -92,7 +92,7 @@
   "experiments": {
     "short_backbones": {
       "description": "Compact lossy coding of complete 64\u2013192 residue protein backbones on 64 unseen chains.",
-      "notes": "Scaled RCSB corpus, distinct from the paper evaluation splits. Results here are measured reference values, not paper targets. Full finite dictionary storage is charged. Paper Table 16 values are retained verbatim under _paper_reported.",
+      "notes": "Scaled RCSB corpus, distinct from the paper evaluation splits. Results are the reproduced reference measured by scripts/evaluate_test.sh, not paper targets. Reference: released GEOBPE at the paper Table 14 main codebook {2:100,3:500,5:20,6:100} reported in Table 16 at |V|=600 (no merged keys), 128 fitting chains, 2,048 clustering occurrences. Full finite dictionary storage is charged. Failed attempts are scored at the fixed worst values {\"rmsd\": 15.0, \"lddt\": 0.35, \"bpr\": 96.0, \"vocab_size\": 8192.0}. Paper Table 16 values are retained verbatim under _paper_reported. The independent fixed-bin baseline fails (long_backbones: reconstruction constraint) and is therefore scored at the worst values; its measured values here are RMSD 7.690, lDDT 0.545, BPR 45.344.",
       "weight": 0.5,
       "primary_metric": "lddt",
       "metrics": {
@@ -120,23 +120,23 @@
       "results": {
         "geobpe_reference": {
           "type": "proposed",
-          "rmsd": 1.9807360308433837,
-          "lddt": 0.7557150700918206,
-          "bpr": 44.372994154661434,
-          "vocab_size": 2107.0
+          "rmsd": 1.9802756371543153,
+          "lddt": 0.7557434258459929,
+          "bpr": 44.207101158354725,
+          "vocab_size": 2100.0
         },
         "internal_baseline": {
           "type": "baseline",
-          "rmsd": 7.690367596723833,
-          "lddt": 0.5447829721891497,
-          "bpr": 45.343701778694445,
-          "vocab_size": 288.0
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
         }
       }
     },
     "long_backbones": {
       "description": "Compact lossy coding of complete 256\u2013512 residue protein backbones on 64 unseen chains.",
-      "notes": "Scaled RCSB corpus, distinct from the paper evaluation splits. Results here are measured reference values, not paper targets. Full finite dictionary storage is charged. Paper Table 16 values are retained verbatim under _paper_reported.",
+      "notes": "Scaled RCSB corpus, distinct from the paper evaluation splits. Results are the reproduced reference measured by scripts/evaluate_test.sh, not paper targets. Reference: released GEOBPE at the paper Table 14 main codebook {2:100,3:500,5:20,6:100} reported in Table 16 at |V|=600 (no merged keys), 128 fitting chains, 2,048 clustering occurrences. Full finite dictionary storage is charged. Failed attempts are scored at the fixed worst values {\"rmsd\": 15.0, \"lddt\": 0.35, \"bpr\": 96.0, \"vocab_size\": 8192.0}. Paper Table 16 values are retained verbatim under _paper_reported. The independent fixed-bin baseline fails (long_backbones: reconstruction constraint) and is therefore scored at the worst values; its measured values here are RMSD 19.813, lDDT 0.428, BPR 45.332.",
       "weight": 0.5,
       "primary_metric": "lddt",
       "metrics": {
@@ -164,17 +164,17 @@
       "results": {
         "geobpe_reference": {
           "type": "proposed",
-          "rmsd": 1.519381382308767,
-          "lddt": 0.8239768147770626,
-          "bpr": 44.34411134912492,
-          "vocab_size": 2107.0
+          "rmsd": 1.5182767567157438,
+          "lddt": 0.8241116073083052,
+          "bpr": 44.17821835281821,
+          "vocab_size": 2100.0
         },
         "internal_baseline": {
           "type": "baseline",
-          "rmsd": 19.813211017267836,
-          "lddt": 0.42807354758759275,
-          "bpr": 45.332148656479845,
-          "vocab_size": 288.0
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
         }
       }
     }

@@ -1,27 +1,49 @@
 {
   "_metadata": {
     "slice": "test",
-    "source": "evaluator-decoded raw streams; reference method only",
-    "reference": "GEOBPE Table 14 main codebook (500/100 initial, 20/100 merged medoids), Appendix K.2 short compression schedule (5 merges), 128 fitting chains, 2048 clustering occurrences; no matching to paper numbers"
+    "source": "evaluator-decoded raw representations of every checkpoints/submissions/*/manifest.json",
+    "failed_attempts_scored_at": {
+      "rmsd": 15.0,
+      "lddt": 0.35,
+      "bpr": 96.0,
+      "vocab_size": 8192.0
+    },
+    "failed": {
+      "internal_baseline": [
+        "long_backbones: reconstruction constraint"
+      ]
+    }
   },
   "experiments": {
     "short_backbones": {
       "results": {
         "geobpe_reference": {
-          "rmsd": 1.9807360308433837,
-          "lddt": 0.7557150700918206,
-          "bpr": 44.372994154661434,
-          "vocab_size": 2107.0
+          "rmsd": 1.9802756371543153,
+          "lddt": 0.7557434258459929,
+          "bpr": 44.207101158354725,
+          "vocab_size": 2100.0
+        },
+        "internal_baseline": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
         }
       }
     },
     "long_backbones": {
       "results": {
         "geobpe_reference": {
-          "rmsd": 1.519381382308767,
-          "lddt": 0.8239768147770626,
-          "bpr": 44.34411134912492,
-          "vocab_size": 2107.0
+          "rmsd": 1.5182767567157438,
+          "lddt": 0.8241116073083052,
+          "bpr": 44.17821835281821,
+          "vocab_size": 2100.0
+        },
+        "internal_baseline": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
         }
       }
     }

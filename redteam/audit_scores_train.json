@@ -1,0 +1,301 @@
+{
+  "_metadata": {
+    "slice": "train",
+    "source": "evaluator-decoded raw representations of every checkpoints/submissions/*/manifest.json",
+    "failed_attempts_scored_at": {
+      "rmsd": 15.0,
+      "lddt": 0.35,
+      "bpr": 96.0,
+      "vocab_size": 8192.0
+    },
+    "failed": {
+      "attack_constant_template": [
+        "ValueError: invalid full coordinate output"
+      ],
+      "attack_crash": [
+        "CalledProcessError: Command '['python', 'eval/test/probes.py', '--attack', 'crash', '--request', '/home/user/eval/train/runs/attack_crash/request.json', '--output', '/home/user/eval/train/runs/attack_crash/outputs.json', '--model', '/home/user/eval/train/runs/attack_crash/model.json']' returned non-zero exit status 1."
+      ],
+      "attack_forged_counts": [
+        "ValueError: representation fields do not match codec"
+      ],
+      "attack_forged_target": [
+        "ValueError: representation fields do not match codec"
+      ],
+      "attack_negative_counts": [
+        "ValueError: invalid stream lengths"
+      ],
+      "attack_public_dictionary": [
+        "ValueError: reconstruction does not cover the complete chain"
+      ],
+      "attack_quality_fields": [
+        "ValueError: representation fields do not match codec"
+      ],
+      "attack_tamper_reference": [
+        "ValueError: attempt modified evaluation or comparison files: scoring/reference.json"
+      ],
+      "attack_tamper_target": [
+        "ValueError: attempt modified evaluation or comparison files: data/downloads/pdb/visible_short/3ivq_A.pdb"
+      ],
+      "attack_truncated": [
+        "ValueError: invalid full coordinate output"
+      ],
+      "internal_baseline": [
+        "long_backbones: reconstruction constraint"
+      ],
+      "supplied_baseline": [
+        "short_backbones: rate/dictionary constraint",
+        "long_backbones: rate/dictionary constraint"
+      ]
+    }
+  },
+  "experiments": {
+    "short_backbones": {
+      "results": {
+        "attack_constant_template": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_crash": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_forged_counts": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_forged_target": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_negative_counts": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_prune_comparison": {
+          "rmsd": 1.924225484968796,
+          "lddt": 0.7610325589299773,
+          "bpr": 43.91628649509333,
+          "vocab_size": 2100.0
+        },
+        "attack_public_dictionary": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_quality_fields": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_tamper_reference": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_tamper_target": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_truncated": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "closed_loop_internal": {
+          "rmsd": 0.35117189544260025,
+          "lddt": 0.9641226944854303,
+          "bpr": 26.265148833264153,
+          "vocab_size": 159.0
+        },
+        "geobpe_reference": {
+          "rmsd": 1.924225484968796,
+          "lddt": 0.7610325589299773,
+          "bpr": 43.91628649509333,
+          "vocab_size": 2100.0
+        },
+        "higher_capacity": {
+          "rmsd": 1.806610096941926,
+          "lddt": 0.7720170682340439,
+          "bpr": 53.32711050604892,
+          "vocab_size": 3173.0
+        },
+        "internal_baseline": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "lower_capacity": {
+          "rmsd": 3.606429077684428,
+          "lddt": 0.6171628172993975,
+          "bpr": 29.717629848559046,
+          "vocab_size": 407.0
+        },
+        "merge5": {
+          "rmsd": 1.9178767974600124,
+          "lddt": 0.7615851432292914,
+          "bpr": 44.075542260633455,
+          "vocab_size": 2107.0
+        },
+        "no_bpe": {
+          "rmsd": 1.9178767974600124,
+          "lddt": 0.7615851432292914,
+          "bpr": 43.91628649509333,
+          "vocab_size": 2100.0
+        },
+        "refined_glue": {
+          "rmsd": 1.2138273187385071,
+          "lddt": 0.8392730182442909,
+          "bpr": 43.91628649509333,
+          "vocab_size": 2100.0
+        },
+        "supplied_baseline": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        }
+      }
+    },
+    "long_backbones": {
+      "results": {
+        "attack_constant_template": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_crash": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_forged_counts": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_forged_target": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_negative_counts": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_prune_comparison": {
+          "rmsd": 1.5263327957743271,
+          "lddt": 0.8235277779720832,
+          "bpr": 43.89132213322456,
+          "vocab_size": 2100.0
+        },
+        "attack_public_dictionary": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_quality_fields": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_tamper_reference": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_tamper_target": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "attack_truncated": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "closed_loop_internal": {
+          "rmsd": 0.4295810000330641,
+          "lddt": 0.9604886725433164,
+          "bpr": 26.210227237152854,
+          "vocab_size": 159.0
+        },
+        "geobpe_reference": {
+          "rmsd": 1.5263327957743271,
+          "lddt": 0.8235277779720832,
+          "bpr": 43.89132213322456,
+          "vocab_size": 2100.0
+        },
+        "higher_capacity": {
+          "rmsd": 1.897273893521128,
+          "lddt": 0.7627602601286267,
+          "bpr": 53.31712476130141,
+          "vocab_size": 3173.0
+        },
+        "internal_baseline": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        },
+        "lower_capacity": {
+          "rmsd": 7.675947582649293,
+          "lddt": 0.4852636159996887,
+          "bpr": 29.57521162655219,
+          "vocab_size": 407.0
+        },
+        "merge5": {
+          "rmsd": 1.526252767002184,
+          "lddt": 0.8237068313626423,
+          "bpr": 44.050577898764686,
+          "vocab_size": 2107.0
+        },
+        "no_bpe": {
+          "rmsd": 1.526252767002184,
+          "lddt": 0.8237068313626423,
+          "bpr": 43.89132213322456,
+          "vocab_size": 2100.0
+        },
+        "refined_glue": {
+          "rmsd": 0.9400309011262054,
+          "lddt": 0.889149388821575,
+          "bpr": 43.89132213322456,
+          "vocab_size": 2100.0
+        },
+        "supplied_baseline": {
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        }
+      }
+    }
+  }
+}

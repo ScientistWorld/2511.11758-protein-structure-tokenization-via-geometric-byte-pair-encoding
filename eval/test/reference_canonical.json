@@ -1,0 +1,182 @@
+{
+  "_paper_reported": {
+    "scaled_pdb_tokenization_cameo": {
+      "description": "Protein backbone structure tokenization on the scaled CAMEO held-out split. Reference values use two reported structural-tokenizer operating points from the paper's Table 16.",
+      "notes": "RMSD, lDDT, BPR, and vocabulary size are copied from the paper's Table 16 rows. The compact gym uses lDDT as the primary reconstruction-quality metric because the small public subset reproduces local-distance preservation more faithfully than global RMSD. RMSD remains scored as a secondary distortion metric. The benchmark computes BPR as a reproducible encoded-token proxy, so reproduced BPR is not expected to match the paper's full description-length BPR exactly.",
+      "weight": 0.5,
+      "primary_metric": "lddt",
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -0.6,
+          "description": "Global geometric reconstruction error between original and reconstructed backbone coordinates."
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Primary local distance preservation score that rewards reconstructed backbones with native-like local geometry."
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.4,
+          "description": "Encoded-token bits-per-residue proxy that penalizes inefficient structural encodings."
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.1,
+          "description": "Vocabulary compactness constraint that discourages memorizing structures with an unbounded token set."
+        }
+      },
+      "results": {
+        "geobpe_table16_high": {
+          "type": "proposed",
+          "rmsd": 1.77,
+          "lddt": 0.7,
+          "bpr": 34.0,
+          "vocab_size": 237.0
+        },
+        "geobpe_table16_low": {
+          "type": "proposed",
+          "rmsd": 3.96,
+          "lddt": 0.53,
+          "bpr": 27.26,
+          "vocab_size": 109.0
+        }
+      }
+    },
+    "scaled_pdb_tokenization_casp14": {
+      "description": "Protein backbone structure tokenization on the scaled CASP14 held-out split. Reference values use two reported structural-tokenizer operating points from the paper's Table 16.",
+      "notes": "RMSD, lDDT, BPR, and vocabulary size are copied from the paper's Table 16 rows. The compact gym uses lDDT as the primary reconstruction-quality metric because the small public subset reproduces local-distance preservation more faithfully than global RMSD. RMSD remains scored as a secondary distortion metric. The benchmark computes BPR as a reproducible encoded-token proxy, so reproduced BPR is not expected to match the paper's full description-length BPR exactly.",
+      "weight": 0.5,
+      "primary_metric": "lddt",
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -0.6,
+          "description": "Global geometric reconstruction error between original and reconstructed backbone coordinates."
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Primary local distance preservation score that rewards reconstructed backbones with native-like local geometry."
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.4,
+          "description": "Encoded-token bits-per-residue proxy that penalizes inefficient structural encodings."
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.1,
+          "description": "Vocabulary compactness constraint that discourages memorizing structures with an unbounded token set."
+        }
+      },
+      "results": {
+        "geobpe_table16_high": {
+          "type": "proposed",
+          "rmsd": 1.77,
+          "lddt": 0.7,
+          "bpr": 34.0,
+          "vocab_size": 237.0
+        },
+        "geobpe_table16_low": {
+          "type": "proposed",
+          "rmsd": 3.96,
+          "lddt": 0.53,
+          "bpr": 27.26,
+          "vocab_size": 109.0
+        }
+      }
+    }
+  },
+  "experiments": {
+    "short_backbones": {
+      "description": "Compact lossy coding of complete 64\u2013192 residue protein backbones on 64 unseen chains.",
+      "notes": "Scaled RCSB corpus, distinct from the paper evaluation splits. Results are the reproduced reference measured by scripts/evaluate_test.sh, not paper targets. Reference: released GEOBPE at the paper Table 14 main codebook {2:100,3:500,5:20,6:100} reported in Table 16 at |V|=600 (no merged keys), 128 fitting chains, 2,048 clustering occurrences. Full finite dictionary storage is charged. Failed attempts are scored at the fixed worst values {\"rmsd\": 15.0, \"lddt\": 0.35, \"bpr\": 96.0, \"vocab_size\": 8192.0}. Paper Table 16 values are retained verbatim under _paper_reported. The independent fixed-bin baseline fails (long_backbones: reconstruction constraint) and is therefore scored at the worst values; its measured values here are RMSD 7.690, lDDT 0.545, BPR 45.344.",
+      "weight": 0.5,
+      "primary_metric": "lddt",
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -0.6,
+          "description": "Mean complete-backbone RMSD in angstroms after proper Kabsch alignment."
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Mean per-residue CA lDDT, 15 angstrom inclusion radius and tolerances 0.5, 1, 2, 4 angstroms."
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.4,
+          "description": "Encoded streams plus the shared dictionary charged once across the full corpus, in bits per native residue."
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.02,
+          "description": "Total dictionary and boundary alphabet size, also limited to 8192."
+        }
+      },
+      "results": {
+        "geobpe_reference": {
+          "type": "proposed",
+          "rmsd": 1.9802756371543153,
+          "lddt": 0.7557434258459929,
+          "bpr": 44.207101158354725,
+          "vocab_size": 2100.0
+        },
+        "internal_baseline": {
+          "type": "baseline",
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        }
+      }
+    },
+    "long_backbones": {
+      "description": "Compact lossy coding of complete 256\u2013512 residue protein backbones on 64 unseen chains.",
+      "notes": "Scaled RCSB corpus, distinct from the paper evaluation splits. Results are the reproduced reference measured by scripts/evaluate_test.sh, not paper targets. Reference: released GEOBPE at the paper Table 14 main codebook {2:100,3:500,5:20,6:100} reported in Table 16 at |V|=600 (no merged keys), 128 fitting chains, 2,048 clustering occurrences. Full finite dictionary storage is charged. Failed attempts are scored at the fixed worst values {\"rmsd\": 15.0, \"lddt\": 0.35, \"bpr\": 96.0, \"vocab_size\": 8192.0}. Paper Table 16 values are retained verbatim under _paper_reported. The independent fixed-bin baseline fails (long_backbones: reconstruction constraint) and is therefore scored at the worst values; its measured values here are RMSD 19.813, lDDT 0.428, BPR 45.332.",
+      "weight": 0.5,
+      "primary_metric": "lddt",
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -0.6,
+          "description": "Mean complete-backbone RMSD in angstroms after proper Kabsch alignment."
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Mean per-residue CA lDDT, 15 angstrom inclusion radius and tolerances 0.5, 1, 2, 4 angstroms."
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.4,
+          "description": "Encoded streams plus the shared dictionary charged once across the full corpus, in bits per native residue."
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.02,
+          "description": "Total dictionary and boundary alphabet size, also limited to 8192."
+        }
+      },
+      "results": {
+        "geobpe_reference": {
+          "type": "proposed",
+          "rmsd": 1.5182767567157438,
+          "lddt": 0.8241116073083052,
+          "bpr": 44.17821835281821,
+          "vocab_size": 2100.0
+        },
+        "internal_baseline": {
+          "type": "baseline",
+          "rmsd": 15.0,
+          "lddt": 0.35,
+          "bpr": 96.0,
+          "vocab_size": 8192.0
+        }
+      }
+    }
+  }
+}
