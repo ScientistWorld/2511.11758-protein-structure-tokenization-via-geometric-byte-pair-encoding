@@ -1,13 +1,5 @@
 #!/usr/bin/env bash
-# Reference-only end-to-end reproduction, with all comparison settings fixed in eval/.
+# Temporary: the one combined hardening audit job. Restored to scripts/reproduce.sh afterwards.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
-export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
-export GEOBPE_DATASET_WORKERS=1 SLURM_CPUS_PER_TASK=1 PYTHONHASHSEED=0 MPLBACKEND=Agg
-export PYTHONWARNINGS=ignore::FutureWarning
-bash scripts/method.sh
-python baseline/internal.py --fit
-bash scripts/evaluate_train.sh
-bash scripts/evaluate_test.sh
-python scripts/package_scores.py
-python validate.py
+exec bash scripts/hardening_audit.sh

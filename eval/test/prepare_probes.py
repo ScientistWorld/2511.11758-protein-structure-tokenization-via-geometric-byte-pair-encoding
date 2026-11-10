@@ -20,7 +20,7 @@ def main():
  dictionary={'codec':'motif','motifs':motifs,'glue':{'theta':[1.9],'omega':[3.14],'phi':[3.14]}}
  load_model(dictionary)  # Verify the attack's dictionary is well formed.
  print('Whole-chain lookup probe uses ten valid public dictionary entries.',flush=True)
- for attack in ('forged_target','forged_counts','quality_fields','negative_counts','truncated','constant_template','public_dictionary','prune_comparison'):
+ for attack in ('forged_target','forged_counts','quality_fields','negative_counts','truncated','constant_template','public_dictionary','prune_comparison','crash','tamper_reference','tamper_target'):
   dest=ROOT/'checkpoints/submissions'/('attack_'+attack); dest.mkdir(parents=True,exist_ok=True)
   model=source if attack not in ('truncated','constant_template','public_dictionary') else dictionary if attack=='public_dictionary' else {'codec':'cartesian'}
   (dest/'model.json').write_text(json.dumps(model)+'\n')

@@ -1,31 +1,41 @@
-"""Public, method-independent decoder, measurement, failure gates and cohort ranking.
+"""Public, method-independent decoder, measurement and failure gates.
 
-All submitted values are representation symbols, never scores or targets.
-Method, data and private evaluation implementations are not imported. Evaluation never trains a submitted method.
+Every checkpoints/submissions/*/manifest.json on disk is encoded through the same
+interface and decoded here. Each method's four metrics per experiment are written
+to scoring/scores_train.json under experiments.<name>.results.<method>, the public
+feedback slice. The same rules apply on the private slice. A malformed, crashed, file-modifying or constraint-failing
+attempt receives the fixed worst value of every scored metric in every experiment.
+
+Submitted values are representation symbols, never scores, counts, flags or
+targets. Targets, test size, limits and worst values are owned by this directory.
+Method, data and private evaluation code are not imported. Evaluation never trains
+a submitted method.
 """
 from __future__ import annotations
-import hashlib,json,math,os,subprocess,sys
+import hashlib,json,math,os,subprocess,time
 from pathlib import Path
 import numpy as np
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
+SLICE='train'
 EXPERIMENTS={'short_backbones':('visible_short',64),'long_backbones':('visible_long',64)}
-# Read the published coefficients, and require the evaluator-owned frozen contract.
-# An attempt cannot change its comparisons by editing public score/config files.
-_contract=json.loads((HERE/'contract.json').read_text())['experiments']
-_published=json.loads((ROOT/'scoring/reference.json').read_text())['experiments']
-for _e,_c in _contract.items():
- if _published[_e]['weight']!=_c['weight'] or any((_published[_e]['metrics'][m]['higher_is_better'],_published[_e]['metrics'][m]['coefficient'])!=(d['higher_is_better'],d['coefficient']) for m,d in _c['metrics'].items()):
-  raise ValueError('published scoring coefficients differ from fixed evaluation contract')
-METRICS={m:(d['higher_is_better'],abs(d['coefficient'])) for m,d in _published[next(iter(EXPERIMENTS))]['metrics'].items()}
-WEIGHTS={e:_published[e]['weight'] for e in EXPERIMENTS}
-# Fixed task feasibility constraints, chosen before the final runs.
-LIMITS={'rmsd':15.,'lddt':.35,'bpr':96.,'vocab_size':8192}
+SCORES=ROOT/'scoring'/'scores_train.json'
+REFERENCE=ROOT/'scoring'/'reference.json'
 
 def read_json(path):
  return json.loads(Path(path).read_text(),parse_constant=lambda x: (_ for _ in ()).throw(ValueError('nonfinite JSON')))
 def write_json(path,obj):
- path=Path(path); path.parent.mkdir(parents=True,exist_ok=True); path.write_text(json.dumps(obj,indent=2,allow_nan=False)+'\n')
+ path=Path(path); path.parent.mkdir(parents=True,exist_ok=True)
+ temp=path.with_name(path.name+'.partial'); temp.write_text(json.dumps(obj,indent=2,allow_nan=False)+'\n'); temp.replace(path)
+
+CONTRACT=read_json(HERE/'contract.json')
+METRICS={m:(d['higher_is_better'],abs(d['coefficient'])) for m,d in CONTRACT['experiments'][next(iter(EXPERIMENTS))]['metrics'].items()}
+WEIGHTS={e:CONTRACT['experiments'][e]['weight'] for e in EXPERIMENTS}
+# Fixed task feasibility constraints, chosen before the final runs.
+LIMITS={k:float(v) for k,v in CONTRACT['limits'].items()}
+# Every failed attempt is scored at these values: no better than any feasible run.
+WORST={m:float(CONTRACT['worst'][m]) for m in METRICS}
+
 def exact_keys(obj,keys):
  if not isinstance(obj,dict) or set(obj)!=set(keys): raise ValueError('representation fields do not match codec')
 def floats(values):
@@ -41,10 +51,11 @@ def index(v,n):
 
 def load_model(obj):
  """Frozen decoder model. Charge float32 values, array sizes and dictionary headers."""
+ if not isinstance(obj,dict): raise ValueError('model must be an object')
  codec=obj.get('codec'); model_bits=128
  if codec=='motif':
   exact_keys(obj,['codec','motifs','glue'])
-  if not 1<=len(obj['motifs'])<=8192: raise ValueError('invalid dictionary size')
+  if not isinstance(obj['motifs'],list) or not 1<=len(obj['motifs'])<=8192: raise ValueError('invalid dictionary size')
   motifs=[]
   for row in obj['motifs']:
    exact_keys(row,['bonds','angles','torsions']); d,a,t=[floats(row[k]) for k in ('bonds','angles','torsions')]
@@ -57,7 +68,9 @@ def load_model(obj):
   model_bits+=sum(32+32*len(v) for v in glue.values())
   return {'codec':codec,'motifs':motifs,'glue':glue},model_bits,len(motifs)+sum(map(len,glue.values()))
  if codec=='internal':
-  exact_keys(obj,['codec','bins']); bins=[floats(v) for v in obj['bins']]
+  exact_keys(obj,['codec','bins'])
+  if not isinstance(obj['bins'],list): raise ValueError('invalid internal-coordinate alphabets')
+  bins=[floats(v) for v in obj['bins']]
   if len(bins)!=9 or any(not 1<=len(v)<=4096 for v in bins): raise ValueError('invalid internal-coordinate alphabets')
   return {'codec':codec,'bins':bins},model_bits+sum(32+32*len(v) for v in bins),sum(map(len,bins))
  if codec=='cartesian':
@@ -80,6 +93,7 @@ def decode(row,model,n):
  codec=model['codec']; bits=32
  if codec=='motif':
   exact_keys(row,['id','motifs','glue']); ids=row['motifs']; joins=row['glue']
+  if not isinstance(ids,list) or not isinstance(joins,list): raise ValueError('invalid stream lengths')
   if not 1<=len(ids)<=n or len(joins)!=len(ids)-1: raise ValueError('invalid stream lengths')
   d=[]; a=[]; t=[]
   for i,mid in enumerate(ids):
@@ -100,7 +114,7 @@ def decode(row,model,n):
   values=[]
   for group,expected in enumerate((3*n-1,3*n-2,3*n-3)):
    seq=lists[group]
-   if len(seq)!=expected: raise ValueError('incomplete internal stream')
+   if not isinstance(seq,list) or len(seq)!=expected: raise ValueError('incomplete internal stream')
    arr=[]
    for j,v in enumerate(seq):
     bins=model['bins'][group*3+j%3]; arr.append(bins[index(v,len(bins))]); bits+=width(len(bins))
@@ -113,13 +127,15 @@ def decode(row,model,n):
  if x.shape!=(3*n,3): raise ValueError('wrong reconstructed size')
  return x,bits
 
-def target(path):
+def parse_backbone(text):
  x=[]
- for line in Path(path).read_text().splitlines():
+ for line in text.splitlines():
   if line.startswith('ATOM  '): x.append([float(line[j:j+8]) for j in (30,38,46)])
  a=np.asarray(x,float)
  if len(a)%3 or not np.isfinite(a).all(): raise ValueError('invalid evaluator target')
  return a
+def target(path):
+ return parse_backbone(Path(path).read_text())
 
 def quality(native,reconstruction):
  """Backbone Kabsch RMSD and per-residue CA lDDT (15 A, four tolerances)."""
@@ -137,95 +153,110 @@ def quality(native,reconstruction):
  return rmsd,lddt
 
 def dataset():
+ """Load and verify every public target once; measurement never rereads files."""
  rows=read_json(ROOT/'data'/'sources.json'); out={}
  for exp,(split,size) in EXPERIMENTS.items():
   selected=[r for r in rows if r['split']==split]
   if len(selected)!=size: raise ValueError('fixed test size mismatch')
-  out[exp]=[(f"{r['pdb']}_{r['chain']}",ROOT/'data'/'downloads'/'pdb'/split/f"{r['pdb']}_{r['chain']}.pdb",r) for r in selected]
+  entries=[]
+  for r in selected:
+   name=f"{r['pdb']}_{r['chain']}"; path=ROOT/'data'/'downloads'/'pdb'/split/f"{name}.pdb"; data=path.read_bytes()
+   if hashlib.sha256(data).hexdigest()!=r['sha256']: raise ValueError('public source integrity failure: '+name)
+   native=parse_backbone(data.decode())
+   if len(native)//3!=r['residues']: raise ValueError('public source length mismatch: '+name)
+   entries.append((name,path,r,native))
+  out[exp]=entries
  return out
 
 def measure(raw,model_info,targets):
  model,model_bits,vocab=model_info
- if not isinstance(raw,list): raise ValueError('outputs must be a list')
- wanted={name for entries in targets.values() for name,_,_ in entries}
- if len(raw)!=len(wanted) or {r.get('id') for r in raw}!=wanted: raise ValueError('missing, duplicate or unknown instances')
+ if not isinstance(raw,list) or not all(isinstance(r,dict) for r in raw): raise ValueError('outputs must be a list of objects')
+ wanted={name for entries in targets.values() for name,_,_,_ in entries}
+ ids=[r.get('id') for r in raw]
+ if len(raw)!=len(wanted) or len(set(map(str,ids)))!=len(ids) or set(ids)!=wanted: raise ValueError('missing, duplicate or unknown instances')
  by_id={r['id']:r for r in raw}; result={}; details={}
- total_residues=sum(source['residues'] for entries in targets.values() for _,_,source in entries)
+ total_residues=sum(len(native)//3 for entries in targets.values() for _,_,_,native in entries)
  for exp,entries in targets.items():
   rr=[]; ll=[]; lengths=[]; stream_bits=[]
-  for name,path,source in entries:
-   native=target(path); n=len(native)//3
-   if n!=source['residues'] or hashlib.sha256(path.read_bytes()).hexdigest()!=source['sha256']: raise ValueError('private source integrity failure')
+  for name,_,_,native in entries:
+   n=len(native)//3
    pred,bits=decode(by_id[name],model,n); rmsd,lddt=quality(native,pred)
    rr.append(rmsd); ll.append(lddt); lengths.append(n); stream_bits.append(bits)
   result[exp]={'rmsd':float(np.mean(rr)),'lddt':float(np.mean(ll)),'bpr':float(sum(stream_bits)/sum(lengths)+model_bits/total_residues),'vocab_size':float(vocab)}
-  details[exp]={'rmsd':rr,'lddt':ll,'residues':lengths,'bits':stream_bits,'model_bits':model_bits}
+  details[exp]={'ids':[name for name,_,_,_ in entries],'rmsd':rr,'lddt':ll,'residues':lengths,'bits':stream_bits,'model_bits':model_bits}
  return result,details
 
 def feasibility(values):
  reasons=[]
  for exp,row in values.items():
-  if any(not math.isfinite(v) for v in row.values()): reasons.append(exp+': nonfinite metric')
+  if any(not math.isfinite(v) for v in row.values()): reasons.append(exp+': nonfinite metric'); continue
   if row['rmsd']>LIMITS['rmsd'] or row['lddt']<LIMITS['lddt']: reasons.append(exp+': reconstruction constraint')
   if not 0<row['bpr']<=LIMITS['bpr'] or not 1<=row['vocab_size']<=LIMITS['vocab_size']: reasons.append(exp+': rate/dictionary constraint')
  return reasons
 
-def rank(records,reference):
- """Normalize by this cohort's measured variation; failed runs never outrank passes."""
- comparable=[r for r in records.values() if 'metrics' in r and not r['failed']]
- if not comparable: raise RuntimeError('no valid attempts')
- scales={exp:{m:float(np.std([r['metrics'][exp][m] for r in comparable],ddof=0)) for m in METRICS} for exp in EXPERIMENTS}
- for r in records.values():
-  if r['failed']:
-   r['rank']=-1e100; continue
-  r['rank']=float(sum(WEIGHTS[exp]*abs(c)*(1 if up else -1)*(r['metrics'][exp][m]-reference[exp][m])/scales[exp][m] for exp in EXPERIMENTS for m,(up,c) in METRICS.items() if scales[exp][m]>1e-12))
- return scales
+def scored(record):
+ """The only values that are ranked: measured metrics, or worst values on failure."""
+ if record.get('failed',True) or 'metrics' not in record: return {exp:dict(WORST) for exp in EXPERIMENTS}
+ return {exp:{m:float(record['metrics'][exp][m]) for m in METRICS} for exp in EXPERIMENTS}
 
-def paired_intervals(records,reference_details,scales,reference):
- """Paired bootstrap of fixed inputs. Dictionary size/cost remain fixed per method."""
- rng=np.random.default_rng(20261109)
- indices={exp:rng.integers(0,size,(1000,size)) for exp,(_,size) in EXPERIMENTS.items()}
- for r in records.values():
-  if r['failed']: continue
-  draws=np.zeros(1000)
-  total=sum(np.asarray(r['details'][e]['residues'])[indices[e]].sum(1) for e in EXPERIMENTS)
-  ref_total=sum(np.asarray(reference_details[e]['residues'])[indices[e]].sum(1) for e in EXPERIMENTS)
-  for exp in EXPERIMENTS:
-   ix=indices[exp]; d=r['details'][exp]; ref=reference_details[exp]
-   candidate={'rmsd':np.asarray(d['rmsd'])[ix].mean(1),'lddt':np.asarray(d['lddt'])[ix].mean(1),'bpr':np.asarray(d['bits'])[ix].sum(1)/np.asarray(d['residues'])[ix].sum(1)+d['model_bits']/total,'vocab_size':r['metrics'][exp]['vocab_size']}
-   base={'rmsd':np.asarray(ref['rmsd'])[ix].mean(1),'lddt':np.asarray(ref['lddt'])[ix].mean(1),'bpr':np.asarray(ref['bits'])[ix].sum(1)/np.asarray(ref['residues'])[ix].sum(1)+ref['model_bits']/ref_total,'vocab_size':reference[exp]['vocab_size']}
-   for m,(up,c) in METRICS.items():
-    if scales[exp][m]>1e-12: draws+=WEIGHTS[exp]*abs(c)*(1 if up else -1)*(candidate[m]-base[m])/scales[exp][m]
-  r['paired_rank_95ci']=[float(v) for v in np.quantile(draws,[.025,.975])]
+def write_outputs(records):
+ scores={'_metadata':{'slice':SLICE,'source':'evaluator-decoded raw representations of every checkpoints/submissions/*/manifest.json','failed_attempts_scored_at':WORST,'failed':{n:r.get('reasons',[]) for n,r in records.items() if r.get('failed',True)}},
+  'experiments':{exp:{'results':{n:scored(r)[exp] for n,r in records.items()}} for exp in EXPERIMENTS}}
+ write_json(SCORES,scores)
+ write_json(HERE/'measurements.json',records)
+
+def snapshot(targets):
+ paths=[REFERENCE,HERE/'contract.json',ROOT/'data'/'sources.json',Path(__file__).resolve()]
+ paths+=[p for entries in targets.values() for _,p,_,_ in entries]
+ return {p:p.read_bytes() for p in paths if p.exists()}
+def restore(snap):
+ """Undo any change an attempt made to evaluator-owned or comparison files. Never raises."""
+ changed=[]
+ for p,data in snap.items():
+  try: same=p.read_bytes()==data
+  except OSError: same=False
+  if not same:
+   try: p.parent.mkdir(parents=True,exist_ok=True); p.write_bytes(data)
+   except OSError: pass
+   try: changed.append(str(p.relative_to(ROOT)))
+   except ValueError: changed.append(str(p))
+ return changed
+
+def evaluate_one(path,targets,snap,runs):
+ name=path.parent.name; record={'failed':True,'reasons':[]}
+ try:
+  manifest=read_json(path)
+  if not isinstance(manifest,dict) or not isinstance(manifest.get('model'),str): raise ValueError('invalid manifest')
+  command=manifest.get('command')
+  if not isinstance(command,list) or not command or not all(isinstance(s,str) for s in command): raise ValueError('invalid manifest command')
+  model_json=read_json(ROOT/manifest['model']); model_info=load_model(model_json)
+  run=runs/name; run.mkdir(parents=True,exist_ok=True)
+  frozen=run/'model.json'; write_json(frozen,model_json)
+  request=run/'request.json'; write_json(request,[{'id':n,'path':str(p)} for entries in targets.values() for n,p,_,_ in entries])
+  output=run/'outputs.json'
+  if os.environ.get('EVAL_RESCORE')!='1' or not output.exists():
+   output.unlink(missing_ok=True)
+   argv=[s.format(request=str(request),output=str(output),model=str(frozen)) for s in command]
+   start=time.time()
+   try:
+    with (run/'encoder.log').open('w') as log:
+     subprocess.run(argv,cwd=ROOT,stdout=log,stderr=subprocess.STDOUT,check=True,timeout=7200)
+   finally:
+    changed=restore(snap); record['encoder_seconds']=round(time.time()-start,1)  # diagnostic only, never scored
+   if changed: raise ValueError('attempt modified evaluation or comparison files: '+', '.join(changed[:5]))
+  values,details=measure(read_json(output),model_info,targets)
+  reasons=feasibility(values); record.update(metrics=values,details=details,failed=bool(reasons),reasons=reasons)
+ except Exception as exc:
+  restore(snap); record.update(failed=True,malformed=True,reasons=[f'{type(exc).__name__}: {exc}'[:500]])
+ return name,record
 
 def main():
- targets=dataset(); records={}; runs=HERE/'runs'; runs.mkdir(exist_ok=True)
+ targets=dataset(); snap=snapshot(targets)
+ runs=HERE/'runs'; runs.mkdir(exist_ok=True); records={}
  manifests=sorted((ROOT/'checkpoints'/'submissions').glob('*/manifest.json'))
- if not manifests: raise RuntimeError('no method manifests on disk')
  for path in manifests:
-  name=path.parent.name; record={'failed':True}; records[name]=record
-  try:
-   manifest=read_json(path); model_json=read_json(ROOT/manifest['model']); model_info=load_model(model_json)
-   run=runs/name; run.mkdir(exist_ok=True)
-   frozen=run/'model.json'; write_json(frozen,model_json)
-   request=run/'request.json'; write_json(request,[{'id':name,'path':str(p)} for entries in targets.values() for name,p,_ in entries])
-   output=run/'outputs.json'
-   if os.environ.get('EVAL_RESCORE')!='1' or not output.exists():
-    command=[str(s).format(request=str(request),output=str(output),model=str(frozen)) for s in manifest['command']]
-    with (run/'encoder.log').open('w') as log:
-     subprocess.run(command,cwd=ROOT,stdout=log,stderr=subprocess.STDOUT,check=True,timeout=7200)
-   values,details=measure(read_json(output),model_info,targets)
-   reasons=feasibility(values); record.update(metrics=values,details=details,failed=bool(reasons),reasons=reasons)
-  except Exception as exc: record.update(malformed=True,reasons=[str(exc)])
-  write_json(HERE/'measurements.json',records)
- baseline_path=HERE/'reference_frozen.json'
- if os.environ.get('EVAL_FREEZE_REFERENCE')=='1':
-  name=os.environ['EVAL_REFERENCE_NAME']; ref=records[name]
-  if ref['failed']: raise RuntimeError('reference failed: '+str(ref.get('reasons')))
-  write_json(baseline_path,{'metrics':ref['metrics'],'details':ref['details']})
- reference=read_json(baseline_path)
- scales=rank(records,reference['metrics']); paired_intervals(records,reference['details'],scales,reference['metrics'])
- write_json(HERE/'ranking.json',{'normalization':scales,'methods':records})
- write_json(HERE/'scores_all.json',{'experiments':{exp:{name:r['metrics'][exp] for name,r in records.items() if 'metrics' in r} for exp in EXPERIMENTS}})
- print(json.dumps({name:{k:r[k] for k in ('failed','rank','reasons','paired_rank_95ci') if k in r} for name,r in records.items()},indent=2))
+  name,record=evaluate_one(path,targets,snap,runs); records[name]=record
+  write_outputs(records)
+ write_outputs(records)
+ print(json.dumps({name:{'failed':r['failed'],'reasons':r['reasons'],'scored':scored(r)} for name,r in records.items()},indent=2))
 if __name__=='__main__': main()

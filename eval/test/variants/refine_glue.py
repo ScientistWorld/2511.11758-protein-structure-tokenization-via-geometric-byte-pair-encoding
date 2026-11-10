@@ -1,14 +1,16 @@
-"""Honest headroom control: discrete boundary-coordinate descent at fixed rate.
+"""Verifier-only headroom variant: discrete boundary-coordinate descent at fixed rate.
 
+Kept under eval/test/ so this measured improvement is not a copyable free win.
 The released model and its assignments remain frozen. Unlike the reference's
 SE(3) boundary-frame loss, this variant chooses existing boundary symbols using
 full-chain aligned Cartesian error, accepting only results that also preserve
-local-distance fidelity. It uses only the encoder's supplied input geometry.
+local-distance fidelity. It uses only the encoder's supplied input geometry and
+invokes the released encoder as a subprocess; it imports no method code.
 """
 import argparse,copy,hashlib,json,math,subprocess,sys
 from pathlib import Path
 import numpy as np
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[3]
 
 def atomic(path,obj):
  path=Path(path); path.parent.mkdir(parents=True,exist_ok=True)
@@ -100,7 +102,7 @@ def main():
  if a.register:
   dest=ROOT/'checkpoints/submissions'/a.register; dest.mkdir(parents=True,exist_ok=True)
   (dest/'model.json').write_bytes(Path(a.model).read_bytes())
-  atomic(dest/'manifest.json',{'model':str((dest/'model.json').relative_to(ROOT)),'command':['python','method/refine.py','--checkpoint',a.checkpoint,'--request','{request}','--output','{output}','--model','{model}']}); return
+  atomic(dest/'manifest.json',{'model':str((dest/'model.json').relative_to(ROOT)),'command':['python','eval/test/variants/refine_glue.py','--checkpoint',a.checkpoint,'--request','{request}','--output','{output}','--model','{model}']}); return
  output=Path(a.output); base=output.with_suffix('.base.json')
  subprocess.run([sys.executable,str(ROOT/'method/encode.py'),'--checkpoint',a.checkpoint,'--request',a.request,'--output',str(base),'--model',a.model],cwd=ROOT,check=True)
  model=json.loads(Path(a.model).read_text(),parse_float=lambda x:float(np.float32(x)))

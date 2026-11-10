@@ -246,3 +246,5 @@ eval/test/scores_all.json
 eval/train/scores_all.json
 eval/test/ranking.json
 eval/train/ranking.json
+# Atomic-write temporaries from the evaluators and audit scripts.
+*.partial

@@ -42,5 +42,17 @@
         }
       }
     }
+  },
+  "limits": {
+    "rmsd": 15.0,
+    "lddt": 0.35,
+    "bpr": 96.0,
+    "vocab_size": 8192
+  },
+  "worst": {
+    "rmsd": 15.0,
+    "lddt": 0.35,
+    "bpr": 96.0,
+    "vocab_size": 8192.0
   }
 }

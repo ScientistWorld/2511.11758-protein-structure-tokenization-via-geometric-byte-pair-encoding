@@ -1,9 +1,10 @@
 """Check the rotation calculus against complete reconstruction before the audit."""
-import sys
+import importlib.util
 from pathlib import Path
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import numpy as np
-from method.refine import nerf,rotated_tail,refine,expand,quality
+_spec=importlib.util.spec_from_file_location('refine_glue',Path(__file__).resolve().parents[1]/'eval/test/variants/refine_glue.py')
+_mod=importlib.util.module_from_spec(_spec); _spec.loader.exec_module(_mod)
+nerf,rotated_tail,refine,expand,quality=_mod.nerf,_mod.rotated_tail,_mod.refine,_mod.expand,_mod.quality
 
 def main():
  d=[1.4]*11; a=[1.9]*10; t=[2.8,-1.1,.7]*3

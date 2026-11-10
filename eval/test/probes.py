@@ -5,9 +5,13 @@ Answers and attack outputs stay inside this directory. Never import method code.
 import argparse,json
 from pathlib import Path
 
+ROOT=Path(__file__).resolve().parents[2]
+
 def main():
  p=argparse.ArgumentParser(); p.add_argument('--attack',required=True); p.add_argument('--request',required=True); p.add_argument('--output',required=True); p.add_argument('--model',required=True); a=p.parse_args()
  requests=json.loads(Path(a.request).read_text()); out=[]
+ # Crashing must still cost the worst value of every metric, never an empty entry.
+ if a.attack=='crash': raise SystemExit('deliberate encoder failure without output')
  # Available only to the verifier's replay, never future submitted methods.
  reference=json.loads((Path(a.output).parents[1]/'geobpe_reference'/'outputs.json').read_text())
  by_id={r['id']:r for r in reference}
@@ -21,8 +25,18 @@ def main():
    coords=[[float(s[i:i+8]) for i in (30,38,46)] for s in Path(request['path']).read_text().splitlines() if s.startswith('ATOM  ')]
    row={'id':request['id'],'coordinates':coords[:6] if attack=='truncated' else [[0.,0.,0.]]*6}
   elif attack=='public_dictionary': row={'id':request['id'],'motifs':[0],'glue':[]}
-  elif attack=='prune_comparison': pass
+  elif attack in ('prune_comparison','tamper_reference','tamper_target'): pass
   else: raise ValueError(attack)
   out.append(row)
  Path(a.output).write_text(json.dumps(out)+'\n')
+ # Valid reference streams plus an edit of the comparison or of a target file.
+ if a.attack=='tamper_reference':
+  path=ROOT/'scoring/reference.json'; ref=json.loads(path.read_text())
+  for exp in ref.get('experiments',{}).values():
+   for m,d in exp.get('metrics',{}).items(): d['coefficient']=0.0 if m!='lddt' else 1.0
+   for r in exp.get('results',{}).values():
+    if isinstance(r,dict) and 'lddt' in r: r['lddt']=0.0
+  path.write_text(json.dumps(ref)+'\n')
+ elif a.attack=='tamper_target':
+  first=Path(requests[0]['path']); first.write_text(first.read_text()+'REMARK tampered\n')
 if __name__=='__main__': main()

@@ -1,4 +1,9 @@
-"""Measure decoded CPU-host replay noise on paired inputs, without retraining."""
+"""Measure decoded CPU-host replay noise on paired inputs, without retraining.
+
+Forces a fresh encoding of four private inputs (two per experiment) with the frozen
+reference and compares decoded quality and stream bits with the saved run. Raw
+differences only; the hardening report converts them to rank units.
+"""
 import json,subprocess
 from pathlib import Path
 import evaluate as evaluator
@@ -14,7 +19,7 @@ def main():
  reference={r['id']:r for r in json.loads((run/'outputs.json').read_text())}
  repeated=json.loads(out.read_text()); assert len(repeated)==len(inputs)
  model=evaluator.load_model(json.loads((run/'model.json').read_text()))[0]
- scales=json.loads((HERE/'ranking.json').read_text())['normalization']; by_id={r['id']:r for r in inputs}
+ by_id={r['id']:r for r in inputs}
  differences={}; bounds={e:{'rmsd':0.,'lddt':0.,'bpr':0.} for e in evaluator.EXPERIMENTS}
  for row in repeated:
   rid=row['id']; native=evaluator.target(by_id[rid]['path']); n=len(native)//3
@@ -24,8 +29,7 @@ def main():
   delta={'rmsd':abs(qa[0]-qb[0]),'lddt':abs(qa[1]-qb[1]),'bpr':abs(bits_a-bits_b)/n}
   differences[rid]=delta
   for metric,value in delta.items(): bounds[exp][metric]=max(bounds[exp][metric],value)
- noise=sum(evaluator.WEIGHTS[e]*abs(evaluator.METRICS[m][1])*v/scales[e][m] for e,values in bounds.items() for m,v in values.items() if scales[e][m]>1e-12)
- report={'exact_raw_replay':all(r==reference[r['id']] for r in repeated),'paired_inputs':len(inputs),'absolute_metric_differences':differences,'maximum_difference_by_experiment':bounds,'conservative_normalized_rank_noise':noise,'note':'Four-input numerical replay diagnostic across CPU hosts, not a population confidence bound.'}
+ report={'exact_raw_replay':all(r==reference[r['id']] for r in repeated),'paired_inputs':len(inputs),'absolute_metric_differences':differences,'maximum_difference_by_experiment':bounds,'note':'Four-input forced fresh encoding on the job host versus the saved run; not a population confidence bound.'}
  evaluator.write_json(HERE/'replay_noise.json',report)
- print('Decoded numerical replay rank-noise diagnostic:',noise,flush=True)
+ print('Forced four-input replay exact:',report['exact_raw_replay'],json.dumps(bounds),flush=True)
 if __name__=='__main__': main()

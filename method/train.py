@@ -1,6 +1,11 @@
 """Train the released GEOBPE algorithm, without the upstream plotting driver.
 
-Table 14 pipeline with explicit codebook, occurrence and iteration settings.
+Table 14 pipeline with explicit codebook, occurrence and iteration settings:
+empirical quantizers, RMSD k-medoid residue initialization, global glue
+optimization, the geo-pair map, then `--iterations` merge steps. The reference
+uses the main codebook at the operating point Table 16 reports for it
+(|V| = 600, no merged keys; Appendix K.2 stops merging early at high
+resolution). `--iterations 5` on the same fit gives the merge ablation.
 No held-out data is loaded during fitting.
 """
 import argparse,json,os,pickle,sys,random
