@@ -1,0 +1,46 @@
+{
+  "experiments": {
+    "short_backbones": {
+      "weight": 0.5,
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -0.6
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 1.0
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.4
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.02
+        }
+      }
+    },
+    "long_backbones": {
+      "weight": 0.5,
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -0.6
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 1.0
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.4
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.02
+        }
+      }
+    }
+  }
+}

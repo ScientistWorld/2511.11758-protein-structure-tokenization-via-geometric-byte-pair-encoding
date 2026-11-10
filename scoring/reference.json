@@ -1,5 +1,5 @@
 {
-  "experiments": {
+  "_paper_reported": {
     "scaled_pdb_tokenization_cameo": {
       "description": "Protein backbone structure tokenization on the scaled CAMEO held-out split. Reference values use two reported structural-tokenizer operating points from the paper's Table 16.",
       "notes": "RMSD, lDDT, BPR, and vocabulary size are copied from the paper's Table 16 rows. The compact gym uses lDDT as the primary reconstruction-quality metric because the small public subset reproduces local-distance preservation more faithfully than global RMSD. RMSD remains scored as a secondary distortion metric. The benchmark computes BPR as a reproducible encoded-token proxy, so reproduced BPR is not expected to match the paper's full description-length BPR exactly.",
@@ -31,7 +31,7 @@
         "geobpe_table16_high": {
           "type": "proposed",
           "rmsd": 1.77,
-          "lddt": 0.70,
+          "lddt": 0.7,
           "bpr": 34.0,
           "vocab_size": 237.0
         },
@@ -75,7 +75,7 @@
         "geobpe_table16_high": {
           "type": "proposed",
           "rmsd": 1.77,
-          "lddt": 0.70,
+          "lddt": 0.7,
           "bpr": 34.0,
           "vocab_size": 237.0
         },
@@ -85,6 +85,50 @@
           "lddt": 0.53,
           "bpr": 27.26,
           "vocab_size": 109.0
+        }
+      }
+    }
+  },
+  "experiments": {
+    "short_backbones": {
+      "weight": 0.5,
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -0.6
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 1.0
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.4
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.02
+        }
+      }
+    },
+    "long_backbones": {
+      "weight": 0.5,
+      "metrics": {
+        "rmsd": {
+          "higher_is_better": false,
+          "coefficient": -0.6
+        },
+        "lddt": {
+          "higher_is_better": true,
+          "coefficient": 1.0
+        },
+        "bpr": {
+          "higher_is_better": false,
+          "coefficient": -0.4
+        },
+        "vocab_size": {
+          "higher_is_better": false,
+          "coefficient": -0.02
         }
       }
     }

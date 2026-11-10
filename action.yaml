@@ -2,4 +2,4 @@ action: submit
 gpus: 0
 test: false
 milestone: method_runs
-notes: "Resume the combined hardening audit from all three completed training checkpoints and partial raw streams; equal public/private corpus sizes, atomic inference recovery, paired headroom, fixed shortcut replays, reference-only score packaging."
+notes: "Combined final repair: main Table 14 medoids and short compression schedule, shared-dictionary accounting, fixed-cost boundary-refinement headroom, paired numerical replay, shortcut reruns and reference-only score packaging."

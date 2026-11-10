@@ -10,8 +10,15 @@ import numpy as np
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
 EXPERIMENTS={'short_backbones':('short',64),'long_backbones':('long',64)}
-METRICS={'rmsd':(False,.6),'lddt':(True,1.),'bpr':(False,.4),'vocab_size':(False,.02)}
-WEIGHTS={'short_backbones':.5,'long_backbones':.5}
+# Read the published coefficients, and require the evaluator-owned frozen contract.
+# An attempt cannot change its comparisons by editing public score/config files.
+_contract=json.loads((HERE/'contract.json').read_text())['experiments']
+_published=json.loads((ROOT/'scoring/reference.json').read_text())['experiments']
+for _e,_c in _contract.items():
+ if _published[_e]['weight']!=_c['weight'] or any((_published[_e]['metrics'][m]['higher_is_better'],_published[_e]['metrics'][m]['coefficient'])!=(d['higher_is_better'],d['coefficient']) for m,d in _c['metrics'].items()):
+  raise ValueError('published scoring coefficients differ from fixed evaluation contract')
+METRICS={m:(d['higher_is_better'],abs(d['coefficient'])) for m,d in _published[next(iter(EXPERIMENTS))]['metrics'].items()}
+WEIGHTS={e:_published[e]['weight'] for e in EXPERIMENTS}
 # Fixed task feasibility constraints, chosen before the final runs.
 LIMITS={'rmsd':15.,'lddt':.35,'bpr':96.,'vocab_size':8192}
 
@@ -143,6 +150,7 @@ def measure(raw,model_info,targets):
  wanted={name for entries in targets.values() for name,_,_ in entries}
  if len(raw)!=len(wanted) or {r.get('id') for r in raw}!=wanted: raise ValueError('missing, duplicate or unknown instances')
  by_id={r['id']:r for r in raw}; result={}; details={}
+ total_residues=sum(source['residues'] for entries in targets.values() for _,_,source in entries)
  for exp,entries in targets.items():
   rr=[]; ll=[]; lengths=[]; stream_bits=[]
   for name,path,source in entries:
@@ -150,7 +158,7 @@ def measure(raw,model_info,targets):
    if n!=source['residues'] or hashlib.sha256(path.read_bytes()).hexdigest()!=source['sha256']: raise ValueError('private source integrity failure')
    pred,bits=decode(by_id[name],model,n); rmsd,lddt=quality(native,pred)
    rr.append(rmsd); ll.append(lddt); lengths.append(n); stream_bits.append(bits)
-  result[exp]={'rmsd':float(np.mean(rr)),'lddt':float(np.mean(ll)),'bpr':float((model_bits+sum(stream_bits))/sum(lengths)),'vocab_size':float(vocab)}
+  result[exp]={'rmsd':float(np.mean(rr)),'lddt':float(np.mean(ll)),'bpr':float(sum(stream_bits)/sum(lengths)+model_bits/total_residues),'vocab_size':float(vocab)}
   details[exp]={'rmsd':rr,'lddt':ll,'residues':lengths,'bits':stream_bits,'model_bits':model_bits}
  return result,details
 
@@ -180,10 +188,12 @@ def paired_intervals(records,reference_details,scales,reference):
  for r in records.values():
   if r['failed']: continue
   draws=np.zeros(1000)
+  total=sum(np.asarray(r['details'][e]['residues'])[indices[e]].sum(1) for e in EXPERIMENTS)
+  ref_total=sum(np.asarray(reference_details[e]['residues'])[indices[e]].sum(1) for e in EXPERIMENTS)
   for exp in EXPERIMENTS:
    ix=indices[exp]; d=r['details'][exp]; ref=reference_details[exp]
-   candidate={'rmsd':np.asarray(d['rmsd'])[ix].mean(1),'lddt':np.asarray(d['lddt'])[ix].mean(1),'bpr':(d['model_bits']+np.asarray(d['bits'])[ix].sum(1))/np.asarray(d['residues'])[ix].sum(1),'vocab_size':r['metrics'][exp]['vocab_size']}
-   base={'rmsd':np.asarray(ref['rmsd'])[ix].mean(1),'lddt':np.asarray(ref['lddt'])[ix].mean(1),'bpr':(ref['model_bits']+np.asarray(ref['bits'])[ix].sum(1))/np.asarray(ref['residues'])[ix].sum(1),'vocab_size':reference[exp]['vocab_size']}
+   candidate={'rmsd':np.asarray(d['rmsd'])[ix].mean(1),'lddt':np.asarray(d['lddt'])[ix].mean(1),'bpr':np.asarray(d['bits'])[ix].sum(1)/np.asarray(d['residues'])[ix].sum(1)+d['model_bits']/total,'vocab_size':r['metrics'][exp]['vocab_size']}
+   base={'rmsd':np.asarray(ref['rmsd'])[ix].mean(1),'lddt':np.asarray(ref['lddt'])[ix].mean(1),'bpr':np.asarray(ref['bits'])[ix].sum(1)/np.asarray(ref['residues'])[ix].sum(1)+ref['model_bits']/ref_total,'vocab_size':reference[exp]['vocab_size']}
    for m,(up,c) in METRICS.items():
     if scales[exp][m]>1e-12: draws+=WEIGHTS[exp]*abs(c)*(1 if up else -1)*(candidate[m]-base[m])/scales[exp][m]
   r['paired_rank_95ci']=[float(v) for v in np.quantile(draws,[.025,.975])]

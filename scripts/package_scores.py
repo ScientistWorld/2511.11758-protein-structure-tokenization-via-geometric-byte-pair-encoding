@@ -11,7 +11,7 @@ def main():
  for side,record in slices.items():
   r=record['methods']['geobpe_reference']
   if r['failed']: raise ValueError('reference failed on '+side)
-  scores={'_metadata':{'slice':side,'source':'evaluator-decoded raw streams; reference method only','reference':'GEOBPE Table 14 pipeline, Table 16 small codebook, 128 fitting chains, 50 merges, 512 clustering occurrences; no matching to paper numbers'},'experiments':{exp:{'results':{'geobpe_reference':row}} for exp,row in r['metrics'].items()}}
+  scores={'_metadata':{'slice':side,'source':'evaluator-decoded raw streams; reference method only','reference':'GEOBPE Table 14 main codebook (500/100 initial, 20/100 merged medoids), Appendix K.2 short compression schedule (5 merges), 128 fitting chains, 2048 clustering occurrences; no matching to paper numbers'},'experiments':{exp:{'results':{'geobpe_reference':row}} for exp,row in r['metrics'].items()}}
   write(f'scoring/scores_{side}.json',scores)
   if side=='train': write('scoring/scores.json',scores)
  test=slices['test']['methods']; experiments={}
@@ -19,7 +19,7 @@ def main():
   definitions={
    'rmsd':{'higher_is_better':False,'coefficient':-.6,'description':'Mean complete-backbone RMSD in angstroms after proper Kabsch alignment.'},
    'lddt':{'higher_is_better':True,'coefficient':1.,'description':'Mean per-residue CA lDDT, 15 angstrom inclusion radius and tolerances 0.5, 1, 2, 4 angstroms.'},
-   'bpr':{'higher_is_better':False,'coefficient':-.4,'description':'Full dictionary plus encoded streams, in bits per native residue.'},
+   'bpr':{'higher_is_better':False,'coefficient':-.4,'description':'Encoded streams plus the shared dictionary charged once across the full corpus, in bits per native residue.'},
    'vocab_size':{'higher_is_better':False,'coefficient':-.02,'description':'Total dictionary and boundary alphabet size, also limited to 8192.'}}
   results={'geobpe_reference':dict(type='proposed',**row)}
   if 'metrics' in test.get('internal_baseline',{}): results['internal_baseline']=dict(type='baseline',**test['internal_baseline']['metrics'][exp])
@@ -35,11 +35,19 @@ def main():
  lines+=['\nFailed attempts and reasons:\n']
  for name,r in test.items():
   if r['failed']: lines.append(f"- `{name}`: {'; '.join(r.get('reasons',[]))}")
- better=test.get('higher_capacity',{}); weaker=test.get('lower_capacity',{}); nobpe=test.get('no_bpe',{})
+
+ for exp,refrow in test['geobpe_reference']['metrics'].items():
+  variant=test['refined_glue']['metrics'][exp]
+  if variant['rmsd']>refrow['rmsd']+1e-8 or variant['lddt']<refrow['lddt']-1e-8 or abs(variant['bpr']-refrow['bpr'])>1e-10 or variant['vocab_size']!=refrow['vocab_size']:
+   raise ValueError('independent fixed-cost refinement check failed: '+exp)
+ better=test.get('refined_glue',{}); weaker=test.get('lower_capacity',{}); nobpe=test.get('no_bpe',{})
+ replay=read('eval/test/replay_noise.json'); noise=replay['conservative_normalized_rank_noise']
+ headroom=not better.get('failed',True) and better.get('paired_rank_95ci',[0])[0]>max(0.,noise)
  # State evidence rather than automatically declaring all requested conditions met.
  bounds={'rmsd':0.,'lddt':1.,'bpr':0.,'vocab_size':1.}
  at_bound=[f'{exp}/{metric}' for exp,row in test['geobpe_reference']['metrics'].items() for metric,value in row.items() if abs(value-bounds[metric])<1e-12]
- lines+=['\nReference metrics at their best bound: '+(', '.join(at_bound) if at_bound else 'none.')+' Long backbones are the added scored experiment; their weight is 0.5.', '\nHeadroom evidence: the stronger variant '+('has a strictly positive paired lower confidence limit.' if not better.get('failed',True) and better.get('paired_rank_95ci',[0])[0]>0 else 'did NOT establish a strictly positive paired lower confidence limit. This requirement remains unmet.'),'The weaker variant '+('fails the task constraints.' if weaker.get('failed') else f"has rank {weaker.get('rank',0):.6f}."),'The no-merge ablation '+('fails constraints.' if nobpe.get('failed') else f"has rank {nobpe.get('rank',0):.6f}; indistinguishable geometry is a scientific headroom limitation, not a forged-output loophole.")]
+ lines+=['\nReference metrics at their best bound: '+(', '.join(at_bound) if at_bound else 'none.')+' Long backbones are the added scored experiment; their weight is 0.5.', '\nHeadroom evidence: the stronger variant '+(f'has a paired lower confidence limit above zero and the measured normalized replay difference ({noise:.6g}).' if headroom else f'did NOT establish a paired lower confidence limit above both zero and the measured replay difference ({noise:.6g}). This requirement remains unmet.'),'The weaker variant '+('fails the task constraints.' if weaker.get('failed') else f"has rank {weaker.get('rank',0):.6f}."),'The no-merge ablation '+('fails constraints.' if nobpe.get('failed') else f"has rank {nobpe.get('rank',0):.6f}; indistinguishable geometry is a scientific headroom limitation, not a forged-output loophole.")]
+ lines+=['\nThe boundary-refinement variant changes only the encoder’s choice of existing finite boundary symbols. It uses its input structure, keeps the reference dictionary and motif sequence, and pays identical rate/vocabulary cost. Its output is accepted only when its independently evaluated RMSD and lDDT are both no worse. The remaining nonzero distortion comes from the finite motif geometry; this simple variant does not attain a scored quality bound.', '\nDecoded replay diagnostic: '+json.dumps({k:v for k,v in replay.items() if k!='absolute_metric_differences'},sort_keys=True)]
  p=ROOT/'HARDENING.md'; text=p.read_text().split('\n## Final combined job results')[0]; p.write_text(text+'\n'+'\n'.join(lines)+'\n')
- write('scoring/hardening_summary.json',{'higher_capacity_beats_reference':not better.get('failed',True) and better.get('paired_rank_95ci',[0])[0]>0,'weaker_below_reference':weaker.get('failed',False) or weaker.get('rank',0)<0,'reference_at_metric_bound':at_bound})
+ write('scoring/hardening_summary.json',{'refined_glue_beats_reference_beyond_paired_and_numerical_noise':headroom,'numerical_replay_rank_difference':noise,'weaker_below_reference':weaker.get('failed',False) or weaker.get('rank',0)<0,'reference_at_metric_bound':at_bound})
 if __name__=='__main__': main()

@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: core_claim**
+**Current: method_runs**
 
 ## Progress Log
 
@@ -46,3 +46,8 @@ Hardening audit supersedes the earlier `core_claim` assessment. That assessment 
 ### 2026-11-09 — method_runs
 
 All three final 50-round GEOBPE training runs completed. The combined audit was interrupted repeatedly by scheduler preemptions during inference. Atomic per-chain recovery now preserves that work. Public evaluation has been enlarged to the same 64 chains per length range as private evaluation, correcting dictionary-cost amortization. Final paired headroom and attack outcomes remain pending; completed fitting alone does not advance the scientific milestone.
+
+### [2026-11-10] - method_runs
+- The complete paired audit exposed insufficient main-codebook scale and expensive rarely used merges. No new comparative milestone is claimed.
+- Restored the main paper codebook with a short compression schedule, corrected shared-dictionary amortization, and prepared a cost-preserving boundary-refinement headroom check.
+- Numerical replay now measures decoded variation across preempted CPU hosts; reference and ablation raw streams are regenerated where the frozen model changed.

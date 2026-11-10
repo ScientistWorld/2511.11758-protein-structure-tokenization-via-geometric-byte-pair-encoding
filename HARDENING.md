@@ -20,7 +20,7 @@ The test owns targets, size, thresholds, reference measurements, representation 
 
 The new data has 128 fitting chains, 128 public evaluation chains, and 128 unseen private evaluation chains, split equally between 64–192 and 256–512 residues. Every chain has a complete, continuous backbone. Source entries and exact sequences are disjoint between public and private data. Private source lists, downloads, raw predictions, repeatability checks, and the frozen reference with per-chain measurements live only under eval/test/. A public download command fetches every source from RCSB on a fresh clone. No committed code refers to shared/.
 
-The reference restores the paper's histogram bins 500, free bond quantization, original-geometry reassignment, prior-regularized global glue optimization every ten rounds, and the paper's Pareto translation weight 1. It retains the paper's Table 16 smaller codebook, scales fitting to 128 chains, caps clustering candidates at 512, and performs 50 merges. The stronger control uses 1,000 bins and twice as many initial medoids; the weaker control uses 50 bins and 5/2 initial medoids. File/occurrence ordering and random seeds are fixed. An additional inference replay checks identical raw output, and paired bootstrap intervals measure between-input uncertainty.
+The reference restores the paper's histogram bins 500, free bond quantization, original-geometry reassignment, prior-regularized global glue optimization every ten rounds, and the paper's Pareto translation weight 1. The completed audit used the paper's Table 16 smaller codebook with 128 fitting chains, 512 clustering candidates and 50 merges. The final reference instead uses the main Table 14 medoid schedule, 2,048 candidates and five compression merges, as described below. The earlier higher-capacity control (1,000 bins and 100/20 initial medoids) is retained as a measured alternative; the weaker control uses 50 bins and 5/2 initial medoids. File/occurrence ordering and random seeds are fixed. An additional inference replay measures decoded numerical variation across CPU hosts, and paired bootstrap intervals measure between-input uncertainty. The initial 50-merge audit and final correction are recorded below.
 
 Long backbones are the added scored experiment, weighted 0.5: the paper reports accumulation of local errors into global drift, which the former five-chain test barely measured. No reconstruction or rate metric is deliberately saturated. The reference cannot reach the zero-error/perfect-lDDT limits with a finite lossy representation; measured bound checks and stronger-variant evidence appear below.
 
@@ -52,3 +52,24 @@ The corpus is larger but far below the paper's 33,992-chain fitting corpus and t
 There is no exhaustive candidate-enumeration task here: encoding the input geometry is allowed, but storing each entire unseen chain costs its full geometry and cannot satisfy compact coding. The former public-answer lookup is closed by unseen inputs and dictionary accounting. The finite decoder interface supports motif dictionaries, independent internal-coordinate alphabets, and full coordinates; new decoder families would require an explicit benchmark extension. Serialized JSON whitespace is not charged; the fixed binary description-length convention is documented.
 
 The old reference had CAMEO/CASP RMSD 7.516185/4.207396, lDDT 0.577381/0.574539, BPR proxy 7.774787/7.774787, and vocabulary 219. Its rank was zero by definition. The final reference also has rank zero, with full rate and evaluator-native targets on a different corpus; its new scientific measurements appear below. The higher-resolution and weaker controls have changed data and restored paper settings, so the before/after evidence establishes ranking behavior rather than a numerical longitudinal comparison.
+
+## Completed 50-merge audit before the final repair
+
+The complete audit stopped at a bitwise replay assertion after all model measurements. Motif identities matched; 1–5 boundary symbols per replayed chain differed by one bin across preempted CPU hosts. This is numerical variation to measure in decoded scientific units, not evidence of seed instability. The main failure was scientific: an oversized rarely used merge dictionary penalized the higher-capacity model, and the no-merge control beat the reference.
+
+| Side / attempt | RMSD short / long | lDDT short / long | BPR short / long | Rank |
+|---|---|---|---|---:|
+| train / geobpe_reference | 1.813706 / 2.765136 | 0.766910 / 0.688813 | 53.080489 / 41.546349 | 0 |
+| train / higher_capacity | 1.806610 / 1.897274 | 0.772017 / 0.762760 | 95.596086 / 58.863524 | -0.234047 |
+| train / internal_baseline | 8.832851 / 19.412237 | 0.523633 / 0.429113 | 46.193884 / 45.432471 | -1e+100 |
+| train / lower_capacity | 3.606429 / 7.675948 | 0.617163 / 0.485264 | 43.263242 / 31.352623 | -3.15737 |
+| train / no_bpe | 1.813706 / 2.786364 | 0.766910 / 0.686203 | 40.934434 / 35.874158 | 0.205125 |
+| train / supplied_baseline | 0.011148 / 0.010051 | 1.000000 / 1.000000 | 288.266177 / 288.096420 | -1e+100 |
+| test / geobpe_reference | 1.906143 / 2.762641 | 0.760346 / 0.689849 | 55.020046 / 41.672752 | 0 |
+| test / higher_capacity | 1.894694 / 1.883805 | 0.763872 / 0.762673 | 101.774617 / 59.276457 | -1e+100 |
+| test / internal_baseline | 7.690368 / 19.813211 | 0.544783 / 0.428074 | 46.321956 / 45.441030 | -1e+100 |
+| test / lower_capacity | 3.690832 / 7.611221 | 0.617876 / 0.489437 | 45.091968 / 31.570538 | -2.50685 |
+| test / no_bpe | 1.907194 / 2.754692 | 0.760269 / 0.690576 | 41.785589 / 35.931044 | 0.755145 |
+| test / supplied_baseline | 0.010811 / 0.010146 | 1.000000 / 1.000000 | 288.294731 / 288.098328 | -1e+100 |
+
+The final repair restores the main Table 14 500/100 initial-medoid schedule (20/100 merged medoids), uses five merge rounds following Appendix K.2’s advice for small-corpus compression, and increases the clustering sample cap from 512 to 2,048. This remains below the paper’s 5,000-occurrence cap and 33,992 training chains. A single frozen dictionary serves both experiments; it is now charged once across the complete 128-chain corpus, with its cost apportioned by native residue count. This removes double charging and keeps every dictionary bit accounted for. No quality or rate threshold is relaxed. A separate variant optimizes the same discrete boundary symbols against complete-backbone geometry; it changes neither the reference algorithm nor storage cost. Its paired improvement must exceed measured numerical replay variation.

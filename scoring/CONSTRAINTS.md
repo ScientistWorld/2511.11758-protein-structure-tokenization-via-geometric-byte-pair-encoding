@@ -1,6 +1,6 @@
 # Constraints
 
-Fit only on `data/downloads/pdb/train`; use public visible splits for model selection. Freeze all dictionary contents and operating points before receiving private requests. Do not train, tune, extend the dictionary, or select parameters on private inputs. Inference encodes each requested backbone using the frozen representation.
+Fit only on `data/downloads/pdb/train`; use public visible splits for model selection. Freeze all dictionary contents and operating points before receiving private requests. Do not train, tune, extend the dictionary, or select parameters on private inputs. Inference encodes each requested backbone using the frozen representation. Choosing transmitted symbols using the supplied input geometry is encoding; the decoder contents and global hyperparameters must stay fixed.
 
 Each experiment must satisfy RMSD ≤15 Å, lDDT ≥0.35, 0<BPR≤96, and vocabulary between 1 and 8192. A failure in either experiment fails the attempt, below all feasible methods. These broad operating limits prevent lossless continuous geometry from replacing compact coding and prevent sacrificing reconstruction to get a tiny stream.
 
