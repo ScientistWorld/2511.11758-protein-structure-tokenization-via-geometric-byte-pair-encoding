@@ -57,3 +57,8 @@ All three final 50-round GEOBPE training runs completed. The combined audit was 
 - Fixed-cost refinement improves rank by +1.25409, paired 95% interval [1.195446, 1.319235]; lower capacity scores −2.95926. Reference is feasible and below all quality bounds.
 - Major shortcuts fail or lose their selection benefit; full description length rejects the former free-frame baseline. Reference-only score files and preserved paper numbers pass validation.
 - Remain at `method_runs`: no-merge encoding still matches geometry and slightly improves rate, so this scale does not establish the paper’s hierarchical merge advantage. Final packaging/valid-public-lookup replay reuses saved raw outputs.
+
+### [2026-11-10] - method_runs
+- Final rescore-only job `36b6eb18-d00` passed: a valid public whole-chain dictionary fails unseen complete-chain coverage, and forged quality fields fail the output schema.
+- Fresh reference-only packaging and validation pass. The default driver again reproduces the reference end to end; the standalone baseline launcher uses the independent baseline already measured in the completed jobs.
+- Final audit is packaged in `HARDENING.md`. The comparative merge benefit remains unestablished at this scale, so no higher milestone is claimed.

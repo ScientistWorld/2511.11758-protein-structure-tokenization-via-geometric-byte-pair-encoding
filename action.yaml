@@ -1,5 +1,3 @@
-action: submit
-gpus: 0
-test: true
+action: done
 milestone: method_runs
-notes: "Rescore saved raw outputs only: validate a well-formed public lookup and scalar-field attack; check fresh reference-only packaging; restore default reference run script. No retraining."
+notes: "Hardened ranking and shortcut checks; regenerated reference scores and verified paired headroom. Merge benefit remains unestablished at this scale."
