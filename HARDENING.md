@@ -73,3 +73,65 @@ The complete audit stopped at a bitwise replay assertion after all model measure
 | test / supplied_baseline | 0.010811 / 0.010146 | 1.000000 / 1.000000 | 288.294731 / 288.098328 | -1e+100 |
 
 The final repair restores the main Table 14 500/100 initial-medoid schedule (20/100 merged medoids), uses five merge rounds following Appendix K.2’s advice for small-corpus compression, and increases the clustering sample cap from 512 to 2,048. This remains below the paper’s 5,000-occurrence cap and 33,992 training chains. A single frozen dictionary serves both experiments; it is now charged once across the complete 128-chain corpus, with its cost apportioned by native residue count. This removes double charging and keeps every dictionary bit accounted for. No quality or rate threshold is relaxed. A separate variant optimizes the same discrete boundary symbols against complete-backbone geometry; it changes neither the reference algorithm nor storage cost. Its paired improvement must exceed measured numerical replay variation.
+
+
+## Final combined job results
+
+These ranks use the final cohort standard deviations; failed attempts receive −10¹⁰⁰ and cannot outrank a feasible run. Reference rank is zero by definition. Intervals are paired 1,000-replicate bootstrap intervals over the same private chains.
+
+| Attempt | Failed | Rank | Paired 95% interval |
+|---|---|---:|---|
+| attack_constant_template | True | -1e+100 |  |
+| attack_forged_counts | True | -1e+100 |  |
+| attack_forged_target | True | -1e+100 |  |
+| attack_negative_counts | True | -1e+100 |  |
+| attack_prune_comparison | False | 0 | [0.0, 0.0] |
+| attack_public_dictionary | True | -1e+100 |  |
+| attack_truncated | True | -1e+100 |  |
+| geobpe_reference | False | 0 | [0.0, 0.0] |
+| higher_capacity | False | -0.755637 | [-0.835256, -0.675312] |
+| internal_baseline | True | -1e+100 |  |
+| lower_capacity | False | -2.95926 | [-3.269801, -2.679492] |
+| no_bpe | False | 0.0095675 | [0.009193, 0.009943] |
+| refined_glue | False | 1.25409 | [1.195446, 1.319235] |
+| supplied_baseline | True | -1e+100 |  |
+
+| Attempt / experiment | RMSD ↓ | lDDT ↑ | Full BPR ↓ | Vocabulary ↓ |
+|---|---:|---:|---:|---:|
+| attack_prune_comparison / short_backbones | 1.980736 | 0.755715 | 44.372994 | 2107 |
+| attack_prune_comparison / long_backbones | 1.519381 | 0.823977 | 44.344111 | 2107 |
+| geobpe_reference / short_backbones | 1.980736 | 0.755715 | 44.372994 | 2107 |
+| geobpe_reference / long_backbones | 1.519381 | 0.823977 | 44.344111 | 2107 |
+| higher_capacity / short_backbones | 1.894694 | 0.763872 | 53.966919 | 3173 |
+| higher_capacity / long_backbones | 1.883805 | 0.762673 | 53.955366 | 3173 |
+| internal_baseline / short_backbones | 7.690368 | 0.544783 | 45.343702 | 288 |
+| internal_baseline / long_backbones | 19.813211 | 0.428074 | 45.332149 | 288 |
+| lower_capacity / short_backbones | 3.690832 | 0.617876 | 29.771404 | 407 |
+| lower_capacity / long_backbones | 7.611221 | 0.489437 | 29.865329 | 407 |
+| no_bpe / short_backbones | 1.980736 | 0.755715 | 44.207101 | 2100 |
+| no_bpe / long_backbones | 1.519381 | 0.823977 | 44.178218 | 2100 |
+| refined_glue / short_backbones | 1.224961 | 0.836642 | 44.372994 | 2107 |
+| refined_glue / long_backbones | 0.924750 | 0.889168 | 44.344111 | 2107 |
+| supplied_baseline / short_backbones | 0.010811 | 1.000000 | 288.281731 | 1 |
+| supplied_baseline / long_backbones | 0.010146 | 1.000000 | 288.096881 | 1 |
+
+Failed attempts and reasons:
+
+- `attack_constant_template`: invalid full coordinate output
+- `attack_forged_counts`: representation fields do not match codec
+- `attack_forged_target`: representation fields do not match codec
+- `attack_negative_counts`: invalid stream lengths
+- `attack_public_dictionary`: invalid bond length
+- `attack_truncated`: invalid full coordinate output
+- `internal_baseline`: long_backbones: reconstruction constraint
+- `supplied_baseline`: short_backbones: rate/dictionary constraint; long_backbones: rate/dictionary constraint
+
+Reference metrics at their best bound: none. Long backbones are the added scored experiment; their weight is 0.5.
+
+Headroom evidence: the stronger variant has a paired lower confidence limit above zero and the measured normalized replay difference (0).
+The weaker variant has rank -2.959262.
+The no-merge ablation has rank 0.009567; indistinguishable geometry is a scientific headroom limitation, not a forged-output loophole.
+
+The boundary-refinement variant changes only the encoder’s choice of existing finite boundary symbols. It uses its input structure, keeps the reference dictionary and motif sequence, and pays identical rate/vocabulary cost. Its output is accepted only when its independently evaluated RMSD and lDDT are both no worse. The remaining nonzero distortion comes from the finite motif geometry; this simple variant does not attain a scored quality bound.
+
+Decoded replay diagnostic: {"conservative_normalized_rank_noise": 0.0, "exact_raw_replay": true, "maximum_difference_by_experiment": {"long_backbones": {"bpr": 0.0, "lddt": 0.0, "rmsd": 0.0}, "short_backbones": {"bpr": 0.0, "lddt": 0.0, "rmsd": 0.0}}, "note": "Four-input numerical replay diagnostic across CPU hosts, not a population confidence bound.", "paired_inputs": 4}

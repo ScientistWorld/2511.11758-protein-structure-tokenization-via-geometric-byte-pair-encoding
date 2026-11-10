@@ -1,38 +1,27 @@
 {
   "_metadata": {
     "slice": "test",
-    "artifact": "checkpoints/geobpe_table16_sweep/results.json",
-    "train_scores": "scoring/scores_train.json",
-    "required_structures": {
-      "scaled_pdb_tokenization_cameo": [
-        "7b8b_A",
-        "7ctx_B",
-        "7ejg_C"
-      ],
-      "scaled_pdb_tokenization_casp14": [
-        "6n64_A",
-        "6s44_A"
-      ]
-    }
+    "source": "evaluator-decoded raw streams; reference method only",
+    "reference": "GEOBPE Table 14 main codebook (500/100 initial, 20/100 merged medoids), Appendix K.2 short compression schedule (5 merges), 128 fitting chains, 2048 clustering occurrences; no matching to paper numbers"
   },
   "experiments": {
-    "scaled_pdb_tokenization_cameo": {
+    "short_backbones": {
       "results": {
-        "geobpe_table16_high": {
-          "bpr": 7.774787059601174,
-          "vocab_size": 219.0,
-          "rmsd": 7.5161852263376,
-          "lddt": 0.5773811707638453
+        "geobpe_reference": {
+          "rmsd": 1.9807360308433837,
+          "lddt": 0.7557150700918206,
+          "bpr": 44.372994154661434,
+          "vocab_size": 2107.0
         }
       }
     },
-    "scaled_pdb_tokenization_casp14": {
+    "long_backbones": {
       "results": {
-        "geobpe_table16_high": {
-          "bpr": 7.774787059601174,
-          "vocab_size": 219.0,
-          "rmsd": 4.207396364122474,
-          "lddt": 0.5745393520543429
+        "geobpe_reference": {
+          "rmsd": 1.519381382308767,
+          "lddt": 0.8239768147770626,
+          "bpr": 44.34411134912492,
+          "vocab_size": 2107.0
         }
       }
     }

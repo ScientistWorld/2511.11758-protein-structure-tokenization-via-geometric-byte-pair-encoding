@@ -91,44 +91,90 @@
   },
   "experiments": {
     "short_backbones": {
+      "description": "Compact lossy coding of complete 64\u2013192 residue protein backbones on 64 unseen chains.",
+      "notes": "Scaled RCSB corpus, distinct from the paper evaluation splits. Results here are measured reference values, not paper targets. Full finite dictionary storage is charged. Paper Table 16 values are retained verbatim under _paper_reported.",
       "weight": 0.5,
+      "primary_metric": "lddt",
       "metrics": {
         "rmsd": {
           "higher_is_better": false,
-          "coefficient": -0.6
+          "coefficient": -0.6,
+          "description": "Mean complete-backbone RMSD in angstroms after proper Kabsch alignment."
         },
         "lddt": {
           "higher_is_better": true,
-          "coefficient": 1.0
+          "coefficient": 1.0,
+          "description": "Mean per-residue CA lDDT, 15 angstrom inclusion radius and tolerances 0.5, 1, 2, 4 angstroms."
         },
         "bpr": {
           "higher_is_better": false,
-          "coefficient": -0.4
+          "coefficient": -0.4,
+          "description": "Encoded streams plus the shared dictionary charged once across the full corpus, in bits per native residue."
         },
         "vocab_size": {
           "higher_is_better": false,
-          "coefficient": -0.02
+          "coefficient": -0.02,
+          "description": "Total dictionary and boundary alphabet size, also limited to 8192."
+        }
+      },
+      "results": {
+        "geobpe_reference": {
+          "type": "proposed",
+          "rmsd": 1.9807360308433837,
+          "lddt": 0.7557150700918206,
+          "bpr": 44.372994154661434,
+          "vocab_size": 2107.0
+        },
+        "internal_baseline": {
+          "type": "baseline",
+          "rmsd": 7.690367596723833,
+          "lddt": 0.5447829721891497,
+          "bpr": 45.343701778694445,
+          "vocab_size": 288.0
         }
       }
     },
     "long_backbones": {
+      "description": "Compact lossy coding of complete 256\u2013512 residue protein backbones on 64 unseen chains.",
+      "notes": "Scaled RCSB corpus, distinct from the paper evaluation splits. Results here are measured reference values, not paper targets. Full finite dictionary storage is charged. Paper Table 16 values are retained verbatim under _paper_reported.",
       "weight": 0.5,
+      "primary_metric": "lddt",
       "metrics": {
         "rmsd": {
           "higher_is_better": false,
-          "coefficient": -0.6
+          "coefficient": -0.6,
+          "description": "Mean complete-backbone RMSD in angstroms after proper Kabsch alignment."
         },
         "lddt": {
           "higher_is_better": true,
-          "coefficient": 1.0
+          "coefficient": 1.0,
+          "description": "Mean per-residue CA lDDT, 15 angstrom inclusion radius and tolerances 0.5, 1, 2, 4 angstroms."
         },
         "bpr": {
           "higher_is_better": false,
-          "coefficient": -0.4
+          "coefficient": -0.4,
+          "description": "Encoded streams plus the shared dictionary charged once across the full corpus, in bits per native residue."
         },
         "vocab_size": {
           "higher_is_better": false,
-          "coefficient": -0.02
+          "coefficient": -0.02,
+          "description": "Total dictionary and boundary alphabet size, also limited to 8192."
+        }
+      },
+      "results": {
+        "geobpe_reference": {
+          "type": "proposed",
+          "rmsd": 1.519381382308767,
+          "lddt": 0.8239768147770626,
+          "bpr": 44.34411134912492,
+          "vocab_size": 2107.0
+        },
+        "internal_baseline": {
+          "type": "baseline",
+          "rmsd": 19.813211017267836,
+          "lddt": 0.42807354758759275,
+          "bpr": 45.332148656479845,
+          "vocab_size": 288.0
         }
       }
     }

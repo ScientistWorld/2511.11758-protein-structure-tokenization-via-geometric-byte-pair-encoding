@@ -1,0 +1,40 @@
+{
+  "exact_raw_replay": true,
+  "paired_inputs": 4,
+  "absolute_metric_differences": {
+    "2zsn_A": {
+      "rmsd": 0.0,
+      "lddt": 0.0,
+      "bpr": 0.0
+    },
+    "8vzr_A": {
+      "rmsd": 0.0,
+      "lddt": 0.0,
+      "bpr": 0.0
+    },
+    "6lsf_A": {
+      "rmsd": 0.0,
+      "lddt": 0.0,
+      "bpr": 0.0
+    },
+    "8qt7_A": {
+      "rmsd": 0.0,
+      "lddt": 0.0,
+      "bpr": 0.0
+    }
+  },
+  "maximum_difference_by_experiment": {
+    "short_backbones": {
+      "rmsd": 0.0,
+      "lddt": 0.0,
+      "bpr": 0.0
+    },
+    "long_backbones": {
+      "rmsd": 0.0,
+      "lddt": 0.0,
+      "bpr": 0.0
+    }
+  },
+  "conservative_normalized_rank_noise": 0.0,
+  "note": "Four-input numerical replay diagnostic across CPU hosts, not a population confidence bound."
+}

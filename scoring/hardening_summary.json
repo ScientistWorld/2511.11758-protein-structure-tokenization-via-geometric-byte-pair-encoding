@@ -1,0 +1,6 @@
+{
+  "refined_glue_beats_reference_beyond_paired_and_numerical_noise": true,
+  "numerical_replay_rank_difference": 0.0,
+  "weaker_below_reference": true,
+  "reference_at_metric_bound": []
+}
