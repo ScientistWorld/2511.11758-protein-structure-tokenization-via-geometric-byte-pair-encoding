@@ -84,6 +84,7 @@ The main audit finished successfully in job `35dca7a9-39a`. Reference-only train
 
 A final rescore-only job replaces the lookup attack’s discontinuous legacy structures with ten valid complete public chains, and explicitly replays the formerly tying scalar-field attack. No model is retrained and no threshold changes. It also checks that a fresh reference-only packaging run works without audit variants or replay files. The default run script is restored to the reference reproduction after this check. `validate.py` passes; its two heuristic warnings mistake the paired bootstrap RNG for experiment regeneration. That RNG only resamples already decoded per-input measurements.
 
+
 ## Final combined job results
 
 These ranks use the final cohort standard deviations; failed attempts receive −10¹⁰⁰ and cannot outrank a feasible run. Reference rank is zero by definition. Intervals are paired 1,000-replicate bootstrap intervals over the same private chains.
@@ -96,6 +97,7 @@ These ranks use the final cohort standard deviations; failed attempts receive �
 | attack_negative_counts | True | -1e+100 |  |
 | attack_prune_comparison | False | 0 | [0.0, 0.0] |
 | attack_public_dictionary | True | -1e+100 |  |
+| attack_quality_fields | True | -1e+100 |  |
 | attack_truncated | True | -1e+100 |  |
 | geobpe_reference | False | 0 | [0.0, 0.0] |
 | higher_capacity | False | -0.755637 | [-0.835256, -0.675312] |
@@ -130,7 +132,8 @@ Failed attempts and reasons:
 - `attack_forged_counts`: representation fields do not match codec
 - `attack_forged_target`: representation fields do not match codec
 - `attack_negative_counts`: invalid stream lengths
-- `attack_public_dictionary`: invalid bond length
+- `attack_public_dictionary`: reconstruction does not cover the complete chain
+- `attack_quality_fields`: representation fields do not match codec
 - `attack_truncated`: invalid full coordinate output
 - `internal_baseline`: long_backbones: reconstruction constraint
 - `supplied_baseline`: short_backbones: rate/dictionary constraint; long_backbones: rate/dictionary constraint
