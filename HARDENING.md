@@ -1,5 +1,7 @@
 # Hardening audit
 
+The final test rewards a demonstrated fidelity improvement at fixed rate: `refined_glue` ranks +1.25409 (paired 95% interval [1.195446, 1.319235]), while the weaker control ranks −2.95926. The reference passes every task constraint and has no scored metric at its best bound. Four forced fresh paired encodings matched exactly; this small replay diagnostic is not a general population noise bound. The remaining limitation is that learned merges provide no held-out geometric benefit at this corpus size.
+
 The first combined job passed the independent decoder checks but stopped before fitting on a float32 +/-pi range-check incompatibility in the released PDB loader. This was repaired with a 1e-6 roundoff tolerance and clipping to the physical interval; no chains were removed and no algorithmic settings were changed. The resumed combined audit also checks complete public-corpus parsing before fitting.
 
 The resumed job `56ca3ebd-e4c` completed all three 50-round training runs, but scheduler preemptions repeatedly restarted inference and overwrote its partial streams. It was cancelled to add atomic per-chain recovery, with checkpoint/dictionary/code/input fingerprints. Completed training and unchanged-chain raw outputs are retained; every score is recomputed. The forced four-input inference replay bypasses recovery. Repeated pandas FutureWarnings are suppressed without changing the released numerical operations.
@@ -39,13 +41,14 @@ Ranks below are the old report's control-cohort ranks. Their magnitudes are not 
 | Invented two-residue template | +2.355358 | Expected native size and complete reconstruction are fixed; short output fails. |
 | Truncated native output | +2.352333 | No min-length matching; any incomplete chain fails. |
 | Negative counts | −1.667061 in audit (arbitrarily favorable under fixed scaling) | No claimed counts; negative indices fail before measurement. |
+| Scalar quality fields with valid reference predictions | 0 (tie) | Unknown metric fields now fail the raw-symbol interface; replay included. |
 | Pruned comparisons | Incomplete CASP-only result | Both experiments and method enumeration are evaluator-owned. Its valid full reference predictions now tie the reference, with no pruning benefit. |
 
-The pruning replay is a valid unchanged reference representation; structural checks verify that the evaluator never reads scoring/scores_train.json. The other major attacks run through the same hidden entry point after registration. Already ineffective scalar/null/empty-output and scalar-quality attacks are not replayed. Strict decoder validation also rejects them.
+The pruning replay is a valid unchanged reference representation; structural checks verify that the evaluator never reads scoring/scores_train.json. The other major attacks run through the same hidden entry point after registration. Already rejected scalar-only, null, and empty-output attacks are not replayed. The formerly tying scalar-field attack is replayed explicitly. Strict decoder validation also rejects them.
 
 ## Limitations and deliberately open alternatives
 
-A no-merge model is an honest alternative. If it still ties or improves the final reference, report that scientific limitation; do not manufacture a prohibition or bonus for using merges. The stronger-variant paired confidence interval, not merely a metric below its mathematical bound, determines whether headroom is demonstrated. If the final interval is not positive, the requested scientific headroom remains unresolved.
+The no-merge model is an honest alternative and still ranks +0.009567 after restoring the main paper settings. It matches reference geometry exactly and saves about 0.166 BPR and seven unused alphabet entries. Thus this corpus does not demonstrate the paper’s central hierarchical merge benefit. The larger reconstruction improvement from discrete boundary refinement supplies measured headroom; the no-merge control is not used as that evidence. Training on 128 rather than 33,992 chains remains a material scale reduction, and the comparative paper claim is not established. The audited milestone remains `method_runs`.
 
 The corpus is larger but far below the paper's 33,992-chain fitting corpus and thousands of merge rounds. This iteration does not establish full PDB-scale compression gains, downstream transfer, or performance against the paper's external learned tokenizers. Exact sequence and source disjointness do not establish remote-homology separation. General-purpose dictionary learning and more efficient coding remain scientific research opportunities; attempts must still freeze their representation before private requests.
 
@@ -74,6 +77,12 @@ The complete audit stopped at a bitwise replay assertion after all model measure
 
 The final repair restores the main Table 14 500/100 initial-medoid schedule (20/100 merged medoids), uses five merge rounds following Appendix K.2’s advice for small-corpus compression, and increases the clustering sample cap from 512 to 2,048. This remains below the paper’s 5,000-occurrence cap and 33,992 training chains. A single frozen dictionary serves both experiments; it is now charged once across the complete 128-chain corpus, with its cost apportioned by native residue count. This removes double charging and keeps every dictionary bit accounted for. No quality or rate threshold is relaxed. A separate variant optimizes the same discrete boundary symbols against complete-backbone geometry; it changes neither the reference algorithm nor storage cost. Its paired improvement must exceed measured numerical replay variation.
 
+
+## Final packaging check
+
+The main audit finished successfully in job `35dca7a9-39a`. Reference-only train/test scores were regenerated from decoded final reference runs; all variants and attacks are reported only here. Public/private reference RMSD is 1.917877/1.980736 for short chains and 1.526253/1.519381 for long chains, showing comparable difficulty. The independent baseline has long-chain RMSD 19.813211 and fails the fixed quality constraint; the reference is clearly better and remains far from perfect geometry.
+
+A final rescore-only job replaces the lookup attack’s discontinuous legacy structures with ten valid complete public chains, and explicitly replays the formerly tying scalar-field attack. No model is retrained and no threshold changes. It also checks that a fresh reference-only packaging run works without audit variants or replay files. The default run script is restored to the reference reproduction after this check. `validate.py` passes; its two heuristic warnings mistake the paired bootstrap RNG for experiment regeneration. That RNG only resamples already decoded per-input measurements.
 
 ## Final combined job results
 
@@ -132,6 +141,6 @@ Headroom evidence: the stronger variant has a paired lower confidence limit abov
 The weaker variant has rank -2.959262.
 The no-merge ablation has rank 0.009567; indistinguishable geometry is a scientific headroom limitation, not a forged-output loophole.
 
-The boundary-refinement variant changes only the encoder’s choice of existing finite boundary symbols. It uses its input structure, keeps the reference dictionary and motif sequence, and pays identical rate/vocabulary cost. Its output is accepted only when its independently evaluated RMSD and lDDT are both no worse. The remaining nonzero distortion comes from the finite motif geometry; this simple variant does not attain a scored quality bound.
+The boundary-refinement variant changes only the encoder’s choice of existing finite boundary symbols. It uses its input structure, keeps the reference dictionary and motif sequence, and pays identical rate/vocabulary cost. Its output is accepted only when its independently evaluated RMSD and lDDT are both no worse. Measured RMSD remains above zero and lDDT below one in both experiments; this simple variant does not attain a scored quality bound.
 
 Decoded replay diagnostic: {"conservative_normalized_rank_noise": 0.0, "exact_raw_replay": true, "maximum_difference_by_experiment": {"long_backbones": {"bpr": 0.0, "lddt": 0.0, "rmsd": 0.0}, "short_backbones": {"bpr": 0.0, "lddt": 0.0, "rmsd": 0.0}}, "note": "Four-input numerical replay diagnostic across CPU hosts, not a population confidence bound.", "paired_inputs": 4}

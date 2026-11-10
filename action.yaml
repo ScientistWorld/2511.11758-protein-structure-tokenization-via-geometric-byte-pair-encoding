@@ -1,5 +1,5 @@
 action: submit
 gpus: 0
-test: false
+test: true
 milestone: method_runs
-notes: "Combined final repair: main Table 14 medoids and short compression schedule, shared-dictionary accounting, fixed-cost boundary-refinement headroom, paired numerical replay, shortcut reruns and reference-only score packaging."
+notes: "Rescore saved raw outputs only: validate a well-formed public lookup and scalar-field attack; check fresh reference-only packaging; restore default reference run script. No retraining."

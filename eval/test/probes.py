@@ -15,6 +15,7 @@ def main():
   row=dict(by_id[request['id']]); attack=a.attack
   if attack=='forged_target': row['original_coords']=[[0,0,0]]*6
   elif attack=='forged_counts': row.update(tokens=0,vocab_size=1,residues=1000000000)
+  elif attack=='quality_fields': row.update(rmsd=0.,lddt=1.)
   elif attack=='negative_counts': row['motifs']=[-1000000]
   elif attack in ('truncated','constant_template'):
    coords=[[float(s[i:i+8]) for i in (30,38,46)] for s in Path(request['path']).read_text().splitlines() if s.startswith('ATOM  ')]

@@ -1,5 +1,7 @@
 # Verification Report
 
+**The assessment below is historical and superseded by [HARDENING.md](HARDENING.md).** The current milestone is `method_runs`; full-rate decoding, unseen inputs, failure gates, paired improvement and shortcut replays now replace the old proximity-to-paper-number checks. The scaled test has measured headroom, but a merge advantage over the honest no-merge control remains unestablished.
+
 ## Initial Assessment
 
 The workspace started at `core_claim`. That milestone remains justified: the submitted method path uses the official PT-BPE implementation, produces held-out CAMEO and CASP14 artifacts, and the evaluator scores reconstruction quality plus compactness from method outputs without importing from `method/`.

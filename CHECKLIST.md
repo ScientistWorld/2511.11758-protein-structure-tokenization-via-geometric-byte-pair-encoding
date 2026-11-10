@@ -21,7 +21,7 @@
 
 - [x] Evaluation code in `eval/`
 - [x] Official method code in `method/PT-BPE/`
-- [x] Reproduction wrapper in `method/run_official_geobpe.py`
+- [x] Reference driver in `method/train.py` and `method/encode.py`
 - [x] Baseline implementation in `baseline/`
 
 ## Scripts And Environment
@@ -36,13 +36,13 @@
 ## Data
 
 - [x] Public PDB smoke subset tracked in `data/pdb_smoke/`
-- [x] Idempotent downloader for the PDB subset
+- [x] Idempotent downloader for all 384 fitting/public/private sources
 - [x] No pretrained models required
 
 ## Milestones
 
 - [x] `method_runs`
-- [x] `core_claim`
+- [ ] `core_claim`
 - [ ] `core_claim_plus`
 - [ ] `secondary_claims`
 - [ ] `majority`

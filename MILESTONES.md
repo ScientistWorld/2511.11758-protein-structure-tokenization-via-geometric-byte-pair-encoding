@@ -36,8 +36,8 @@
 - Fixed the final validation failure by making lDDT the compact gym's primary reconstruction-quality metric while keeping RMSD as a scored secondary distortion metric.
 - Re-ran `python validate.py` and `python validate.py --compare`; both pass.
 
-## Stop Justification
-- Completed at milestone `core_claim`.
+## Historical Stop Justification (superseded by hardening)
+- The earlier iteration stopped at `core_claim`; that assessment was withdrawn on 2026-11-09.
 
 ### 2026-11-09 — method_runs
 
@@ -51,3 +51,9 @@ All three final 50-round GEOBPE training runs completed. The combined audit was 
 - The complete paired audit exposed insufficient main-codebook scale and expensive rarely used merges. No new comparative milestone is claimed.
 - Restored the main paper codebook with a short compression schedule, corrected shared-dictionary amortization, and prepared a cost-preserving boundary-refinement headroom check.
 - Numerical replay now measures decoded variation across preempted CPU hosts; reference and ablation raw streams are regenerated where the frozen model changed.
+
+### [2026-11-10] - method_runs
+- Final main-codebook training and all paired evaluations completed in job `35dca7a9-39a`; independent codec and parser checks passed.
+- Fixed-cost refinement improves rank by +1.25409, paired 95% interval [1.195446, 1.319235]; lower capacity scores −2.95926. Reference is feasible and below all quality bounds.
+- Major shortcuts fail or lose their selection benefit; full description length rejects the former free-frame baseline. Reference-only score files and preserved paper numbers pass validation.
+- Remain at `method_runs`: no-merge encoding still matches geometry and slightly improves rate, so this scale does not establish the paper’s hierarchical merge advantage. Final packaging/valid-public-lookup replay reuses saved raw outputs.
