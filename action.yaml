@@ -1,3 +1,8 @@
-action: done
-milestone: method_runs
-notes: "Hardened ranking and shortcut checks; regenerated reference scores and verified paired headroom. Merge benefit remains unestablished at this scale."
+# Once you set action to 'submit' or 'done', STOP immediately.
+# Do NOT sleep, poll, or wait for jobs. The system reads this file
+# only after your turn ends.
+action: pending
+gpus: 0
+test: false
+milestone: core_claim
+notes: ""
