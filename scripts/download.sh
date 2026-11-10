@@ -3,4 +3,7 @@
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 python3 data/fetch.py --manifest data/sources.json --root data/downloads/pdb
-python3 eval/test/fetch.py --manifest eval/test/sources.json --root eval/test/downloads
+# Private evaluation inputs (also public RCSB entries); only where eval/test/ is present.
+if [[ -f eval/test/fetch.py && -f eval/test/sources.json ]]; then
+ python3 eval/test/fetch.py --manifest eval/test/sources.json --root eval/test/downloads
+fi

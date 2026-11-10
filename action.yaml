@@ -1,8 +1,8 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: pending
+action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: ""
+notes: "Final hardening check: refit reference with training seeds 1 and 2 (identical settings), score them on the private test for the seed-noise floor, then rerun the end-to-end reference driver (reproduce.sh) to repackage reference-only scores and validate."
