@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: method_runs**
+**Current: core_claim**
 
 ## Progress Log
 
@@ -62,3 +62,8 @@ All three final 50-round GEOBPE training runs completed. The combined audit was 
 - Final rescore-only job `36b6eb18-d00` passed: a valid public whole-chain dictionary fails unseen complete-chain coverage, and forged quality fields fail the output schema.
 - Fresh reference-only packaging and validation pass. The default driver again reproduces the reference end to end; the standalone baseline launcher uses the independent baseline already measured in the completed jobs.
 - Final audit is packaged in `HARDENING.md`. The comparative merge benefit remains unestablished at this scale, so no higher milestone is claimed.
+
+### [2026-11-11] - core_claim
+- The released GEOBPE algorithm, with the paper's settings, runs at the paper's own Table 16 operating point for its main codebook (|V| = 600). It reproduces the paper's distortion scale on 64 + 64 unseen private chains: RMSD 1.98 / 1.52 Å and lDDT 0.756 / 0.824, against the paper's 1.66 Å and 0.73. The rate constraint is measured as the full description length (44.2 BPR, dictionary included) together with the alphabet size.
+- In the paper's direction, at equal rate the method far outperforms an independent fixed-bin quantizer (RMSD 7.69 / 19.81 Å, failing the long-chain constraint). The effect dwarfs the training-seed spread (0.015 rank), and public and private unseen chains agree.
+- Not established: the hierarchical-merge benefit, the VQ-VAE/ProToken Pareto comparison, downstream transfer and data efficiency. A simple closed-loop internal-coordinate codec dominates the method on this benchmark (see `HARDENING.md`). These limits keep the milestone at `core_claim`.

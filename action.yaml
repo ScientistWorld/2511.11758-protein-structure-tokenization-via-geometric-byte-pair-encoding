@@ -1,8 +1,6 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: submit
-gpus: 0
-test: false
+action: done
 milestone: core_claim
-notes: "Final hardening check: refit reference with training seeds 1 and 2 (identical settings), score them on the private test for the seed-noise floor, then rerun the end-to-end reference driver (reproduce.sh) to repackage reference-only scores and validate."
+notes: "Hardening complete: every major shortcut fails and is scored at worst values in both experiments; better variants rank +0.42/+1.28 and a weaker one −1.27 (paired CIs exclude 0) against a 0.015 training-seed spread; reference-only scores repackaged end-to-end and validated; HARDENING.md documents the open alternatives (closed-loop codec, no-merge tie, encoder-side search)."

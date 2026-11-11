@@ -1,149 +1,129 @@
-# Hardening audit
+# Hardening audit (final)
 
-The final test rewards a demonstrated fidelity improvement at fixed rate: `refined_glue` ranks +1.25409 (paired 95% interval [1.195446, 1.319235]), while the weaker control ranks −2.95926. The reference passes every task constraint and has no scored metric at its best bound. Four forced fresh paired encodings matched exactly; this small replay diagnostic is not a general population noise bound. The remaining limitation is that learned merges provide no held-out geometric benefit at this corpus size.
+**Better results now score higher, and worse ones lower, by far more than the noise.** On the hidden test, a fixed-cost encoder improvement of the reproduced GEOBPE ranks **+0.424** above the reference (paired 95% interval [0.404, 0.443]). A simple closed-loop internal-coordinate codec ranks **+1.282** [1.223, 1.337]. A lower-capacity GEOBPE ranks **−1.270** [−1.363, −1.182]. Refitting the reference with two other training seeds moves it by at most **0.015**. Every major shortcut from `REDTEAM.md` now fails: it is written to `scoring/scores_test.json` at the fixed worst value of every metric in both experiments, or else it ties the reference with no gain.
 
-The first combined job passed the independent decoder checks but stopped before fitting on a float32 +/-pi range-check incompatibility in the released PDB loader. This was repaired with a 1e-6 roundoff tolerance and clipping to the physical interval; no chains were removed and no algorithmic settings were changed. The resumed combined audit also checks complete public-corpus parsing before fitting.
+The reference is the released PT-BPE GEOBPE at the paper's main Table 14 codebook. It sits at the operating point the paper reports in Table 16 (|V| = 600), with the paper's glue and quantizer settings restored. No reference metric sits at a bound.
 
-The resumed job `56ca3ebd-e4c` completed all three 50-round training runs, but scheduler preemptions repeatedly restarted inference and overwrote its partial streams. It was cancelled to add atomic per-chain recovery, with checkpoint/dictionary/code/input fingerprints. Completed training and unchanged-chain raw outputs are retained; every score is recomputed. The forced four-input inference replay bypasses recovery. Repeated pandas FutureWarnings are suppressed without changing the released numerical operations.
+Two limitations remain and are stated plainly:
+- **A simple codec dominates the reference.** A classical closed-loop internal-coordinate codec beats the paper's method on every metric. This is an honest shortfall of the method, not a loophole, and it cannot be removed without replacing the paper's algorithm.
+- **Hierarchical merges show no benefit.** At this corpus size, merging adds nothing on held-out chains.
 
-Partial public measurements exposed a size mismatch: full dictionary storage was divided across 32 public versus 64 private chains. The larger vocabulary therefore failed the public rate gate while the private corpus amortized the same dictionary twice as far. Public evaluation was enlarged to 64 unseen chains in each range before the resumed combined audit. Fitting inputs, operating limits, coefficients, and private data were unchanged. New public sources exclude private sources and exact sequences; only the test-side acquisition helper reads the private exclusion list.
+All ranks below apply the external rule to the evaluator-written score files. For each experiment and metric, the rule takes the weight times the coefficient magnitude, times the improvement in the metric's better direction, divided by that metric's population standard deviation across the cohort, and sums the terms. Unless noted, the cohort is every non-attack attempt of the final audit ("science" cohort), and the reference is 0. Raw tables, the "all attempts" cohort and the train slice are in `redteam/hardening_final.md`. The seed results are in `redteam/seed_spread.md`.
 
-## Report and decisions
+## Does a better result score higher? Variants before and after
 
-The original REDTEAM report found a strong genuine improvement (`better_bins300`, audit/control ranks +0.693188/+0.629933) and a clearly worse low-capacity variant (−1.238218/−3.488790). The old reference's seed-to-seed rank range was 0.128686/0.359406, while the translation-weight change was below that range. Its three merge rounds did not affect held-out geometry: the no-merge alternative tied reconstruction and slightly improved the flawed rate proxy. This is an honest headroom problem, not an exploit to prohibit.
+Before: the original `REDTEAM.md` gym (5 public chains per split, proxy rate, method-supplied targets), with its audit / control-scale ranks. After: the final gym on the hidden test (64 unseen chains per experiment, full description length, evaluator-owned targets).
 
-The report also found that the test trusted supplied targets, sizes, and token/vocabulary counts, omitted boundary information and dictionary cost, accepted negative counts, truncated predictions to the smaller length, and took experiment selection from a mutable public score file. Five public test chains let a ten-entry dictionary memorize all answers. The supplied baseline transmitted exact native frames without charging them and dominated the reference.
+| Variant | Before | After (test, science cohort) [paired 95%] | After (train) |
+|---|---:|---:|---:|
+| Stronger quantizer (`better_bins300`, 50→300 bins) | +0.693 / +0.630 | Settings now in the reference (500 bins) | — |
+| Translation weight 1 (`better_glue`) | +0.043 / +0.213, below seed spread | Now the reference setting (paper Pareto setting) | — |
+| `refined_glue`: same frozen dictionary, motif stream and rate; boundary symbols re-chosen against complete-backbone geometry | — | **+0.4244** [0.4038, 0.4433] | +0.4138 |
+| `closed_loop_internal`: 26-bit/residue internal-coordinate codec, symbols chosen sequentially against the decoded prefix | — | **+1.2815** [1.2227, 1.3374] | +1.2673 |
+| `lower_capacity` (50 bins, 5/2 initial medoids) | −1.238 / −3.489 | **−1.2698** [−1.3626, −1.1818] | −1.2916 |
+| `higher_capacity` (old small codebook with 1000 bins, 100/20 medoids, 50 merges) | — | −0.3020 [−0.3329, −0.2696] | −0.2854 |
+| `merge5` (reference fit plus five merge rounds) | — | −0.0033 [−0.0058, −0.0003] | −0.0005 |
+| `no_bpe` (pre-merge vocabulary, earlier host) | +0.000027 / +0.034 | −0.0005 [−0.0030, 0.0024] (tie) | +0.0021 |
+| `weaker_no_glue` | Failed before evaluation | Not rerun | — |
 
-All fixes were decided together before a single combined compute job. Final-code reference, stronger and weaker variants, no-merge control, independent baseline, and former supplied baseline are rerun; evaluator-only attacks reuse the final reference raw outputs. No training is performed by the hidden test. The test does not defend against leftover processes or Python environment changes.
+Notes on the table:
+- **`higher_capacity` is not a strictly larger model.** It has more bins but five times fewer medoids than the reference, and it pays about 10 BPR more. Its lower rank is a trade-off measurement, not evidence against the paper's codebook-growth trend.
+- **Shared dictionary.** `refined_glue` and `merge5` use the reference's dictionary, so their comparisons carry no training-seed noise.
+- **Train and test agree** for every variant, so an honest method scores alike on both slices.
 
-## Changes
+### Noise
 
-The test owns targets, size, thresholds, reference measurements, representation decoder, and rank contract. It decodes raw symbols and recomputes every scientific quantity; method-written metrics, targets, sizes, and flags are never consumed. Complete-chain checks reject truncation, unknown fields and invalid symbols fail, and feasibility gates place every failed attempt below every successful one. All finite dictionary floats, lengths, boundary indices, and stream symbols are charged. The continuous-coordinate diagnostic pays 288 bits per residue before headers and fails the 96-BPR limit.
+| Source of noise | Before | After |
+|---|---:|---:|
+| Training seed (max − min rank over seeds 0/1/2) | 0.129 / 0.359 | **0.0147** (seeds 1 and 2: −0.0046 [−0.0287, 0.0194], −0.0147 [−0.0333, 0.0043]) |
+| Fresh re-encoding on one host (forced four-input replay) | — | 0 (bit-identical) |
+| Cross-host re-encoding (`no_bpe` vs fresh reference, same algorithm) | — | 0.0005 rank; 89 of 128 private chains differ in at least one boundary bin |
 
-The new data has 128 fitting chains, 128 public evaluation chains, and 128 unseen private evaluation chains, split equally between 64–192 and 256–512 residues. Every chain has a complete, continuous backbone. Source entries and exact sequences are disjoint between public and private data. Private source lists, downloads, raw predictions, repeatability checks, and the frozen reference with per-chain measurements live only under eval/test/. A public download command fetches every source from RCSB on a fresh clone. No committed code refers to shared/.
+The seeds were refit in this pass with identical settings (`method/train.py --seed`; the default seed 0 is unchanged). Their raw test metrics:
 
-The reference restores the paper's histogram bins 500, free bond quantization, original-geometry reassignment, prior-regularized global glue optimization every ten rounds, and the paper's Pareto translation weight 1. The completed audit used the paper's Table 16 smaller codebook with 128 fitting chains, 512 clustering candidates and 50 merges. The final reference instead uses the main Table 14 medoid schedule, 2,048 candidates and five compression merges, as described below. The earlier higher-capacity control (1,000 bins and 100/20 initial medoids) is retained as a measured alternative; the weaker control uses 50 bins and 5/2 initial medoids. File/occurrence ordering and random seeds are fixed. An additional inference replay measures decoded numerical variation across CPU hosts, and paired bootstrap intervals measure between-input uncertainty. The initial 50-merge audit and final correction are recorded below.
+| Seed | RMSD short / long | lDDT short / long | BPR short / long |
+|---|---|---|---|
+| 0 | 1.980 / 1.518 | 0.7557 / 0.8241 | 44.207 / 44.178 |
+| 1 | 1.987 / 1.530 | 0.7553 / 0.8230 | 44.207 / 44.178 |
+| 2 | 1.995 / 1.531 | 0.7546 / 0.8195 | 44.207 / 44.178 |
 
-Long backbones are the added scored experiment, weighted 0.5: the paper reports accumulation of local errors into global drift, which the former five-chain test barely measured. No reconstruction or rate metric is deliberately saturated. The reference cannot reach the zero-error/perfect-lDDT limits with a finite lossy representation; measured bound checks and stronger-variant evidence appear below.
+The smallest genuine improvement is about 29 times the seed spread. The paper's own effect is much larger than either source of noise: GEOBPE against the matched-rate fixed-bin baseline is RMSD 1.98 / 1.52 versus 7.69 / 19.81 Å, at 44.2 versus 45.3 BPR.
 
-Coefficient magnitudes remain RMSD 0.6, lDDT 1, BPR 0.4. Vocabulary size decreases from 0.1 to 0.02 because dictionary storage is now already fully charged in BPR; it retains a small preference for a compact alphabet without the former double penalty. Rank uses better-direction improvements over the frozen reproduced reference, divided by each metric's standard deviation among feasible attempts, and sums with 0.5 experiment weights. Failed attempts never enter this scientific ranking. The paper's numerical results are preserved verbatim under `_paper_reported`, separate from scaled measured reference results.
+## Major shortcuts: fix, and score before and after
 
-## Major shortcuts: before and fix
+"Before" is the `REDTEAM.md` audit-cohort rank. "After" is the final hidden-test outcome. Every failed attempt is written at RMSD 15, lDDT 0.35, BPR 96 and vocabulary 8192 in both experiments. That is rank −3.979 in the all-attempts cohort and −4.419 in the science cohort, below every feasible attempt.
 
-Ranks below are the old report's control-cohort ranks. Their magnitudes are not comparable with the new cohort's standardized ranks. The final table gives all rerun outcomes on the new hidden corpus.
+| Shortcut | Before | Fix | After |
+|---|---:|---|---|
+| Supplied baseline with free continuous frames | +2.3525 | The decoder interface has no free side information. Continuous output is charged 32 bits per float; the 96-BPR rate limit applies. | Fails (BPR 288); worst values |
+| Forged target coordinates | +2.3523 | Targets are evaluator PDBs, verified by sha256 and held in memory; target fields fail the schema | Fails; worst values |
+| Forged token counts / vocabulary size | +0.0030 | Counts, sizes and alphabet are derived from the decoded representation; claimed fields fail | Fails; worst values |
+| Public whole-chain dictionary | +2.3553 | Private unseen chains (64 + 64, source- and sequence-disjoint from public); dictionary storage charged | Fails (no complete coverage); worst values |
+| Constant two-residue template | +2.3554 | Native residue count and complete reconstruction fixed by `eval/` | Fails; worst values |
+| Truncated output | +2.3523 | No min-length matching; any incomplete chain fails | Fails; worst values |
+| Negative counts | −1.667 (+2835 at fixed scales) | No claimed counts; negative or non-integer indices fail | Fails; worst values |
+| Scalar quality fields beside valid predictions | 0 (tie) | Unknown fields fail the schema | Fails; worst values |
+| Pruning the comparison via a mutable public score file | Incomplete output | Experiments, test size, thresholds, weights and the published comparison are owned by `eval/`. The private evaluator restores its own copy of `scoring/reference.json` before and after every attempt. | 0 (tie: valid reference streams, no selection benefit) |
+| Crashed encoder (new probe) | — | Failed attempts are written at the worst values, not omitted | Fails; worst values |
+| Tampering with the reference comparison or a private target (new probes) | — | Evaluator, comparison and input files are snapshotted, restored after each encoder, and the attempt fails | Fails; worst values |
 
-| Shortcut | Before | Fix / final replay |
-|---|---:|---|
-| Supplied baseline's free exact frames | +2.352529 | Preserve its 16-prototype geometry, transmit and charge its entire continuous coordinate output; rate gate applies. |
-| Forged target coordinates | +2.352333 | Only evaluator PDBs are targets; supplied target fields fail the interface. |
-| Forged counts / vocabulary | +0.003025 | Derive counts, size and alphabet from decoded representation; forged fields fail. |
-| Public whole-chain dictionary | +2.355349 | New private unseen sources; whole-chain dictionary storage charged. Replay a visible structure as a dictionary entry against unseen inputs. |
-| Invented two-residue template | +2.355358 | Expected native size and complete reconstruction are fixed; short output fails. |
-| Truncated native output | +2.352333 | No min-length matching; any incomplete chain fails. |
-| Negative counts | −1.667061 in audit (arbitrarily favorable under fixed scaling) | No claimed counts; negative indices fail before measurement. |
-| Scalar quality fields with valid reference predictions | 0 (tie) | Unknown metric fields now fail the raw-symbol interface; replay included. |
-| Pruned comparisons | Incomplete CASP-only result | Both experiments and method enumeration are evaluator-owned. Its valid full reference predictions now tie the reference, with no pruning benefit. |
+The scalar-only, null-array and empty-array attacks already failed before; the strict schema still rejects them, and they were not replayed.
 
-The pruning replay is a valid unchanged reference representation; structural checks verify that the evaluator never reads scoring/scores_train.json. The other major attacks run through the same hidden entry point after registration. Already rejected scalar-only, null, and empty-output attacks are not replayed. The formerly tying scalar-field attack is replayed explicitly. Strict decoder validation also rejects them.
+## Shortcuts and open alternatives deliberately left
 
-## Limitations and deliberately open alternatives
+- **Encoder-side search against the supplied input.** An encoder must see the structure it encodes, and the decoder is public. Any method can therefore compute its own distortion and search over symbols. This is left open on purpose:
+  - every transmitted bit, including the dictionary, is charged, so search can only find a better representation inside a frozen codebook at a measured rate;
+  - the paper's own encoder does exactly this, optimizing boundary glue against the original structure, so limiting it would cripple the reproduced method.
+  This search is measured: `refined_glue` (+0.42) and `closed_loop_internal` (+1.28) are such encoders. Per-instance compute is bounded only by the 7,200 s per-attempt encoder timeout, about 56 s per chain. The reference encoder takes about 21–23 s per chain (44–50 minutes per 128-chain attempt on the job hosts).
+- **No merges (`no_bpe`).** An honest alternative that the test cannot tell apart from the reference: same algorithm, zero merge rounds. The reference itself is the pre-merge checkpoint the paper reports. This is a headroom limitation, not a loophole.
+- **Memorizing public evaluation chains.** This only raises train-slice scores. The hidden test uses unseen chains, so such a method loses there.
+- **Method-owned files in the run directory.** The evaluator deletes `outputs.json` before each encoder run but leaves the method's own cache files (the reference uses them for per-chain resume). An encoder could keep private inputs there between hidden-test runs. This is not defended, consistent with not defending against leftover state; the grader's shortcut check covers it.
+- **Entropy coding.** Symbols are charged at fixed width, `ceil(log2(alphabet))`, so entropy coding is not rewarded. JSON whitespace is not charged.
 
-The no-merge model is an honest alternative and still ranks +0.009567 after restoring the main paper settings. It matches reference geometry exactly and saves about 0.166 BPR and seven unused alphabet entries. Thus this corpus does not demonstrate the paper’s central hierarchical merge benefit. The larger reconstruction improvement from discrete boundary refinement supplies measured headroom; the no-merge control is not used as that evidence. Training on 128 rather than 33,992 chains remains a material scale reduction, and the comparative paper claim is not established. The audited milestone remains `method_runs`.
+## Reference score before and after
 
-The corpus is larger but far below the paper's 33,992-chain fitting corpus and thousands of merge rounds. This iteration does not establish full PDB-scale compression gains, downstream transfer, or performance against the paper's external learned tokenizers. Exact sequence and source disjointness do not establish remote-homology separation. General-purpose dictionary learning and more efficient coding remain scientific research opportunities; attempts must still freeze their representation before private requests.
+| | RMSD | lDDT | BPR | Vocabulary |
+|---|---|---|---|---|
+| Before (CAMEO / CASP, 5 chains each, proxy rate, method-supplied targets) | 7.516 / 4.207 | 0.5774 / 0.5745 | 7.775 (tokens only) | 219 |
+| After, test (short / long, 64 unseen chains each) | 1.9803 / 1.5183 | 0.7557 / 0.8241 | 44.207 / 44.178 (full description length) | 2100 |
+| After, train (public unseen, short / long) | 1.9242 / 1.5263 | 0.7610 / 0.8235 | 43.916 / 43.891 | 2100 |
+| Paper, Table 16, same codebook at \|V\| = 600 (kept under `_paper_reported`) | 1.66 | 0.73 | 36.02 | 600 |
 
-There is no exhaustive candidate-enumeration task here: encoding the input geometry is allowed, but storing each entire unseen chain costs its full geometry and cannot satisfy compact coding. The former public-answer lookup is closed by unseen inputs and dictionary accounting. The finite decoder interface supports motif dictionaries, independent internal-coordinate alphabets, and full coordinates; new decoder families would require an explicit benchmark extension. Serialized JSON whitespace is not charged; the fixed binary description-length convention is documented.
+The final reference's distortion is on the paper's scale. Its BPR is higher than the paper's for two reasons:
+- symbols are charged at whole-bit width;
+- the complete dictionary (about 7.2 bits per residue: 211,424 bits over 29,513 private residues) is amortized over 128 chains rather than a PDB-scale corpus.
 
-The old reference had CAMEO/CASP RMSD 7.516185/4.207396, lDDT 0.577381/0.574539, BPR proxy 7.774787/7.774787, and vocabulary 219. Its rank was zero by definition. The final reference also has rank zero, with full rate and evaluator-native targets on a different corpus; its new scientific measurements appear below. The higher-resolution and weaker controls have changed data and restored paper settings, so the before/after evidence establishes ranking behavior rather than a numerical longitudinal comparison.
+The packaged `scoring/scores_test.json`, `scores_train.json` and `reference.json` hold the reference runs alone: the reference, plus the fixed-bin baseline at worst values because it fails the long-chain reconstruction constraint. The final job regenerated them through `scripts/reproduce.sh`, byte-identical to the previous packaging.
 
-## Completed 50-merge audit before the final repair
+## Headroom check
 
-The complete audit stopped at a bitwise replay assertion after all model measurements. Motif identities matched; 1–5 boundary symbols per replayed chain differed by one bin across preempted CPU hosts. This is numerical variation to measure in decoded scientific units, not evidence of seed instability. The main failure was scientific: an oversized rarely used merge dictionary penalized the higher-capacity model, and the no-merge control beat the reference.
+- **No reference metric at a bound.** RMSD is above 0 and lDDT below 1 in both experiments; BPR is 44 against a feasible range that goes down to a few bits; vocabulary is 2100, above the minimum of 1.
+- **Added experiment.** `long_backbones` (256–512 residues, weight 0.5) is where the paper's method falls short: local quantization error accumulates into global drift.
+- **Measured headroom.** Two variants beat the reference well beyond noise. Neither reaches a bound: `closed_loop_internal` has RMSD 0.378 / 0.435 and lDDT 0.963 / 0.958.
+- **Brute force fails.** Lossless coordinates (288 BPR) and whole-chain lookup both fail.
+- **Baseline below the reference.** The independent fixed-bin baseline (`baseline/internal.py`) is far below the reference: at equal rate it drifts to 19.8 Å on long chains and fails the constraint.
 
-| Side / attempt | RMSD short / long | lDDT short / long | BPR short / long | Rank |
-|---|---|---|---|---:|
-| train / geobpe_reference | 1.813706 / 2.765136 | 0.766910 / 0.688813 | 53.080489 / 41.546349 | 0 |
-| train / higher_capacity | 1.806610 / 1.897274 | 0.772017 / 0.762760 | 95.596086 / 58.863524 | -0.234047 |
-| train / internal_baseline | 8.832851 / 19.412237 | 0.523633 / 0.429113 | 46.193884 / 45.432471 | -1e+100 |
-| train / lower_capacity | 3.606429 / 7.675948 | 0.617163 / 0.485264 | 43.263242 / 31.352623 | -3.15737 |
-| train / no_bpe | 1.813706 / 2.786364 | 0.766910 / 0.686203 | 40.934434 / 35.874158 | 0.205125 |
-| train / supplied_baseline | 0.011148 / 0.010051 | 1.000000 / 1.000000 | 288.266177 / 288.096420 | -1e+100 |
-| test / geobpe_reference | 1.906143 / 2.762641 | 0.760346 / 0.689849 | 55.020046 / 41.672752 | 0 |
-| test / higher_capacity | 1.894694 / 1.883805 | 0.763872 / 0.762673 | 101.774617 / 59.276457 | -1e+100 |
-| test / internal_baseline | 7.690368 / 19.813211 | 0.544783 / 0.428074 | 46.321956 / 45.441030 | -1e+100 |
-| test / lower_capacity | 3.690832 / 7.611221 | 0.617876 / 0.489437 | 45.091968 / 31.570538 | -2.50685 |
-| test / no_bpe | 1.907194 / 2.754692 | 0.760269 / 0.690576 | 41.785589 / 35.931044 | 0.755145 |
-| test / supplied_baseline | 0.010811 / 0.010146 | 1.000000 / 1.000000 | 288.294731 / 288.098328 | -1e+100 |
+## Weights and coefficients
 
-The final repair restores the main Table 14 500/100 initial-medoid schedule (20/100 merged medoids), uses five merge rounds following Appendix K.2’s advice for small-corpus compression, and increases the clustering sample cap from 512 to 2,048. This remains below the paper’s 5,000-occurrence cap and 33,992 training chains. A single frozen dictionary serves both experiments; it is now charged once across the complete 128-chain corpus, with its cost apportioned by native residue count. This removes double charging and keeps every dictionary bit accounted for. No quality or rate threshold is relaxed. A separate variant optimizes the same discrete boundary symbols against complete-backbone geometry; it changes neither the reference algorithm nor storage cost. Its paired improvement must exceed measured numerical replay variation.
+- **Coefficients:** RMSD 0.6, lDDT 1.0, BPR 0.4, vocabulary 0.02. The vocabulary coefficient was lowered from 0.1 earlier in this iteration because dictionary storage is now charged inside BPR; keeping it at 0.1 would penalize alphabet size twice.
+- **Experiment weights:** 0.5 each. Global drift on long chains is the failure the paper's glue optimization exists to correct.
+- **No changes in this final pass.**
 
+## Changes in this iteration
 
-## Final packaging check
+- **Evaluators:** they decode raw symbols with an independent NeRF decoder and recompute every metric. They write every on-disk submission to `scoring/scores_{train,test}.json`, at worst values for any malformed, crashed, file-modifying or constraint-failing attempt. Targets are loaded and verified before any encoder runs; evaluator, comparison and input files are restored after each encoder.
+- **Reference:** paper settings restored (500 bins, free bonds, original-geometry reassignment, glue prior 1 every 10 rounds, translation weight 1). It uses the main Table 14 codebook at the Table 16 |V| = 600 operating point, which follows Appendix K.2: stop merging early at high resolution.
+- **Data:** 128 fitting, 128 public and 128 private chains, split into short and long. Private sources and downloads live only in `eval/test/`.
+- **Hidden headroom probes:** they live in `eval/test/variants/` and are not shipped with the method.
+- **This pass:**
+  - measured the training-seed spread;
+  - made `scripts/download.sh` skip the private fetch where `eval/test/` is absent;
+  - restored `scripts/run.sh` to the end-to-end reference driver (`scripts/reproduce.sh`).
+  No evaluator, data or reference code changed in this pass, so the final audit job `2175ebd6-1ed` remains the current shortcut and variant evidence.
 
-The main audit finished successfully in job `35dca7a9-39a`. Reference-only train/test scores were regenerated from decoded final reference runs; all variants and attacks are reported only here. Public/private reference RMSD is 1.917877/1.980736 for short chains and 1.526253/1.519381 for long chains, showing comparable difficulty. The independent baseline has long-chain RMSD 19.813211 and fails the fixed quality constraint; the reference is clearly better and remains far from perfect geometry.
+## What could not be fixed
 
-The final rescore-only job `36b6eb18-d00` passed. The lookup probe used ten valid complete public chains, passed dictionary validation, and failed complete-chain coverage on unseen inputs. The formerly tying scalar-field attack failed the strict output schema. No model was retrained and no threshold changed. Fresh reference-only packaging passed without audit variants or replay files, and `scripts/run.sh` was restored to end-to-end reference reproduction. The standalone baseline launcher now uses the same independently implemented baseline and public evaluation commands already verified by the reproduction job. `validate.py` passes; its two heuristic warnings mistake the paired bootstrap RNG for experiment regeneration. That RNG only resamples already decoded per-input measurements.
-
-
-## Final combined job results
-
-These ranks use the final cohort standard deviations; failed attempts receive −10¹⁰⁰ and cannot outrank a feasible run. Reference rank is zero by definition. Intervals are paired 1,000-replicate bootstrap intervals over the same private chains.
-
-| Attempt | Failed | Rank | Paired 95% interval |
-|---|---|---:|---|
-| attack_constant_template | True | -1e+100 |  |
-| attack_forged_counts | True | -1e+100 |  |
-| attack_forged_target | True | -1e+100 |  |
-| attack_negative_counts | True | -1e+100 |  |
-| attack_prune_comparison | False | 0 | [0.0, 0.0] |
-| attack_public_dictionary | True | -1e+100 |  |
-| attack_quality_fields | True | -1e+100 |  |
-| attack_truncated | True | -1e+100 |  |
-| geobpe_reference | False | 0 | [0.0, 0.0] |
-| higher_capacity | False | -0.755637 | [-0.835256, -0.675312] |
-| internal_baseline | True | -1e+100 |  |
-| lower_capacity | False | -2.95926 | [-3.269801, -2.679492] |
-| no_bpe | False | 0.0095675 | [0.009193, 0.009943] |
-| refined_glue | False | 1.25409 | [1.195446, 1.319235] |
-| supplied_baseline | True | -1e+100 |  |
-
-| Attempt / experiment | RMSD ↓ | lDDT ↑ | Full BPR ↓ | Vocabulary ↓ |
-|---|---:|---:|---:|---:|
-| attack_prune_comparison / short_backbones | 1.980736 | 0.755715 | 44.372994 | 2107 |
-| attack_prune_comparison / long_backbones | 1.519381 | 0.823977 | 44.344111 | 2107 |
-| geobpe_reference / short_backbones | 1.980736 | 0.755715 | 44.372994 | 2107 |
-| geobpe_reference / long_backbones | 1.519381 | 0.823977 | 44.344111 | 2107 |
-| higher_capacity / short_backbones | 1.894694 | 0.763872 | 53.966919 | 3173 |
-| higher_capacity / long_backbones | 1.883805 | 0.762673 | 53.955366 | 3173 |
-| internal_baseline / short_backbones | 7.690368 | 0.544783 | 45.343702 | 288 |
-| internal_baseline / long_backbones | 19.813211 | 0.428074 | 45.332149 | 288 |
-| lower_capacity / short_backbones | 3.690832 | 0.617876 | 29.771404 | 407 |
-| lower_capacity / long_backbones | 7.611221 | 0.489437 | 29.865329 | 407 |
-| no_bpe / short_backbones | 1.980736 | 0.755715 | 44.207101 | 2100 |
-| no_bpe / long_backbones | 1.519381 | 0.823977 | 44.178218 | 2100 |
-| refined_glue / short_backbones | 1.224961 | 0.836642 | 44.372994 | 2107 |
-| refined_glue / long_backbones | 0.924750 | 0.889168 | 44.344111 | 2107 |
-| supplied_baseline / short_backbones | 0.010811 | 1.000000 | 288.281731 | 1 |
-| supplied_baseline / long_backbones | 0.010146 | 1.000000 | 288.096881 | 1 |
-
-Failed attempts and reasons:
-
-- `attack_constant_template`: invalid full coordinate output
-- `attack_forged_counts`: representation fields do not match codec
-- `attack_forged_target`: representation fields do not match codec
-- `attack_negative_counts`: invalid stream lengths
-- `attack_public_dictionary`: reconstruction does not cover the complete chain
-- `attack_quality_fields`: representation fields do not match codec
-- `attack_truncated`: invalid full coordinate output
-- `internal_baseline`: long_backbones: reconstruction constraint
-- `supplied_baseline`: short_backbones: rate/dictionary constraint; long_backbones: rate/dictionary constraint
-
-Reference metrics at their best bound: none. Long backbones are the added scored experiment; their weight is 0.5.
-
-Headroom evidence: the stronger variant has a paired lower confidence limit above zero and the measured normalized replay difference (0).
-The weaker variant has rank -2.959262.
-The no-merge ablation has rank 0.009567; indistinguishable geometry is a scientific headroom limitation, not a forged-output loophole.
-
-The boundary-refinement variant changes only the encoder’s choice of existing finite boundary symbols. It uses its input structure, keeps the reference dictionary and motif sequence, and pays identical rate/vocabulary cost. Its output is accepted only when its independently evaluated RMSD and lDDT are both no worse. Measured RMSD remains above zero and lDDT below one in both experiments; this simple variant does not attain a scored quality bound.
-
-Decoded replay diagnostic: {"conservative_normalized_rank_noise": 0.0, "exact_raw_replay": true, "maximum_difference_by_experiment": {"long_backbones": {"bpr": 0.0, "lddt": 0.0, "rmsd": 0.0}, "short_backbones": {"bpr": 0.0, "lddt": 0.0, "rmsd": 0.0}}, "note": "Four-input numerical replay diagnostic across CPU hosts, not a population confidence bound.", "paired_inputs": 4}
+- **The paper's method is not on this benchmark's Pareto front.** A roughly 60-line closed-loop internal-coordinate codec reaches RMSD 0.38–0.44 at 26 BPR, against GEOBPE's 1.5–2.0 at 44 BPR. Its open-loop form is the shipped baseline, so a future agent can find it easily. Under the paper's own metrics this is a genuine improvement, not a shortcut, and the score orders it correctly. But it means future rankings will likely be led by encoder-design ideas from classical coding rather than by better hierarchical vocabularies. The paper's Pareto claims compare only against learned tokenizers (VQ-VAEs, ProToken), and those comparisons are not reproduced here.
+- **Hierarchical merges show no held-out benefit.** At 128 fitting chains and 2,048 clustering occurrences (paper: 33,992 chains, a 5,000-occurrence cap), five merge rounds add seven motifs that no held-out chain uses.
+- **Not covered:** downstream transfer, language-model generation and the claimed data-efficiency advantage.
+- **Encoder timeout:** it is a wall-clock bound on feasibility. It is generous (the reference uses about 40% of it), but a host more than about twice as slow could time out the reference encoder, which would then be scored at the worst values.
