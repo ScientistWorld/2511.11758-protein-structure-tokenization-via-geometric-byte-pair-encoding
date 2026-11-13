@@ -3,6 +3,6 @@
 # only after your turn ends.
 action: submit
 gpus: 0
-test: true
+test: false
 milestone: core_claim
-notes: "Validation: score new hidden frozen-tokenizer probes (open/closed/compact glue, motif-format short codec) and archived variants on both slices from saved raw streams; restore reference-only scores."
+notes: "Final audit: fresh end-to-end refit and encoding of the reference and baseline on both slices; hidden probes (open/closed glue, closed-loop re-tokenization over the frozen vocabulary, compact alphabets, short codecs) and archived variants scored from raw streams; reference-only packaging and validation."

@@ -1,8 +1,9 @@
 """Verifier-only probes on the frozen reference tokenizer (not shipped).
 
-Every mode keeps the released dictionary's motifs and the reference encoder's own
-motif stream (nearest residue medoid, Algorithm 10 step 1, produced by invoking the
-released encoder as a subprocess). Only the boundary glue symbols change:
+Every mode keeps the released dictionary (the reference's 600 learned residue
+medoids). The glue modes also keep the reference encoder's own motif stream (nearest
+residue medoid, Algorithm 10 step 1, produced by invoking the released encoder as a
+subprocess) and change only the boundary glue symbols:
 
   open     each boundary angle snaps to the bin holding its native value: the paper's
            "GeoBPE without glue optimization" ablation (Appendix A, Fig. 6).
@@ -12,6 +13,14 @@ released encoder as a subprocess). Only the boundary glue symbols change:
            dictionary, alphabets and rate as the reference.
   compact  closed, with the glue alphabets re-quantized per angle type to 8 (theta),
            4 (omega) and 64 (phi) quantiles of the public fitting chains.
+
+The token modes re-tokenize in closed loop over the same frozen vocabulary: for each
+residue the learned medoid and its boundary glue are chosen together so the placed
+CA, C and next N atoms land nearest the input given the decoded prefix (only the first
+residue keeps the released encoder's medoid). This replaces the paper's open-loop
+nearest-medoid assignment plus batch glue refinement by sequential discrete IK.
+  tokens          reference glue alphabets: same dictionary, alphabets and rate.
+  tokens_compact  compact glue alphabets as above.
 
 Uses only the encoder's supplied input geometry; imports no method or evaluator code.
 """
@@ -106,6 +115,45 @@ def encode_closed(native,ids,motifs,G,top=8):
   j+=2
  return glue
 
+def encode_tokens(native,first,motifs,G,top=3):
+ TH,OM,PH=G; order=np.argsort(PH); PHs=PH[order]; P=len(PH)
+ def table(length):
+  ids=np.asarray([i for i,m in enumerate(motifs) if len(m[0])==length])
+  return ids,np.asarray([motifs[i][0] for i in ids]),np.asarray([motifs[i][1] for i in ids]),np.asarray([(motifs[i][2] or [0.])[0] for i in ids])
+ tables={3:table(3),2:table(2)}
+ N=len(native)//3; md,ma,mt=motifs[first]
+ x=np.zeros((3*N,3)); x[1]=[md[0],0,0]; x[2]=[md[0]-md[1]*math.cos(ma[0]),md[1]*math.sin(ma[0]),0]
+ goal=superpose(native,x); x[3]=place(x,3,md[2],ma[1],mt[0]); ids=[first]; glue=[]
+ unit=lambda v:v/np.linalg.norm(v,axis=1)[:,None]
+ for res in range(1,N):
+  last=res==N-1; jN=3*res; jCA=jN+1; jC=jN+2
+  mids,B,A,PSI=tables[2 if last else 3]
+  bc,nn,tg=frame(x,jCA); r=goal[jCA]-x[jN]; Dn=float(np.median(B[:,0]))
+  cb=-Dn*np.cos(TH)[:,None]; sa=Dn*np.sin(TH)[:,None]
+  err=(cb-r@bc)**2+(sa*np.cos(OM)[None,:]-r@tg)**2+(sa*np.sin(OM)[None,:]-r@nn)**2
+  k=min(top,err.size); best=None
+  for f in np.argpartition(err.ravel(),k-1)[:k]:
+   ti,oi=np.unravel_index(int(f),err.shape)
+   u=-math.cos(TH[ti])*bc+math.sin(TH[ti])*(math.cos(OM[oi])*tg+math.sin(OM[oi])*nn)
+   CA=x[jN]+B[:,0,None]*u; tot=((CA-goal[jCA])**2).sum(1)
+   b2=unit(CA-x[jN]); n2=unit(np.cross(x[jN]-x[jN-1],b2)); t2=np.cross(n2,b2); r2=goal[jC]-CA
+   want=np.arctan2((r2*n2).sum(1),(r2*t2).sum(1))%(2*math.pi)
+   pos=np.searchsorted(PHs,want); c=np.stack([(pos-1)%P,pos%P],1)
+   gap=np.abs(PHs[c]-want[:,None]); gap=np.minimum(gap,2*math.pi-gap)
+   pi=order[c[np.arange(len(c)),np.argmin(gap,1)]]; ph=PH[pi]
+   C=CA+B[:,1,None]*(-np.cos(A[:,0])[:,None]*b2+np.sin(A[:,0])[:,None]*(np.cos(ph)[:,None]*t2+np.sin(ph)[:,None]*n2))
+   tot+=((C-goal[jC])**2).sum(1)
+   if not last:
+    b3=unit(C-CA); n3=unit(np.cross(CA-x[jN],b3)); t3=np.cross(n3,b3)
+    Nx=C+B[:,2,None]*(-np.cos(A[:,1])[:,None]*b3+np.sin(A[:,1])[:,None]*(np.cos(PSI)[:,None]*t3+np.sin(PSI)[:,None]*n3))
+    tot+=((Nx-goal[jC+1])**2).sum(1)
+   m=int(np.argmin(tot))
+   if best is None or tot[m]<best[0]: best=(float(tot[m]),int(ti),int(oi),m,int(pi[m]))
+  _,ti,oi,m,p=best; mid=int(mids[m]); ids.append(mid); glue.append([ti,oi,p]); md,ma,mt=motifs[mid]
+  x[jCA]=place(x,jCA,md[0],TH[ti],OM[oi]); x[jC]=place(x,jC,md[1],ma[0],PH[p])
+  if not last: x[jC+1]=place(x,jC+1,md[2],ma[1],mt[0])
+ return ids,glue
+
 def glue_angles(paths):
  values={'theta':[],'omega':[],'phi':[]}
  for p in paths:
@@ -120,7 +168,7 @@ def register(a):
  base=json.loads(Path(a.base_model).read_text())
  (dest/'base_model.json').write_text(json.dumps(base,allow_nan=False)+'\n')
  model=dict(base)
- if a.mode=='compact':
+ if a.mode in ('compact','tokens_compact'):
   values=glue_angles(sorted((ROOT/'data/downloads/pdb/train').glob('*.pdb')))
   model['glue']={k:[float(v) for v in np.quantile(np.asarray(values[k]),(np.arange(COMPACT[k])+.5)/COMPACT[k])] for k in ('theta','omega','phi')}
  (dest/'model.json').write_text(json.dumps(model,allow_nan=False)+'\n')
@@ -128,7 +176,7 @@ def register(a):
  atomic(dest/'manifest.json',{'model':rel(dest/'model.json'),'command':['python','eval/test/variants/glue_loop.py','--mode',a.mode,'--checkpoint',a.checkpoint,'--base-model',rel(dest/'base_model.json'),'--request','{request}','--output','{output}','--model','{model}']})
 
 def main():
- p=argparse.ArgumentParser(); p.add_argument('--mode',choices=('open','closed','compact'),required=True)
+ p=argparse.ArgumentParser(); p.add_argument('--mode',choices=('open','closed','compact','tokens','tokens_compact'),required=True)
  p.add_argument('--checkpoint',required=True); p.add_argument('--base-model',required=True)
  p.add_argument('--request'); p.add_argument('--output'); p.add_argument('--model'); p.add_argument('--register'); a=p.parse_args()
  if a.register: register(a); return
@@ -142,7 +190,8 @@ def main():
  streams={r['id']:r for r in json.loads(base.read_text())}; rows=[]
  for request in json.loads(Path(a.request).read_text()):
   native=coordinates(request['path']); ids=streams[request['id']]['motifs']
-  glue=encode_open(native,ids,motifs,G) if a.mode=='open' else encode_closed(native,ids,motifs,G)
+  if a.mode.startswith('tokens'): ids,glue=encode_tokens(native,ids[0],motifs,G)
+  else: glue=encode_open(native,ids,motifs,G) if a.mode=='open' else encode_closed(native,ids,motifs,G)
   rows.append({'id':request['id'],'motifs':ids,'glue':glue})
  atomic(output,rows)
 if __name__=='__main__': main()

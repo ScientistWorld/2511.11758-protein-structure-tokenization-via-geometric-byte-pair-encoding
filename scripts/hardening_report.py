@@ -17,6 +17,9 @@ EXPS=list(CONTRACT['experiments'])
 W={e:CONTRACT['experiments'][e]['weight'] for e in EXPS}
 M={m:(d['higher_is_better'],abs(d['coefficient'])) for m,d in CONTRACT['experiments'][EXPS[0]]['metrics'].items()}
 BOUNDS={'rmsd':0.,'lddt':1.,'bpr':0.,'vocab_size':1.}
+# Hand-designed closed-loop codecs (no learned vocabulary); every other attempt is the
+# reference, a baseline, or a variant of the paper's tokenizer.
+SHORT_CODECS={'closed_loop_internal','closed_loop_motif'}
 
 def read(p): return json.loads((ROOT/p).read_text())
 
@@ -59,8 +62,8 @@ def main():
  for side in ('test','train'):
   scores=read(f'scoring/scores_{side}.json'); values=table(scores); meas=read(f'eval/{side}/measurements.json')
   names=sorted(values[EXPS[0]]); attacks=[n for n in names if n.startswith('attack_')]
-  science=[n for n in names if n not in attacks]; core=[n for n in science if n!='closed_loop_internal']
-  cohorts={'all':names,'science':science,'science_without_closed_loop':core}
+  science=[n for n in names if n not in attacks]; core=[n for n in science if n not in SHORT_CODECS]
+  cohorts={'all':names,'science':science,'paper_line':core}
   side_report={'failed':scores['_metadata']['failed'],'scored':values,'measured':{n:meas[n].get('metrics') for n in names},'cohorts':{}}
   details={n:meas[n]['details'] for n in names if not meas[n].get('failed',True) and 'details' in meas[n]}
   for label,cohort in cohorts.items():
@@ -72,20 +75,20 @@ def main():
   side_report['reference_at_bound']=[f'{e}/{m}' for e in EXPS for m,v in values[e][REF].items() if abs(v-BOUNDS[m])<1e-12]
   side_report['replay_no_bpe_vs_reference_changed_streams']=same_streams(side,REF,'no_bpe')
   report[side]=side_report
-  lines+=[f'## {side} slice','','| Attempt | Failed | Short RMSD | Short lDDT | Short BPR | Long RMSD | Long lDDT | Long BPR | Vocab | Rank (all) | Rank (science) | Rank (science w/o closed loop) |','|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|']
+  lines+=[f'## {side} slice','','| Attempt | Failed | Short RMSD | Short lDDT | Short BPR | Long RMSD | Long lDDT | Long BPR | Vocab | Rank (all) | Rank (science) | Rank (paper line) |','|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|']
   for n in names:
    v=values; rk=side_report['cohorts']
    cell=lambda lab: f"{rk[lab]['ranks'][n]:.4f}" if n in rk[lab]['ranks'] else '—'
-   lines.append(f"| {n} | {n in scores['_metadata']['failed']} | {v['short_backbones'][n]['rmsd']:.4f} | {v['short_backbones'][n]['lddt']:.4f} | {v['short_backbones'][n]['bpr']:.3f} | {v['long_backbones'][n]['rmsd']:.4f} | {v['long_backbones'][n]['lddt']:.4f} | {v['long_backbones'][n]['bpr']:.3f} | {v['long_backbones'][n]['vocab_size']:.0f} | {cell('all')} | {cell('science')} | {cell('science_without_closed_loop')} |")
+   lines.append(f"| {n} | {n in scores['_metadata']['failed']} | {v['short_backbones'][n]['rmsd']:.4f} | {v['short_backbones'][n]['lddt']:.4f} | {v['short_backbones'][n]['bpr']:.3f} | {v['long_backbones'][n]['rmsd']:.4f} | {v['long_backbones'][n]['lddt']:.4f} | {v['long_backbones'][n]['bpr']:.3f} | {v['long_backbones'][n]['vocab_size']:.0f} | {cell('all')} | {cell('science')} | {cell('paper_line')} |")
   lines+=['','Measured (unscored) metrics of failed attempts and failure reasons:','']
   for n,reasons in scores['_metadata']['failed'].items():
    mm=meas[n].get('metrics')
    meas_txt='; '.join(f"{e}: RMSD {mm[e]['rmsd']:.4f}, lDDT {mm[e]['lddt']:.4f}, BPR {mm[e]['bpr']:.3f}" for e in EXPS) if mm else 'not measurable'
    lines.append(f"- `{n}` — {'; '.join(reasons)} — measured: {meas_txt}")
   if side=='test':
-   lines+=['','Paired 95% rank intervals versus the reference:','','| Attempt | science cohort | science w/o closed loop |','|---|---|---|']
+   lines+=['','Paired 95% rank intervals versus the reference:','','| Attempt | science cohort | paper-line cohort |','|---|---|---|']
    for n in science:
-    a=side_report['cohorts']['science']['paired_95ci'].get(n); b=side_report['cohorts']['science_without_closed_loop']['paired_95ci'].get(n)
+    a=side_report['cohorts']['science']['paired_95ci'].get(n); b=side_report['cohorts']['paper_line']['paired_95ci'].get(n)
     if a or b: lines.append(f"| {n} | {[round(x,4) for x in a] if a else '—'} | {[round(x,4) for x in b] if b else '—'} |")
   lines+=['',f"Reference metrics at a best bound: {side_report['reference_at_bound'] or 'none'}.",f"Chains whose raw streams differ between the fresh reference and the earlier-host no-merge replay: {side_report['replay_no_bpe_vs_reference_changed_streams']}.",'']
  try:
