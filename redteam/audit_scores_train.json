@@ -9,119 +9,49 @@
       "vocab_size": 8192.0
     },
     "failed": {
-      "attack_constant_template": [
-        "ValueError: invalid full coordinate output"
-      ],
-      "attack_crash": [
-        "CalledProcessError: Command '['python', 'eval/test/probes.py', '--attack', 'crash', '--request', '/home/user/eval/train/runs/attack_crash/request.json', '--output', '/home/user/eval/train/runs/attack_crash/outputs.json', '--model', '/home/user/eval/train/runs/attack_crash/model.json']' returned non-zero exit status 1."
-      ],
-      "attack_forged_counts": [
-        "ValueError: representation fields do not match codec"
-      ],
-      "attack_forged_target": [
-        "ValueError: representation fields do not match codec"
-      ],
-      "attack_negative_counts": [
-        "ValueError: invalid stream lengths"
-      ],
-      "attack_public_dictionary": [
-        "ValueError: reconstruction does not cover the complete chain"
-      ],
-      "attack_quality_fields": [
-        "ValueError: representation fields do not match codec"
-      ],
-      "attack_tamper_reference": [
-        "ValueError: attempt modified evaluation or comparison files: scoring/reference.json"
-      ],
-      "attack_tamper_target": [
-        "ValueError: attempt modified evaluation or comparison files: data/downloads/pdb/visible_short/3ivq_A.pdb"
-      ],
-      "attack_truncated": [
-        "ValueError: invalid full coordinate output"
-      ],
       "internal_baseline": [
         "long_backbones: reconstruction constraint"
-      ],
-      "supplied_baseline": [
-        "short_backbones: rate/dictionary constraint",
-        "long_backbones: rate/dictionary constraint"
       ]
     }
   },
   "experiments": {
     "short_backbones": {
       "results": {
-        "attack_constant_template": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_crash": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_forged_counts": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_forged_target": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_negative_counts": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_prune_comparison": {
-          "rmsd": 1.924225484968796,
-          "lddt": 0.7610325589299773,
+        "closed_glue": {
+          "rmsd": 0.7703334676030016,
+          "lddt": 0.9258275277362016,
           "bpr": 43.91628649509333,
           "vocab_size": 2100.0
-        },
-        "attack_public_dictionary": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_quality_fields": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_tamper_reference": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_tamper_target": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_truncated": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
         },
         "closed_loop_internal": {
           "rmsd": 0.35117189544260025,
           "lddt": 0.9641226944854303,
           "bpr": 26.265148833264153,
           "vocab_size": 159.0
+        },
+        "closed_loop_motif": {
+          "rmsd": 0.6891926658663746,
+          "lddt": 0.9074746720147261,
+          "bpr": 22.673983086177294,
+          "vocab_size": 336.0
+        },
+        "closed_tokens": {
+          "rmsd": 0.04359830778116003,
+          "lddt": 0.9998977462625886,
+          "bpr": 43.91628649509333,
+          "vocab_size": 2100.0
+        },
+        "closed_tokens_compact": {
+          "rmsd": 0.49086199617190207,
+          "lddt": 0.9453204945636089,
+          "bpr": 26.559322838315992,
+          "vocab_size": 676.0
+        },
+        "compact_glue": {
+          "rmsd": 2.9920295523524203,
+          "lddt": 0.6151053766565603,
+          "bpr": 26.559322838315992,
+          "vocab_size": 676.0
         },
         "geobpe_reference": {
           "rmsd": 1.924225484968796,
@@ -159,93 +89,57 @@
           "bpr": 43.91628649509333,
           "vocab_size": 2100.0
         },
+        "open_glue": {
+          "rmsd": 2.4451443040453977,
+          "lddt": 0.7697689237095918,
+          "bpr": 43.91628649509333,
+          "vocab_size": 2100.0
+        },
         "refined_glue": {
           "rmsd": 1.2138273187385071,
           "lddt": 0.8392730182442909,
           "bpr": 43.91628649509333,
           "vocab_size": 2100.0
-        },
-        "supplied_baseline": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
         }
       }
     },
     "long_backbones": {
       "results": {
-        "attack_constant_template": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_crash": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_forged_counts": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_forged_target": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_negative_counts": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_prune_comparison": {
-          "rmsd": 1.5263327957743271,
-          "lddt": 0.8235277779720832,
+        "closed_glue": {
+          "rmsd": 0.8301994902926028,
+          "lddt": 0.9216692727187237,
           "bpr": 43.89132213322456,
           "vocab_size": 2100.0
-        },
-        "attack_public_dictionary": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_quality_fields": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_tamper_reference": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_tamper_target": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
-        },
-        "attack_truncated": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
         },
         "closed_loop_internal": {
           "rmsd": 0.4295810000330641,
           "lddt": 0.9604886725433164,
           "bpr": 26.210227237152854,
           "vocab_size": 159.0
+        },
+        "closed_loop_motif": {
+          "rmsd": 0.8523592433757219,
+          "lddt": 0.8863916224474075,
+          "bpr": 22.569132766328455,
+          "vocab_size": 336.0
+        },
+        "closed_tokens": {
+          "rmsd": 0.03978854813310262,
+          "lddt": 0.9999742099085108,
+          "bpr": 43.89132213322456,
+          "vocab_size": 2100.0
+        },
+        "closed_tokens_compact": {
+          "rmsd": 0.48057744845899036,
+          "lddt": 0.9572423961037255,
+          "bpr": 26.454472518467156,
+          "vocab_size": 676.0
+        },
+        "compact_glue": {
+          "rmsd": 3.603977770984998,
+          "lddt": 0.5284688013206171,
+          "bpr": 26.454472518467156,
+          "vocab_size": 676.0
         },
         "geobpe_reference": {
           "rmsd": 1.5263327957743271,
@@ -283,17 +177,17 @@
           "bpr": 43.89132213322456,
           "vocab_size": 2100.0
         },
+        "open_glue": {
+          "rmsd": 5.317334497357949,
+          "lddt": 0.6870777369474664,
+          "bpr": 43.89132213322456,
+          "vocab_size": 2100.0
+        },
         "refined_glue": {
           "rmsd": 0.9400309011262054,
           "lddt": 0.889149388821575,
           "bpr": 43.89132213322456,
           "vocab_size": 2100.0
-        },
-        "supplied_baseline": {
-          "rmsd": 15.0,
-          "lddt": 0.35,
-          "bpr": 96.0,
-          "vocab_size": 8192.0
         }
       }
     }
