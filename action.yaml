@@ -1,6 +1,8 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: done
+action: submit
+gpus: 0
+test: true
 milestone: core_claim
-notes: "Hardening complete: every major shortcut fails and is scored at worst values in both experiments; better variants rank +0.42/+1.28 and a weaker one −1.27 (paired CIs exclude 0) against a 0.015 training-seed spread; reference-only scores repackaged end-to-end and validated; HARDENING.md documents the open alternatives (closed-loop codec, no-merge tie, encoder-side search)."
+notes: "Validation: score new hidden frozen-tokenizer probes (open/closed/compact glue, motif-format short codec) and archived variants on both slices from saved raw streams; restore reference-only scores."

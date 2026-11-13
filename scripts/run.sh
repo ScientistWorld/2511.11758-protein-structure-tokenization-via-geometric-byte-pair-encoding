@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# End-to-end reference reproduction (after scripts/download.sh): fit the reproduced
-# GEOBPE reference and the independent baseline, evaluate both slices through the
-# evaluators, package reference-only scores, validate.
+# TEMPORARY (validation job): score the new hidden probes from saved raw streams.
+# Restored to the end-to-end reference driver (scripts/reproduce.sh) afterwards.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
-exec bash scripts/reproduce.sh
+exec bash tmp/probe_check.sh
