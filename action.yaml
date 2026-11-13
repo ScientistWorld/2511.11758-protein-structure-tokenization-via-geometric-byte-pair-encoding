@@ -1,8 +1,6 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: submit
-gpus: 0
-test: false
+action: done
 milestone: core_claim
-notes: "Final audit: fresh end-to-end refit and encoding of the reference and baseline on both slices; hidden probes (open/closed glue, closed-loop re-tokenization over the frozen vocabulary, compact alphabets, short codecs) and archived variants scored from raw streams; reference-only packaging and validation."
+notes: "Hardening final: reference rerun end to end (byte-identical scores); closed-loop re-tokenization over the frozen GeoBPE vocabulary ties the short codec (+1.67 vs +1.72; near-lossless at reference rate); paper's glue-refinement effect measured (-0.56, ~30x seed noise); short codec outranking the reference and merges at scale left, stated plainly in HARDENING.md."
